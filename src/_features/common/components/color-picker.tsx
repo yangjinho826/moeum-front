@@ -29,6 +29,7 @@ export default function ColorPicker({
 }: ColorPickerProps) {
   const t = useTranslations("general.picker");
   const labelId = useId();
+  const descId = useId();
 
   return (
     <Input.Wrapper
@@ -36,6 +37,8 @@ export default function ColorPicker({
       labelElement="div"
       labelProps={{ id: labelId }}
       description={description}
+      // 그리드 음수 마진(히트 44 안의 원) 만큼 설명을 띄운다
+      descriptionProps={{ id: descId, mt: 6 }}
       inputWrapperOrder={["label", "input", "description"]}
     >
       {/* 44 히트 안의 28 원 — 음수 마진으로 첫 원을 라벨 선에 맞춘다 */}
@@ -48,6 +51,7 @@ export default function ColorPicker({
         my={-6}
         role="group"
         aria-labelledby={label ? labelId : undefined}
+        aria-describedby={description ? descId : undefined}
       >
         {USER_COLOR_PALETTE.map((c, i) => {
           const selected = value === c;

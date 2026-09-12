@@ -31,6 +31,7 @@ export default function IconPicker({
 }: IconPickerProps) {
   const t = useTranslations("general.picker");
   const labelId = useId();
+  const descId = useId();
 
   return (
     <Input.Wrapper
@@ -38,6 +39,8 @@ export default function IconPicker({
       labelElement="div"
       labelProps={{ id: labelId }}
       description={description}
+      // 설명이 타일에 붙지 않게 6 — 색 선택과 같은 간격
+      descriptionProps={{ id: descId, mt: 6 }}
       inputWrapperOrder={["label", "input", "description"]}
     >
       <SimpleGrid
@@ -46,6 +49,7 @@ export default function IconPicker({
         verticalSpacing={6}
         role="group"
         aria-labelledby={label ? labelId : undefined}
+        aria-describedby={description ? descId : undefined}
       >
         {ICON_KEYS.map((key) => {
           const selected = value === key;

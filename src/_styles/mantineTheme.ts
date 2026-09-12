@@ -247,8 +247,13 @@ export const mantineTheme = createTheme({
       },
     }),
     // 스위치 라벨도 폼 필드 라벨과 같은 13/500 dim, 설명 12 (배치5 고정지출 "보관" — 앱의 첫 Switch)
+    // 설정 행 모양 — 라벨·설명 좌, 스위치 우 끝 (배치5 S6: 호출부마다 달라지지 않게 테마에서)
     Switch: Switch.extend({
+      defaultProps: { labelPosition: "left" },
       styles: {
+        // 라벨·설명까지 누를 수 있는 영역 44 이상(DESIGN §4 터치 타깃)
+        body: { minHeight: rem(44), alignItems: "center", justifyContent: "space-between", gap: rem(12) },
+        labelWrapper: { flex: 1 },
         label: { fontSize: rem(13), lineHeight: rem(19), fontWeight: 500, color: "var(--moeum-text-dim)" },
         description: { fontSize: rem(12), lineHeight: rem(17) },
       },

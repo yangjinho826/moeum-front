@@ -69,14 +69,10 @@ export default function HouseholdSection() {
                     role: isOwner ? t("member.role_owner") : t("member.role_member"),
                     date: h.startedAt.replaceAll("-", "."),
                   })}
-                  value={
-                    h.householdId === inUseId ? (
-                      // 금액 자리지만 글자 라벨 — 모노 대신 본문 서체 12 dim
-                      <Text component="span" c="dimmed" fw={500} style={{ fontSize: 12, fontFamily: "var(--mantine-font-family)" }}>
-                        {t("in_use")}
-                      </Text>
-                    ) : undefined
-                  }
+                  // 값 자리의 글자 라벨 — 본문 서체 13/500 dim (ListRow valueText)
+                  value={h.householdId === inUseId ? t("in_use") : undefined}
+                  valueColor="dim"
+                  valueText
                   chevron={isOwner}
                   last={i === items.length - 1}
                   onClick={isOwner ? () => open(h.householdId) : undefined}
@@ -84,6 +80,12 @@ export default function HouseholdSection() {
               );
             })}
           </Section>
+        )}
+        {/* 멤버 행이 왜 안 눌리는지 — 데스크톱은 레일 도움말이, 모바일은 목록 아래 한 줄이 말한다 */}
+        {items.some((h) => h.role !== "OWNER") && (
+          <Text hiddenFrom="lg" c="dimmed" mt={12} style={{ fontSize: 13, lineHeight: "19px" }}>
+            {t("guide.role_body")}
+          </Text>
         )}
       </Stack>
 

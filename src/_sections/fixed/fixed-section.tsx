@@ -176,7 +176,11 @@ function FixedMonthList({
                 key={it.fixedId}
                 tall
                 title={it.isArchived ? <Text component="span" inherit c="dimmed">{it.name}</Text> : it.name}
-                lead={{ icon: isKnownIcon(it.icon) ? it.icon : it.categoryIcon, color: it.color ?? it.categoryColor }}
+                // 보관 행은 제목과 함께 글리프도 dim — 색이 남으면 활성처럼 읽힌다
+                lead={{
+                  icon: isKnownIcon(it.icon) ? it.icon : it.categoryIcon,
+                  color: it.isArchived ? null : (it.color ?? it.categoryColor),
+                }}
                 meta={[t("day_format", { day: it.dayOfMonth }), it.categoryName].filter(Boolean).join(" · ")}
                 value={showValue ? fmt(value) : undefined}
                 valueColor={amountColor(value, "text")}

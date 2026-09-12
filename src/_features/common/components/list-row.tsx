@@ -41,6 +41,8 @@ export interface ListRowProps {
   value?: ReactNode;
   /** 금액 색(기본 text) */
   valueColor?: SemanticColor;
+  /** 값이 숫자가 아닌 글자 라벨("사용 중")이면 본문 서체 13/500 — 모노는 한글 사이 공백이 벌어진다 */
+  valueText?: boolean;
   /** 금액 아래 모노 11 — 잔액·비율(기본 dim) */
   sub?: ReactNode;
   subColor?: SemanticColor;
@@ -70,6 +72,7 @@ export default function ListRow({
   dot,
   value,
   valueColor = "text",
+  valueText = false,
   sub,
   subColor = "dim",
   bar,
@@ -152,12 +155,12 @@ export default function ListRow({
           <Stack gap={4} align="flex-end">
             {value != null && (
               <Text
-                className="moeum-mono"
-                fw={600}
+                className={valueText ? undefined : "moeum-mono"}
+                fw={valueText ? 500 : 600}
                 ta="right"
                 style={{
-                  fontSize: 14,
-                  lineHeight: "20px",
+                  fontSize: valueText ? 13 : 14,
+                  lineHeight: valueText ? "19px" : "20px",
                   color: semanticColor(valueColor),
                   whiteSpace: "nowrap",
                 }}

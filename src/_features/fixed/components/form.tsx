@@ -1,7 +1,7 @@
 "use client";
 
-import { NumberInput, Select, Stack, Switch, TextInput } from "@mantine/core";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Box, CheckIcon, Group, NumberInput, Select, Stack, Switch, TextInput } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
@@ -33,6 +33,7 @@ export default function FixedForm({
 }: FixedFormProps) {
   const t = useTranslations("fixed");
   const tg = useTranslations("general.common");
+  const tApp = useTranslations("app");
 
   const {
     form,
@@ -43,16 +44,26 @@ export default function FixedForm({
     handleCancel,
   } = useFixedForm({ fixedId, onDone });
 
-  // 지출 카테고리만 — 거래 폼과 같은 옵션 조회(한 번 받으면 캐시 공유)
-  const { data: optionsData } = useSuspenseQuery(queryKeys.transaction.formOptions());
-  const categoryOptions = useMemo(
-    () =>
-      optionsData.body.data.categories
-        .filter((c) => c.kind === "EXPENSE")
-        .map((c) => ({ value: c.categoryId, label: c.name })),
+  // 지출 카테고리만 — 거래 폼과 같은 옵션 조회(캐시 공유). 카테고리는 선택 항목이라 비-Suspense:
+  // 늦거나 실패해도 폼 전체를 가리지 않고 이 필드만 비활성
+  const { data: optionsData, isPending: optionsLoading, isError: optionsFailed } = useQuery(
+    queryKeys.transaction.formOptions(),
+  );
+  const categories = useMemo(
+    () => (optionsData?.body.data.categories ?? []).filter((c) => c.kind === "EXPENSE"),
     [optionsData],
   );
-  const noCategory = categoryOptions.length === 0;
+  const categoryOptions = useMemo(
+    () => categories.map((c) => ({ value: c.categoryId, label: c.name })),
+    [categories],
+  );
+  const categoryColor = useMemo(() => new Map(categories.map((c) => [c.categoryId, c.color])), [categories]);
+  // 상태 안내는 설명 줄에 — 비활성 칸의 placeholder 는 대비가 낮아 읽히지 않는다
+  const categoryDesc = optionsFailed
+    ? tg("load_failed")
+    : optionsData && categories.length === 0
+      ? t("category_empty")
+      : t("category_desc");
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -67,13 +78,31 @@ export default function FixedForm({
         <Select
           {...form.getInputProps("categoryId")}
           label={t("category")}
-          placeholder={noCategory ? t("category_empty") : t("category_placeholder")}
-          description={t("category_desc")}
+          placeholder={optionsLoading ? tApp("loading") : t("category_placeholder")}
+          description={categoryDesc}
           inputWrapperOrder={["label", "input", "description", "error"]}
           data={categoryOptions}
-          disabled={noCategory}
+          // 항목 앞 6px 색 점 = 목록 행 lead 와 같은 색(plan/5 ③). renderOption 은 체크 표시까지 대신 그린다
+          renderOption={({ option, checked }) => (
+            <Group gap={8} wrap="nowrap">
+              {checked && <CheckIcon size={12} style={{ flexShrink: 0 }} />}
+              <Box
+                w={6}
+                h={6}
+                style={{
+                  borderRadius: 3,
+                  flexShrink: 0,
+                  background: categoryColor.get(option.value) ?? "var(--moeum-text-dim)",
+                }}
+              />
+              <span>{option.label}</span>
+            </Group>
+          )}
+          disabled={categoryOptions.length === 0}
           searchable
+          // 수정에선 비우기 불가 — 버튼도, 고른 항목 다시 누르기(allowDeselect)도 막는다(백엔드가 null 을 무시)
           clearable={!isUpdate}
+          allowDeselect={!isUpdate}
         />
         <NumberInput
           {...form.getInputProps("dayOfMonth")}
@@ -105,8 +134,6 @@ export default function FixedForm({
             {...form.getInputProps("isArchived", { type: "checkbox" })}
             label={t("archived")}
             description={t("archived_desc")}
-            labelPosition="left"
-            styles={{ body: { justifyContent: "space-between", gap: 12 }, labelWrapper: { flex: 1 } }}
           />
         )}
         <FormActions

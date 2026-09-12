@@ -50,8 +50,8 @@ export function useHouseholdForm({
     },
     validate: zodResolver(
       z.object({
+        // 통화는 폼에 없다(배치5) — 상세 값을 그대로 돌려보내므로 검증하지 않는다(보이지 않는 에러로 저장이 막히지 않게)
         name: z.string().min(1, t("name_required_message")),
-        currency: z.string().min(3).max(3),
       }),
     ),
   });

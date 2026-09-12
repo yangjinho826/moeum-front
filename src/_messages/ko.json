@@ -283,7 +283,7 @@
     "empty": "고정지출이 없어요. 월세·구독처럼 매달 나가는 돈을 등록해요",
     "category_desc": "고르면 목록에 카테고리가 함께 보여요",
     "category_placeholder": "선택 안 함",
-    "category_empty": "카테고리가 없어요",
+    "category_empty": "지출 카테고리가 없어요 — 비워 둬도 돼요",
     "day_unit": "일",
     "day_range_message": "1~31 사이로 입력해 주세요",
     "look_desc": "비우면 카테고리 색·아이콘을 써요(다시 누르면 비움)",
