@@ -258,7 +258,9 @@
       "delete_body": "A deleted category disappears only from new entries. Past transactions and fixed expenses keep its name.",
       "kind_body": "Either expense or income. When recording, only categories of that kind are offered.",
       "sort_body": "Smaller numbers appear higher. Ties keep the order they were added."
-    }
+    },
+    "empty": "No categories yet",
+    "sort_order_hint": "Smaller numbers appear higher"
   },
   "fixed": {
     "list_title": "Fixed Expenses",
