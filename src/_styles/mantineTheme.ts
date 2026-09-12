@@ -59,7 +59,8 @@ const inputVars = () => ({
 
 export const mantineTheme = createTheme({
   primaryColor: "sage",
-  primaryShade: { light: 6, dark: 4 },
+  // 라이트 7 = --moeum-accent(sage.7) 와 같게 — filled 버튼과 링크가 같은 색 (H-1, 흰 글자 대비 6.69)
+  primaryShade: { light: 7, dark: 4 },
   autoContrast: true,
 
   white: SURFACE.light.surface,
