@@ -1,8 +1,8 @@
 {
  "runId": "ds-moeum-redesign-20260911",
  "fileKey": "j1xaab6icKdvERz6SbU6E0",
- "phase": "S4 batch6 Figma 4/4 done",
- "step": "next: S5 batch6",
+ "phase": "S4 batch7 Figma done",
+ "step": "next: S5 batch7",
  "decisions": {
   "fontSans": "Noto Sans KR (Pretendard 대역)",
   "fontMono": "Geist Mono",
@@ -25,7 +25,8 @@
    "배치3 · 390": "58:382",
    "배치4 · 390": "67:1012",
    "배치5 · 390": "73:296",
-   "배치6 · 390": "76:110"
+   "배치6 · 390": "76:110",
+   "배치7 · 390": "78:2"
   },
   "styles": {
    "Shadow/Modal": "S:bc7a6b3b4e1a4c2a109bfee86b9af6b170d4f316,",
@@ -71,7 +72,11 @@
    "household/[householdId]/members(시트)": "76:111",
    "switcher(셸 시트)": "76:141",
    "login": "77:147",
-   "register": "77:170"
+   "register": "77:170",
+   "invest/new(시트)": "78:4",
+   "invest/[portfolioId]": "78:4 (같은 폼, 수정 = 삭제 좌측)",
+   "onboarding/household": "78:79",
+   "transactions/[transactionId]": "46:451 (같은 폼)"
   }
  },
  "completedSteps": [
@@ -90,7 +95,8 @@
   "S4 batch4",
   "S4 batch5",
   "S6 batch5",
-  "S4 batch6"
+  "S4 batch6",
+  "S4 batch7"
  ],
  "notes": [
   "FAB 높이: DESIGN 40 vs size/button-sm 36 → S3 결정",

@@ -30,8 +30,8 @@ look=교체(Warm Ledger→Statement·Warm)  figma=full  fileKey=j1xaab6icKdvERz6
 | 배치6 S4 | ✅ | node-id 4 (페이지 "배치6 · 390" 76:110 — members(시트) 76:111 · 전환기(셸 시트) 76:141 · login 77:147 · register 77:170) · 배치5 부품 복제(가계부 시트 73:541 · 목록 행 73:526~528 · Field/이름 73:560 · Button 73:649) · get_design_context OK(76:111 — var(--moeum-*) · 컴포넌트 설명) · 미바인딩 solid 0/4(BrandLogo 는 `(brand)` 예외 — brand-logo.tsx 와 같은 SVG) · household/[householdId] = 가계부 폼 페이지 모드(73:541 과 같은 폼, 배치5) · 멤버 라우트 = 시트 정본 fallback | 2026-09-13 |
 | 배치6 S5 | ⬜ | | |
 | 배치6 S6 | ⬜ | | |
-| 배치7 S3 | ⬜ | | |
-| 배치7 S4 | ⬜ | | |
+| 배치7 S3 | ✅ | 계획표 plan/7.md(invest/[portfolioId] · invest/new · onboarding/household · transactions/[transactionId]) · 감사 = 코드 + 백엔드 대조(종목 폼 간격 8·조회 light 틴트·설명 위 · 종목 삭제 = 보관(보유 0) · 거래·종목 페이지 레일 비어 있음 · 온보딩 Card·가운데 힌트) · 가설 = 배치1 pick A+C 확장 · 캔버스 ⏭(위임) · pick = 추천안 A·A·A | 2026-09-13 |
+| 배치7 S4 | ✅ | node-id (페이지 "배치7 · 390" 78:2 — invest/new(시트) 78:4 · invest/[portfolioId] = 78:4 같은 폼(수정 = 삭제 좌측, 배치3 60:249 문법) · onboarding/household 78:79 · transactions/[transactionId] = 46:451 같은 폼) · 배치5·6 부품 복제(시트 73:541 · Field/시작 잔액 60:161 단위 · Button Outline 73:648 · 로그인 77:147) · get_design_context OK(78:79) · 미바인딩 solid 0/2 | 2026-09-13 |
 | 배치7 S5 | ⬜ | | |
 | 배치7 S6 | ⬜ | | |
 | 마감 | ⬜ | qa/final.md | |
