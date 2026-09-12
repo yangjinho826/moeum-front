@@ -7,11 +7,21 @@ import type { CSSProperties, ReactNode } from "react";
 
 import { type SemanticColor, semanticColor } from "_styles/semantic-color";
 
+import DynamicIcon, { isKnownIcon } from "./dynamic-icon";
+
 export interface ListRowBar {
   /** 0~1 비율 */
   ratio: number;
   /** 막대 색(기본 accent) */
   color?: SemanticColor;
+}
+
+/** 행 앞 18px 아이콘 글리프 — 카테고리·고정지출 관리 목록(배치4, Figma ListRow Lead). 색 = 사용자 데이터 hex */
+export interface ListRowLead {
+  /** DynamicIcon 키. 없거나 선택기 목록 밖 이름이면 같은 자리에 6px 색 점 */
+  icon?: string | null;
+  /** 없으면 dim */
+  color?: string | null;
 }
 
 export interface ListRowProps {
@@ -21,6 +31,8 @@ export interface ListRowProps {
   titleDot?: SemanticColor;
   /** 제목 옆 태그(고정지출 등). warning 색 11px */
   tag?: ReactNode;
+  /** 행 앞 아이콘 — 관리 목록에서 사용자가 고른 아이콘을 보여줄 때만(명세서 행은 쓰지 않음) */
+  lead?: ListRowLead;
   /** 메타 11 dimmed — 카테고리 · 날짜 · 통장 */
   meta?: ReactNode;
   /** 메타 앞 6px 점(카테고리 색 hex). 아이콘 박스는 쓰지 않는다 */
@@ -52,6 +64,7 @@ export interface ListRowProps {
 export default function ListRow({
   title,
   titleDot,
+  lead,
   tag,
   meta,
   dot,
@@ -79,57 +92,60 @@ export default function ListRow({
         borderBottom: last ? undefined : "1px solid var(--moeum-hair-2)",
       }}
     >
-      <Stack gap={2} style={{ minWidth: 0, flex: 1 }}>
-        <Group gap={6} wrap="nowrap" style={{ minWidth: 0 }}>
-          {titleDot && (
-            <Box
-              w={6}
-              h={6}
-              style={{ borderRadius: 3, background: semanticColor(titleDot), flexShrink: 0 }}
-            />
-          )}
-          <Text
-            fw={500}
-            c="var(--moeum-text)"
-            truncate
-            style={{ fontSize: 15, lineHeight: "23px" }}
-          >
-            {title}
-          </Text>
-          {tag != null && (
-            <Text
-              component="span"
-              fw={600}
-              style={{
-                fontSize: 11,
-                lineHeight: "16px",
-                color: "var(--mantine-color-warning-5)",
-                flexShrink: 0,
-              }}
-            >
-              {tag}
-            </Text>
-          )}
-        </Group>
-        {meta != null && (
+      <Group gap={12} wrap="nowrap" style={{ minWidth: 0, flex: 1 }}>
+        {lead && <LeadGlyph lead={lead} />}
+        <Stack gap={2} style={{ minWidth: 0, flex: 1 }}>
           <Group gap={6} wrap="nowrap" style={{ minWidth: 0 }}>
-            {dot && (
+            {titleDot && (
               <Box
                 w={6}
                 h={6}
-                style={{ borderRadius: 3, background: dot, flexShrink: 0 }}
+                style={{ borderRadius: 3, background: semanticColor(titleDot), flexShrink: 0 }}
               />
             )}
             <Text
-              c="dimmed"
+              fw={500}
+              c="var(--moeum-text)"
               truncate
-              style={{ fontSize: 11, lineHeight: "16px", letterSpacing: 0 }}
+              style={{ fontSize: 15, lineHeight: "23px" }}
             >
-              {meta}
+              {title}
             </Text>
+            {tag != null && (
+              <Text
+                component="span"
+                fw={600}
+                style={{
+                  fontSize: 11,
+                  lineHeight: "16px",
+                  color: "var(--mantine-color-warning-5)",
+                  flexShrink: 0,
+                }}
+              >
+                {tag}
+              </Text>
+            )}
           </Group>
-        )}
-      </Stack>
+          {meta != null && (
+            <Group gap={6} wrap="nowrap" style={{ minWidth: 0 }}>
+              {dot && (
+                <Box
+                  w={6}
+                  h={6}
+                  style={{ borderRadius: 3, background: dot, flexShrink: 0 }}
+                />
+              )}
+              <Text
+                c="dimmed"
+                truncate
+                style={{ fontSize: 11, lineHeight: "16px", letterSpacing: 0 }}
+              >
+                {meta}
+              </Text>
+            </Group>
+          )}
+        </Stack>
+      </Group>
 
       <Group gap={8} wrap="nowrap" align="center" style={{ flexShrink: 0 }}>
         {(value != null || sub != null || bar) && (
@@ -211,5 +227,19 @@ export default function ListRow({
     <UnstyledButton onClick={onClick} className="moeum-row-press" style={pressStyle}>
       {body}
     </UnstyledButton>
+  );
+}
+
+/** 18px 글리프(stroke 1.5 — Figma Icon/* 와 같은 굵기). 아이콘 없는·목록 밖 이름은 요술봉 대신 자리만 맞추고 색 점 */
+function LeadGlyph({ lead }: { lead: ListRowLead }) {
+  const color = lead.color ?? "var(--moeum-text-dim)";
+  return (
+    <Box w={18} h={18} style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color }}>
+      {isKnownIcon(lead.icon) ? (
+        <DynamicIcon name={lead.icon} size={18} stroke={1.5} />
+      ) : (
+        <Box w={6} h={6} style={{ borderRadius: 3, background: color }} />
+      )}
+    </Box>
   );
 }

@@ -46,7 +46,8 @@ export const TABS: Tab[] = [
     id: "settings",
     icon: IconUser,
     href: "/settings",
-    match: (p) => p.includes("/settings"),
+    // 카테고리·고정지출·가계부 관리는 내정보 "관리"에서 들어가는 하위 화면 (배치4)
+    match: (p) => p.includes("/settings") || /^\/[a-z]{2}\/(category|fixed|household)(\/|$)/.test(p),
   },
 ];
 

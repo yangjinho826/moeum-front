@@ -62,6 +62,10 @@ const MAP: Record<string, ComponentType<IconProps>> = {
   dumbbell: IconDumbbell,
 };
 
+/** 선택기 16개 안의 이름인지 — 시드·옛 데이터엔 목록 밖 이름(tools-kitchen-2 · dots …)이 있어 요술봉 대체가 뜬다 */
+export const isKnownIcon = (name?: string | null): name is IconKey =>
+  Boolean(name && MAP[name]);
+
 type DynamicIconProps = IconProps & {
   name?: string | null;
 };
