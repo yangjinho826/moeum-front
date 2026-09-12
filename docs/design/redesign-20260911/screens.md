@@ -6,10 +6,10 @@
 | invest | /invest | P1 | 1 | 로그인·uitest 데이터 · 390/1440 | 25:179 | 45d29ab | invest.jpg·invest-desktop.jpg |
 | settings | /settings | P1 | 1 | 로그인·uitest 데이터 · 390/1440 | 27:257 | a45b06b | settings.jpg·settings-desktop.jpg |
 | transactions | /transactions | P1 | 1 | 로그인·uitest 데이터 · 390/1440 | 22:90 | 53b0cfe | transactions.jpg·transactions-desktop.jpg·transactions-calendar.jpg |
-| invest/account/[accountId] | /invest/account/[accountId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 41:365 | | |
-| invest/portfolio/[portfolioId] | /invest/portfolio/[portfolioId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 45:130 | | |
-| transactions/new | /transactions/new | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:451 | | |
-| wealth | /wealth | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:195 | | |
+| invest/account/[accountId] | /invest/account/[accountId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 41:365 | 463b05a | invest-account.jpg·invest-account-desktop.jpg |
+| invest/portfolio/[portfolioId] | /invest/portfolio/[portfolioId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 45:130 | f499775 | invest-portfolio.jpg·invest-portfolio-desktop.jpg |
+| transactions/new | /transactions/new | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:451 | 03e493f | transactions-new.jpg(시트 · 데스크톱 모달 560 DOM 실측) |
+| wealth | /wealth | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:195 | c501efc | wealth.jpg·wealth-desktop.jpg |
 | account | /account | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
 | account/[accountId] | /account/[accountId] | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
 | account/[accountId]/edit | /account/[accountId]/edit | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
