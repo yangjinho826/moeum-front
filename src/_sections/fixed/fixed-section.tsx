@@ -129,7 +129,10 @@ function FixedMonthHero({ month, items }: { month: string; items: FixedListItemT
   );
 }
 
-/** 목록 — 사용액은 hero 와 같은 캐시를 비-Suspense 로 읽는다(요약이 없으면 금액만 비고 행·수정 진입은 그대로) */
+/**
+ * 목록 — 사용액은 hero 와 같은 캐시를 비-Suspense 로 읽는다(요약이 없으면 금액만 비고 행·수정 진입은 그대로).
+ * 보관 항목은 맨 아래 "보관 N" 섹션(제목 dim) — 거래 기록 선택지에선 빠졌지만 지난 기록·수정은 남는다 (배치5).
+ */
 function FixedMonthList({
   month,
   items,
@@ -143,35 +146,49 @@ function FixedMonthList({
   const { data } = useQuery({ ...queryKeys.fixed.monthlySummary(month), placeholderData: keepPreviousData });
   const usages = data?.body.data.usages;
 
+  const active = items.filter((it) => !it.isArchived);
+  const archived = items.filter((it) => it.isArchived);
+  const groups = [
+    { key: "active", label: t("list_title"), rows: active },
+    { key: "archived", label: t("archived_title"), rows: archived },
+  ].filter((g) => g.rows.length > 0);
+
   return (
-    <Section
-      title={
-        <>
-          {t("list_title")}{" "}
-          <Text component="span" inherit c="dimmed" className="moeum-mono" fw={600}>
-            {items.length}
-          </Text>
-        </>
-      }
-    >
-      {items.map((it, i) => {
-        const value = usages?.[it.fixedId] ?? 0;
-        return (
-          <ListRow
-            key={it.fixedId}
-            tall
-            title={it.name}
-            lead={{ icon: isKnownIcon(it.icon) ? it.icon : it.categoryIcon, color: it.color ?? it.categoryColor }}
-            meta={[t("day_format", { day: it.dayOfMonth }), it.categoryName].filter(Boolean).join(" · ")}
-            value={usages ? fmt(value) : undefined}
-            valueColor={amountColor(value, "text")}
-            chevron
-            last={i === items.length - 1}
-            onClick={() => onClickRow(it.fixedId)}
-          />
-        );
-      })}
-    </Section>
+    <>
+      {groups.map((g) => (
+        <Section
+          key={g.key}
+          title={
+            <>
+              {g.label}{" "}
+              <Text component="span" inherit c="dimmed" className="moeum-mono" fw={600}>
+                {g.rows.length}
+              </Text>
+            </>
+          }
+        >
+          {g.rows.map((it, i) => {
+            const value = usages?.[it.fixedId] ?? 0;
+            // 보관 행은 이번 달 사용액이 있을 때만 금액(없으면 0 을 늘어놓지 않는다)
+            const showValue = usages && (!it.isArchived || value > 0);
+            return (
+              <ListRow
+                key={it.fixedId}
+                tall
+                title={it.isArchived ? <Text component="span" inherit c="dimmed">{it.name}</Text> : it.name}
+                lead={{ icon: isKnownIcon(it.icon) ? it.icon : it.categoryIcon, color: it.color ?? it.categoryColor }}
+                meta={[t("day_format", { day: it.dayOfMonth }), it.categoryName].filter(Boolean).join(" · ")}
+                value={showValue ? fmt(value) : undefined}
+                valueColor={amountColor(value, "text")}
+                chevron
+                last={i === g.rows.length - 1}
+                onClick={() => onClickRow(it.fixedId)}
+              />
+            );
+          })}
+        </Section>
+      ))}
+    </>
   );
 }
 

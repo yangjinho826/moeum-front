@@ -296,7 +296,8 @@
       "delete_title": "삭제",
       "delete_body": "지워도 이미 기록한 거래엔 고정지출 이름이 남아요."
     },
-    "category": "카테고리"
+    "category": "카테고리",
+    "archived_title": "보관"
   },
   "portfolio": {
     "period_1m": "1개월",

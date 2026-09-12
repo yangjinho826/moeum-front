@@ -298,7 +298,8 @@
       "delete_title": "Delete",
       "delete_body": "Past transactions keep the fixed expense name after deletion."
     },
-    "category": "Category"
+    "category": "Category",
+    "archived_title": "Archived"
   },
   "portfolio": {
     "period_1m": "1M",
