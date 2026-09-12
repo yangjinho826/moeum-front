@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, UnstyledButton, useMantineTheme } from "@mantine/core";
+import { Box, UnstyledButton } from "@mantine/core";
 import {
   IconChartPie,
   IconTrendingUp,
@@ -46,10 +46,13 @@ export const TABS: Tab[] = [
   },
 ];
 
+/**
+ * BottomTab — 모바일 탭바 64 (DESIGN.md §5 셸, Figma TabBar 20:80).
+ * 배경 bg · 상단 hair · 활성 accent / 비활성 dimmed. 아이콘 20 + 라벨 11/700.
+ */
 export function BottomTab() {
   const pathname = usePathname();
   const params = useParams<{ locale: string }>();
-  const theme = useMantineTheme();
   const t = useTranslations("nav");
 
   return (
@@ -63,8 +66,8 @@ export function BottomTab() {
         transform: "translateX(-50%)",
         width: "100%",
         maxWidth: "var(--container-max)",
-        background: theme.colors.gray?.[0] ?? "#F7F4EF",
-        borderTop: `1px solid ${theme.colors.gray?.[2] ?? "#DDD5C9"}`,
+        background: "var(--moeum-bg)",
+        borderTop: "1px solid var(--moeum-hair)",
         // iOS 홈 인디케이터 / Android 제스처 영역 보호
         paddingBottom: "var(--safe-bottom)",
         paddingLeft: "var(--safe-left)",
@@ -76,40 +79,35 @@ export function BottomTab() {
       <Box
         style={{
           display: "flex",
-          justifyContent: "space-around",
           alignItems: "center",
           height: "var(--bottom-tab-h)",
         }}
       >
         {TABS.map(({ id, icon: Icon, href, match }) => {
           const active = match(pathname);
-          const color = active
-            ? (theme.colors.sage?.[6] ?? "#647A5C")
-            : (theme.colors.gray?.[5] ?? "#9C8F82");
+          const color = active ? "var(--moeum-accent)" : "var(--moeum-text-dim)";
           return (
             <UnstyledButton
               key={id}
               component={Link}
               href={`/${params.locale}${href === "/" ? "" : href}`}
               prefetch={false}
+              aria-current={active ? "page" : undefined}
               style={{
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 2,
+                gap: 4,
                 height: "100%",
+                transition: "color 150ms ease-out",
               }}
             >
               <Icon size={20} color={color} stroke={active ? 2.5 : 2} />
               <Box
                 component="span"
-                style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color,
-                }}
+                style={{ fontSize: 11, lineHeight: "16px", fontWeight: 700, color }}
               >
                 {t(id)}
               </Box>

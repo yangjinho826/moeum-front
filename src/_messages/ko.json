@@ -11,9 +11,20 @@
     "home": "홈",
     "transactions": "거래",
     "invest": "투자",
-    "settings": "내정보"
+    "settings": "내정보",
+    "record": "기록",
+    "record_full": "기록하기"
   },
   "settings": {
+    "appearance": "화면 모드",
+    "scheme_light": "라이트",
+    "scheme_dark": "다크",
+    "scheme_auto": "시스템",
+    "household_section": "가계부",
+    "member_count": "{count}명",
+    "category": "카테고리",
+    "fixed": "고정지출",
+    "account": "통장",
     "title": "내정보",
     "current_household": "현재 가계부",
     "switch": "전환",
@@ -31,6 +42,19 @@
     "logout": "로그아웃"
   },
   "home": {
+    "as_of": "{date} 기준",
+    "why_up": "이번 달 늘어난 이유",
+    "why_down": "이번 달 줄어든 이유",
+    "why_detail": "자세히",
+    "net_saving": "순저축",
+    "invest_profit": "투자 평가손익",
+    "meta_valuation": "누적 · 평가 {amount} · {rate}",
+    "go_all_short": "전체",
+    "empty_snapshot": "첫 기록을 남기면 비교가 시작돼요",
+    "record_now": "지금 기록",
+    "expense_top": "지출 Top 3",
+    "go_transactions_all": "거래 전체",
+    "go_invest_all": "투자 전체",
     "total_asset": "총 자산",
     "show_amount": "금액 보기",
     "hide_amount": "금액 숨기기",
@@ -120,7 +144,9 @@
       "confirmyescontent": "작업이 완료되었습니다.",
       "register_has_been_completed": "등록되었습니다.",
       "update_has_been_completed": "수정되었습니다.",
-      "copy": "복사"
+      "copy": "복사",
+      "prev_month": "이전 달",
+      "next_month": "다음 달"
     },
     "money": "{amount}원",
     "won": "원",
@@ -212,6 +238,17 @@
     "used_this_month": "이번달 {amount}원"
   },
   "portfolio": {
+    "period_1m": "1개월",
+    "period_3m": "3개월",
+    "period_12m": "12개월",
+    "period_all": "전체",
+    "profit_label": "평가손익",
+    "accounts": "계좌",
+    "account_meta": "{count}종목 · 현금 {cash}",
+    "empty_invest": "투자 계좌를 연결하면 손익이 여기 보여요",
+    "add_account": "계좌 추가",
+    "go_all": "전체",
+    "trend_label": "평가액 추이",
     "list_title": "포트폴리오",
     "title": "투자",
     "valuation_label": "투자 평가액",
@@ -308,7 +345,9 @@
     "fee_sell_hint": "매도 수수료는 실현손익에서 차감됩니다",
     "fee_negative": "수수료는 0 이상이어야 합니다",
     "settlement_amount": "정산금액",
-    "total_fee": "제비용"
+    "total_fee": "제비용",
+    "balance_trend": "자산 추이",
+    "recent_months": "최근 {count}개월"
   },
   "transaction": {
     "list_title": "거래",
@@ -359,6 +398,7 @@
     "ledger_title": "거래 이력",
     "tx_default_label": "거래",
     "date_tx": "{month}월 {day}일 거래",
+    "date_header": "{month}.{day} {weekday}",
     "date_with_weekday": "{month}월 {day}일 ({weekday})"
   },
   "wealth": {

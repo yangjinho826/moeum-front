@@ -9,30 +9,40 @@ interface FilterChipProps {
 }
 
 /**
- * pill 칩 — 페이지 상단 필터 (전체/지출/수입 등) 공통 사용.
+ * 필터 칩 — 활성 = accent 텍스트 + 하단 2px 언더라인, 배경 채움 없음 (DESIGN.md §5).
+ * 페이지 상단 필터(전체/지출/수입 등) 공통.
  */
 export default function FilterChip({ label, active, onClick }: FilterChipProps) {
   return (
     <UnstyledButton
       onClick={onClick}
+      aria-pressed={active}
       style={{
-        padding: "6px 14px",
-        borderRadius: 999,
-        background: active
-          ? "var(--mantine-color-info-0)"
-          : "var(--mantine-color-gray-1)",
-        color: active
-          ? "var(--mantine-color-info-5)"
-          : "var(--mantine-color-gray-7)",
-        fontSize: 12,
-        fontWeight: 600,
-        // 좁은 flex 컨테이너(ScrollArea 안 nowrap Group)에서 칩이 눌려
-        // 라벨이 세로로 꺾이는 것 방지 — 칩은 항상 내용 크기 유지
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        color: active ? "var(--moeum-accent)" : "var(--moeum-text-dim)",
+        fontSize: 13,
+        lineHeight: "19px",
+        fontWeight: 700,
+        letterSpacing: "-0.01em",
+        // 좁은 flex 컨테이너(ScrollArea 안 nowrap Group)에서 칩이 눌리지 않게
         whiteSpace: "nowrap",
         flexShrink: 0,
+        // 터치타깃 ≥32: 텍스트 19 + 언더라인 2 + 위 6/아래 5 패딩(밑줄이 칩 하단에 붙게 아래는 짧게)
+        paddingTop: 6,
+        paddingBottom: 5,
+        transition: "color 150ms ease-out",
       }}
     >
       {label}
+      <span
+        style={{
+          display: "block",
+          height: 2,
+          background: active ? "var(--moeum-accent)" : "transparent",
+        }}
+      />
     </UnstyledButton>
   );
 }
