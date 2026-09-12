@@ -40,16 +40,18 @@
 ### 2-2. 팔레트 (Mantine 튜플, 셰이드 **항상 명시**)
 | 이름 | 역할 | 라이트 base | 다크 base | 튜플 |
 |---|---|---|---|---|
-| `sage` (primary) | 행동: 탭 활성·버튼·링크·추이선·브랜드 | `sage.6 #647A5C` | `sage.4 #93AC85` | 기존 유지 |
-| `positive` | **수입** · 잔액 양수 · 저축 | `positive.5 #2F855A` | `positive.3 #73B88E` | 기존 유지 |
-| `terracotta` | **지출** · 잔액 음수 | `terracotta.6 #C2674A` | `terracotta.4 #E5B197` | 기존 유지 |
-| `up` | **투자 상승 · 매수 · 총자산 증가** (한국식) | `up.5 #DC2626` | `up.4 #F87171` | = `danger` 튜플 별칭 |
-| `down` | **투자 하락 · 매도 · 총자산 감소** | `down.5 #2563EB` | `down.4 #60A5FA` | = `info` 튜플 별칭 |
+| `sage` (primary) | 행동: 탭 활성·버튼·링크·추이선·브랜드 | `sage.7 #4F6149` | `sage.4 #93AC85` | 기존 유지 |
+| `positive` | **수입** · 잔액 양수 · 저축 | `positive.6 #266E4A` | `positive.3 #73B88E` | 기존 유지 |
+| `terracotta` | **지출** · 잔액 음수 | `terracotta.7 #A4543B` | `terracotta.4 #E5B197` | 기존 유지 |
+| `up` | **투자 상승 · 매수 · 총자산 증가** (한국식) | `up.7 #B91C1C` | `up.4 #F87171` | = `danger` 튜플 별칭 |
+| `down` | **투자 하락 · 매도 · 총자산 감소** | `down.6 #2563EB` | `down.4 #60A5FA` | = `info` 튜플 별칭 |
 | `danger` | 에러·삭제·파괴적 확인 | `#EF4444` | | 기존 |
 | `warning` | 주의·임박·고정지출 태그 | `#F59E0B` | | 기존 |
 | `purple` | 이체·평가조정 | `#8B5CF6` | | 기존 |
 | `gray` | 웜 그레이 | 기존 튜플 | | 기존 |
 | `dark` | 다크 표면 튜플(신규) | — | 0 `#F1EAE0` · 1 `#D9D0C3` · 2 `#A8998A` · 3 `#7A6F63` · 4 `#3A322B` · 5 `#332C26` · 6 `#2A241F` · 7 `#1F1A16` · 8 `#171310` · 9 `#110E0B` | 신규 |
+
+라이트 base 는 **글자 대비 AA(4.5:1, bg `#FAF6EF`) 기준**으로 고른 셰이드다 — accent 6.21 · income 5.71 · expense 4.99 · up 6.01 · down 4.80. 이전 셰이드(sage.6 4.35 · terracotta.6 3.66 · positive.5 4.22 · danger.6 4.48)는 12~14px 링크·금액에서 미달(배치2 S6 H-1). `primaryShade` 라이트도 7 로 맞춰 filled 버튼 = accent. 다크는 전부 통과라 그대로.
 
 `up`/`down` 은 `danger`/`info` 튜플의 **별칭**(`colors.up = danger`). 스킴별 base 셰이드가 다르므로 화면 코드는 **의미 이름 + 셰이드 대신 CSS 변수** `--moeum-accent` `--moeum-income` `--moeum-expense` `--moeum-up` `--moeum-down` 을 우선 쓴다(css-variables.ts 가 스킴별 값 발급).
 
@@ -68,11 +70,12 @@
 ### 2-4. 차트
 | 변수 | 라이트 | 다크 | 용도 |
 |---|---|---|---|
-| chart-1 | sage.6 | sage.4 | 추이선(총자산·평가액), 투자 |
-| chart-2 | terracotta.6 | terracotta.4 | 현금 |
+| chart-1 | sage.7 | sage.4 | 추이선(총자산·평가액), 투자 |
+| chart-2 | terracotta.7 | terracotta.4 | 현금 |
 | chart-3 | text | text | 부동산 |
 | chart-4 | gray.4 `#A99C8D` | dark.3 | 연금 |
 | chart-5 | hair | hair | 기타·트랙 |
+자산군 색은 **고정 매핑**(`ASSET_CLASS_COLOR`: 투자 1 · 현금 2 · 부동산 3 · 연금 4 · 금·적금·기타 5) — 순위로 매기면 과거 추이 색 의미가 바뀐다(배치2 S6 B-1). 종목 비중(StockShares)만 자산군이 아니라 순위(상위 4 = 1~4, 현금 5).
 추이선은 1.5px 단색, 그라데이션 채움 없음, 축·그리드 없음, 마지막 점만 `up`/`down` 색 3px. 점을 탭해 상세로 가는 선(홈 총자산)만 각 점 2px `chart-1` + hover 4px `accent`. 툴팁은 surface + hair 테두리.
 
 ## 3. 타이포그래피
@@ -97,6 +100,8 @@
 |---|---|
 | `HeroAmount` | 카드 밖. `2026.09.11 기준` 모노 캡션 → 라벨 → 큰 숫자+원 → `DeltaPill` + "지난달보다". blur 토글 옵션 |
 | `Section` | `Card` 대신 사용. 상단 헤어라인 + 헤더 행(제목 14/700 · 우측 링크 accent 12/600) + children |
+| `AccentLink` | accent 텍스트 링크 — `section` 12/600(섹션 헤더) · `header` 13/700(페이지·서브 헤더 "+ 추가"·"수정"). 히트 32(패딩+음수 마진). 로컬 스타일 복붙 금지 (배치2 S6) |
+| 모노 라벨 | 11/16 · `.06em` 은 `className="moeum-mono moeum-label"` 한 곳(globals). 인라인 `{fontSize:11, letterSpacing}` 복붙 금지 (배치2 S6) |
 | `ListRow` | 46px, 제목 15/500(Figma ListRow 11:2 기준, S6 정정) / 메타 11 dimmed, 우측 금액 모노 14/600(의미색), 행 구분 `--moeum-hair-2`, 아이콘 박스 없음(카테고리 색은 제목 앞 6px 점) |
 | `DeltaPill` | 배경 없음. `▲ 3,240,000` 모노 + 색. `asset`(up/down) / `ledger`(income/expense) |
 | `StatRow` | "왜 늘었나" 2행: 제목/메타 + 우측 금액 + 2px 기여 막대(accent / up) |
@@ -104,9 +109,10 @@
 | 필터 칩 | 활성 = accent 텍스트 + 하단 2px 언더라인(배경 채움 없음). 히트 ≥32 |
 | 세그먼트 | Mantine SegmentedControl 그대로 — 트랙 surface-2 + 인디케이터 surface(채움). 화면 전환(목록/달력·화면 모드)에만, 필터에는 칩 (S6 D-5 결정) |
 | 셸 | 모바일 헤더 48(브랜드 accent 15/800 · 우측 모노 기준일 · 가계부 pill) · 탭바 64(bg 배경 · 상단 hair · 활성 accent) · `＋ 기록` 8px 라운드 accent 버튼 40px(탭바 위 우측, 홈·거래) / 데스크톱 사이드바 220(활성 = accent-soft 배경 + accent 텍스트, 하단 "기록하기") |
-| 시트 · 모달 | 바텀시트 448 · 상단 16 · 핸들 40×4 hair / 데스크톱 모달 560(같은 Drawer 를 CSS `@media` 로 가운데), surface 배경 |
+| 시트 · 모달 | 바텀시트 448 · 상단 16 · 핸들 40×4 hair / 데스크톱 모달 560(같은 Drawer 를 CSS `@media` 로 가운데), surface 배경, 높이는 내용에 맞춤(최대 90dvh, 넘치면 안에서 스크롤 + 푸터 sticky). 제목은 `Drawer.Title`(다이얼로그 이름). **시트가 탭바를 덮는다** — z: 헤더 30 < FAB 150 < 탭바 190 < Drawer/Modal 200 < 드롭다운 300·1100 (배치2 S6 B-3) |
+| 상태 | 로딩 = `SectionSkeleton`(페이지 `hero rows={3}` · 보조 섹션 `rows`/`chart`, 실제 레이아웃 모양) · 에러 = 보조 섹션은 `SectionBoundary`(섹션 제목 + "불러오지 못했어요 · 다시 시도"), 화면 주 쿼리는 (user)/error.tsx · 빈 = `EmptyText`(문장 "~어요" + 행동 링크) |
 | 폼 필드 | filled surface-2 · 높이 44 · 라운드 8. 라벨 13/500 dim(설명 12 보다 커야 함 — 배치2 S5 피드백으로 11→13), 금액 입력만 모노 28 · 높이 56. 세그먼트에 `color` 채움 금지(흰 인디케이터 위 흰 글자) → 의미색은 라벨 글자에 |
-| 버튼 | filled = accent + `on-accent`(라이트 흰 / 다크 딥브라운), outline = hair 테두리, subtle = accent 텍스트. 높이 36/44/52 |
+| 버튼 | filled = accent + `on-accent`(라이트 흰 / 다크 딥브라운), outline = hair 테두리, subtle = accent 텍스트. 높이 36/44/52. 삭제 = subtle `danger`. 아이콘 버튼 히트 44 |
 
 ## 6. 모션
 | 상황 | 값 |
