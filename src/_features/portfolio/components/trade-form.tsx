@@ -4,6 +4,7 @@ import {
   Group,
   NumberInput,
   SegmentedControl,
+  SimpleGrid,
   Stack,
   Text,
   Textarea,
@@ -20,10 +21,9 @@ import { useEnumOptions } from "_features/enum/queries/use-query";
 import { getErrorMessage } from "_libraries/fetch/error-message";
 import { semanticColor } from "_styles/semantic-color";
 import { todayIsoKst } from "_utilities/datetime";
+import { fmt } from "_utilities/fmt";
 
 import { usePortfolioMutations } from "../queries/use-mutations";
-
-const krw = (n: number) => new Intl.NumberFormat("ko-KR").format(Math.round(n));
 import type {
   PortfolioTransactionItemType,
   PortfolioTxType,
@@ -211,9 +211,26 @@ export default function TradeForm({
     updateTxMutation.isPending ||
     removeTxMutation.isPending;
 
+  // 인풋 오른쪽 단위 — 거래 폼 금액과 같은 dim 13 (Figma 61:115)
+  const unit = (label: string) => (
+    <Text c="dimmed" fw={500} style={{ fontSize: 13, lineHeight: "19px" }}>
+      {label}
+    </Text>
+  );
+  // 상태는 숫자 0 그대로, 화면만 빈칸 + placeholder "0" — "0" 을 지우고 입력하지 않게 (거래 폼과 같은 패턴)
+  const numProps = (field: "quantity" | "price" | "fee") => ({
+    ...form.getInputProps(field),
+    value: form.values[field] || "",
+    onChange: (v: number | string) => form.setFieldValue(field, typeof v === "number" ? v : 0),
+    placeholder: "0",
+    min: 0,
+    thousandSeparator: ",",
+    rightSectionPointerEvents: "none" as const,
+  });
+
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Stack gap="sm">
+      <Stack gap={14}>
         <SegmentedControl
           {...form.getInputProps("tradeType")}
           fullWidth
@@ -229,43 +246,38 @@ export default function TradeForm({
           }))}
           disabled={isEdit}
         />
-        <NumberInput
-          {...form.getInputProps("quantity")}
-          label={t("quantity")}
-          placeholder="0"
-          min={0}
-          decimalScale={4}
-          thousandSeparator=","
-        />
-        <NumberInput
-          {...form.getInputProps("price")}
-          label={isBuy ? t("label_buy_price") : t("label_sell_price")}
-          placeholder="0"
-          min={0}
-          thousandSeparator=","
-          rightSection={
-            <span style={{ fontSize: 11, color: "var(--mantine-color-gray-6)" }}>{tg("won")}</span>
-          }
-        />
-        <NumberInput
-          {...form.getInputProps("fee")}
-          label={t("label_fee")}
-          description={isBuy ? t("fee_buy_hint") : t("fee_sell_hint")}
-          placeholder="0"
-          min={0}
-          thousandSeparator=","
-          rightSection={
-            <span style={{ fontSize: 11, color: "var(--mantine-color-gray-6)" }}>{tg("won")}</span>
-          }
-        />
-        <DateInput
-          value={form.values.txDate || null}
-          onChange={(value) => form.setFieldValue("txDate", value ?? "")}
-          error={form.errors.txDate}
-          label={t("label_tx_date")}
-          placeholder="YYYY-MM-DD"
-          valueFormat="YYYY-MM-DD"
-        />
+        {/* 2열 — 수량·단가 / 수수료·날짜 (Figma 61:115). 설명은 인풋 아래라 두 열 인풋 높이가 맞는다 */}
+        <SimpleGrid cols={2} spacing={12}>
+          <NumberInput
+            {...numProps("quantity")}
+            label={t("quantity")}
+            decimalScale={4}
+            rightSection={unit(t("unit_share"))}
+            data-autofocus={isEdit ? undefined : true}
+          />
+          <NumberInput
+            {...numProps("price")}
+            label={isBuy ? t("label_buy_price") : t("label_sell_price")}
+            rightSection={unit(tg("won"))}
+          />
+        </SimpleGrid>
+        <SimpleGrid cols={2} spacing={12}>
+          <NumberInput
+            {...numProps("fee")}
+            label={t("label_fee")}
+            description={isBuy ? t("fee_buy_hint") : t("fee_sell_hint")}
+            inputWrapperOrder={["label", "input", "description", "error"]}
+            rightSection={unit(tg("won"))}
+          />
+          <DateInput
+            value={form.values.txDate || null}
+            onChange={(value) => form.setFieldValue("txDate", value ?? "")}
+            error={form.errors.txDate}
+            label={t("label_tx_date")}
+            placeholder="YYYY-MM-DD"
+            valueFormat="YYYY.MM.DD"
+          />
+        </SimpleGrid>
         <Textarea
           {...form.getInputProps("memo")}
           label={t("label_memo")}
@@ -274,49 +286,19 @@ export default function TradeForm({
           minRows={1}
         />
 
-        {/* 거래금액 / 수수료 / 정산금액 — 증권사 거래내역과 같은 3줄.
+        {/* 거래금액 / 수수료 / 정산금액 — 증권사 거래내역과 같은 3줄. hair-2 위.
             정산금액이 실제로 계좌를 드나드는 돈이라 굵게 강조한다. */}
-        <Stack gap={4} px={4}>
-          <Group justify="space-between">
-            <span style={{ fontSize: 12, color: "var(--mantine-color-gray-6)" }}>
-              {isBuy ? t("buy_amount") : t("sell_amount")}
-            </span>
-            <span style={{ fontSize: 13, fontVariantNumeric: "tabular-nums" }}>
-              {krw(total)} {tg("won")}
-            </span>
-          </Group>
-          <Group justify="space-between">
-            <span style={{ fontSize: 12, color: "var(--mantine-color-gray-6)" }}>
-              {t("label_fee")}
-            </span>
-            <span style={{ fontSize: 13, fontVariantNumeric: "tabular-nums" }}>
-              {isBuy ? "+" : "−"}
-              {krw(fee)} {tg("won")}
-            </span>
-          </Group>
-          <Group justify="space-between">
-            <span style={{ fontSize: 12, color: "var(--mantine-color-gray-6)" }}>
-              {t("settlement_amount")}
-            </span>
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 800,
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              {krw(settlement)} {tg("won")}
-            </span>
-          </Group>
+        <Stack gap={0} pt={8} style={{ borderTop: "1px solid var(--moeum-hair-2)" }}>
+          <SummaryRow label={isBuy ? t("buy_amount") : t("sell_amount")} value={`${fmt(total)}${tg("won")}`} />
+          <SummaryRow label={t("label_fee")} value={`${isBuy ? "+" : "−"}${fmt(fee)}${tg("won")}`} />
+          <SummaryRow label={t("settlement_amount")} value={`${fmt(settlement)}${tg("won")}`} total />
         </Stack>
 
-        {/* 거래 추가 시트(transaction/form.tsx) 와 동일 패턴 — 취소 + 액션 2버튼.
-            매수/매도 색상은 유지 (UX 핵심). */}
+        {/* 기록 버튼은 accent — 매수/매도 색은 세그먼트 글자에만 (배치2 H-4, DESIGN §5 버튼) */}
         <FormActions
           submitLabel={
-            isEdit ? t("edit_trade") : isBuy ? t("buy_record") : t("sell_record")
+            isEdit ? tg("common.update") : isBuy ? t("buy_record") : t("sell_record")
           }
-          submitColor={isBuy ? "danger" : "info"}
           isPending={isPending}
           onCancel={onCancel}
           cancelLabel={tg("common.cancel")}
@@ -326,5 +308,19 @@ export default function TradeForm({
         />
       </Stack>
     </form>
+  );
+}
+
+/** 정산 요약 한 줄 — 라벨 13 dim / 값 모노 13 (합계는 본문색 700 · 값 15) */
+function SummaryRow({ label, value, total = false }: { label: string; value: string; total?: boolean }) {
+  return (
+    <Group justify="space-between" h={26} wrap="nowrap">
+      <Text fz={13} lh="19px" fw={total ? 700 : 500} c={total ? undefined : "dimmed"}>
+        {label}
+      </Text>
+      <Text className="moeum-mono" fz={total ? 15 : 13} fw={total ? 700 : 600}>
+        {value}
+      </Text>
+    </Group>
   );
 }

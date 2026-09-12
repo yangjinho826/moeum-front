@@ -289,6 +289,7 @@
     "lookup": "Lookup",
     "lookup_failed": "Failed to look up stock.",
     "quantity": "Quantity",
+    "unit_share": "sh",
     "avg_price": "Avg Price",
     "current_value": "Current Value",
     "current_price": "Current Price",
