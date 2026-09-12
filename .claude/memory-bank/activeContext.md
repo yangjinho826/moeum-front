@@ -10,12 +10,12 @@
 
 ## Status
 
-### 리디자인 Quiet Dark — 배치1~4 완료 (2026-09-13, feat/redesign-quiet-dark)
-design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 배치1~3 push 완료. 배치4(카테고리·카테고리 폼·고정지출 + 폼 페이지 도움말 레일) S3~S6 ✅ — qa/4.md, 로컬 커밋 **push 안 함**.
-- 배치4: ListRow `lead` 글리프(선택기 밖 아이콘 = 6px 점) · 폼 페이지 = 좌 폼 · 우 FormGuide(DESIGN §5 갱신) · 고정지출 월 요약은 hero·레일만 경계 + useDeferredValue · 관리 목록 페이지 100.
-- 발견: 백엔드 고정지출엔 금액(amount) 없음 — 프론트 타입·폼의 amount 는 유령 필드(배치5 폼에서 정리, H-404).
-- 보류: H-401~406(qa/4.md) · 배치3 남은 H-303·H-304(InputUnit)·H-307. 참조 0 파일(category/table · fixed/table · icon-box) 삭제는 사용자 확인 대기.
-- 주의: dev 서버가 편집 누적 후 SSR `useContext null` → 재컴파일/재시작. Chrome 확장 `type` 은 숫자 인풋에 안 먹음(`key` 로). 숨은 창이면 React Query 재시도 paused.
+### 리디자인 Quiet Dark — 배치1~5 (2026-09-13, feat/redesign-quiet-dark)
+design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 배치1~4 push 완료(6e3f8eb). 배치5(고정지출 폼·가계부 목록·가계부 폼, pick A·A·A) S3~S6 — qa/5.md, S6 사용자 ✅ 대기 · 21b3f45 부터 로컬 커밋 **push 안 함**.
+- 배치5: 고정지출 금액·가계부 통화 입력 제거(백엔드에 없음/무효과) · 고정지출 카테고리 연결·보관 Switch · `InputUnit` · 가계부 목록 소유자 행만 수정 · ListRow `valueText`.
+- 팀에 확인: 백엔드 update_fixed_expense 가 null 을 "안 바꿈"으로 받아 수정에서 카테고리·색·아이콘 비우기 불가(H-501, moeum-back `model_fields_set` 필요).
+- 삭제 확인 대기: household search.tsx · table.tsx · use-search.ts · HouseholdSearchRequestType · fixed.search_term 키(H-508).
+- 주의: dev 서버가 편집 누적 후 SSR `useContext null`/HMR module factory → 재시작. Chrome `type` 은 숫자 인풋에 안 먹음(`key`). 숨은 창 Drawer 는 rAF 멈춤 — 한 번만 열고 screenshot 으로 프레임 돌리기.
 
 ### 프로젝트 이름 정리 — `household` → `moeum` (2026-08-22, B·C 레이어만)
 브랜드는 이미 "모음"인데 레포·디렉토리·문서에 옛 이름이 남아 거슬린다는 요청. 범위를 4레이어로 쪼개 **B(문서·주석)·C(디렉토리·레포명)만 실행**, D(인프라 식별자)·E(도메인 모델)는 보류.
