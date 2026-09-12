@@ -18,10 +18,10 @@
 | category/[categoryId] | /category/[categoryId] | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1172 | 07c7332·fe62426 | category-sheet.jpg |
 | category/new | /category/new | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1061 | fe62426·07c7332 | category-new-desktop.jpg |
 | fixed | /fixed | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1285 | a0b6f03 | fixed.jpg·fixed-desktop.jpg |
-| fixed/[fixedId] | /fixed/[fixedId] | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | | | |
-| fixed/new | /fixed/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | | | |
-| household | /household | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | | | |
-| household/new | /household/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | | | |
+| fixed/[fixedId] | /fixed/[fixedId] | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:406 | | |
+| fixed/new | /fixed/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:297 | | |
+| household | /household | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:517 | | |
+| household/new | /household/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:541 | | |
 | household/[householdId] | /household/[householdId] | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | | | |
 | household/[householdId]/members | /household/[householdId]/members | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | | | |
 | login | /login | P2 | 6 | 비로그인 · 390/1440 | | | |
