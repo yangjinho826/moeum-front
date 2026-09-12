@@ -18,9 +18,9 @@
 | category/[categoryId] | /category/[categoryId] | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1172 | 07c7332·fe62426 | category-sheet.jpg |
 | category/new | /category/new | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1061 | fe62426·07c7332 | category-new-desktop.jpg |
 | fixed | /fixed | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1285 | a0b6f03·87002da | fixed.jpg·fixed-desktop.jpg |
-| fixed/[fixedId] | /fixed/[fixedId] | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:406 | cca6ce4 | fixed-sheet-edit.jpg |
-| fixed/new | /fixed/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:297 | cca6ce4 | fixed-sheet.jpg·fixed-new-desktop.jpg |
-| household | /household | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:517 | f864585 | household.jpg·household-desktop.jpg |
+| fixed/[fixedId] | /fixed/[fixedId] | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:406 | cca6ce4·4f5e693 | fixed-sheet-edit.jpg |
+| fixed/new | /fixed/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:297 | cca6ce4·4f5e693 | fixed-sheet.jpg·fixed-new-desktop.jpg |
+| household | /household | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:517 | f864585·4f5e693 | household.jpg·household-desktop.jpg |
 | household/new | /household/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:541 | 1690b7f | household-sheet.jpg·household-new-desktop.jpg |
 | household/[householdId] | /household/[householdId] | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | | | |
 | household/[householdId]/members | /household/[householdId]/members | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | | | |
