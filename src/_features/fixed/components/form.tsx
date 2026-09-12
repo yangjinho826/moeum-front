@@ -13,7 +13,7 @@ interface FixedFormProps {
   fixedId?: string;
   /** 시트에서 사용 시 — 성공·취소 후 호출(시트 close) */
   onDone?: () => void;
-  /** 시트(FormSheet) 안에서 쓸 때 — 푸터 sticky. 페이지 모드 폭(560)은 폼 섹션이 잡는다 */
+  /** 시트(FormSheet) 안에서 쓸 때 — 푸터 sticky. 페이지 모드 폭은 폼 섹션(앱 격자 좌 칼럼)이 잡는다 */
   inSheet?: boolean;
 }
 
@@ -36,7 +36,8 @@ export default function FixedForm({
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Stack gap="sm">
+      {/* 간격 14 — 폼 공통 리듬 (배치3 H-302). 필드 구성은 배치5 */}
+      <Stack gap={14}>
         <TextInput
           {...form.getInputProps("name")}
           label={t("name")}

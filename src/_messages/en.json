@@ -232,10 +232,10 @@
       "start_balance_required_message": "Please enter the initial balance"
     },
     "guide": {
-      "delete_body": "Accounts with holdings can't be deleted. Deleting removes this account's transactions; transfers with other accounts stay.",
-      "delete_title": "Delete",
       "type_body": "Living = everyday spending · Savings = deposits and emergency funds · Investment = brokerage (manage holdings in Invest).",
-      "start_balance_body": "The balance on the day you start tracking. Later balances are calculated from transactions."
+      "start_balance_body": "The balance on the day you start tracking. Later balances are calculated from transactions.",
+      "delete_title": "Delete",
+      "delete_body": "Accounts with holdings can't be deleted. Deleting removes this account's transactions; transfers with other accounts stay."
     }
   },
   "category": {
@@ -254,10 +254,10 @@
     "icon": "Icon",
     "sort_order": "Order",
     "guide": {
-      "delete_title": "Delete",
-      "delete_body": "A deleted category disappears only from new entries. Past transactions and fixed expenses keep its name.",
       "kind_body": "Either expense or income. When recording, only categories of that kind are offered.",
-      "sort_body": "Smaller numbers appear higher. Ties keep the order they were added."
+      "sort_body": "Smaller numbers appear higher. Ties keep the order they were added.",
+      "delete_title": "Delete",
+      "delete_body": "A deleted category disappears only from new entries. Past transactions and fixed expenses keep its name."
     },
     "empty": "No categories yet",
     "sort_order_hint": "Smaller numbers appear higher"
@@ -277,7 +277,13 @@
     "day_format": "Day {day}",
     "color": "Color",
     "icon": "Icon",
-    "used_this_month": "{amount} won this month"
+    "month_total": "{month} fixed",
+    "summary_caption": "{recorded} recorded · {count} not yet",
+    "used_total": "Spent",
+    "recorded": "Recorded",
+    "unrecorded": "Unrecorded",
+    "count_unit": "{count}",
+    "empty": "No fixed expenses. Add recurring costs like rent or subscriptions"
   },
   "portfolio": {
     "period_1m": "1M",
