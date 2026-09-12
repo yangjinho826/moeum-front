@@ -1,26 +1,21 @@
 "use client";
 
-import {
-  ActionIcon,
-  Badge,
-  Card,
-  Center,
-  Group,
-  Loader,
-  SimpleGrid,
-  Stack,
-  Text,
-  UnstyledButton,
-} from "@mantine/core";
+import { Box, Button, Center, Loader, SimpleGrid, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconPencil } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { queryKeys } from "_constants/queries";
+import DeltaPill from "_features/common/components/delta-pill";
+import EmptyText from "_features/common/components/empty-text";
 import FormSheet from "_features/common/components/form-sheet";
+import Hairline from "_features/common/components/hairline";
+import HeroAmount from "_features/common/components/hero-amount";
+import ListRow from "_features/common/components/list-row";
+import Section from "_features/common/components/section";
+import StatGrid from "_features/common/components/stat-grid";
 import SubHeader from "_features/layout/components/sub-header";
 import TradeForm from "_features/portfolio/components/trade-form";
 import {
@@ -34,12 +29,16 @@ import type {
   PortfolioTransactionItemType,
   PortfolioTxType,
 } from "_features/portfolio/types";
-import {
-  formatProfitAmount,
-  formatProfitRate,
-  profitColor,
-} from "_features/portfolio/utils";
-import { useMoney } from "_features/common/hooks/use-money";
+import { semanticColor, signColor } from "_styles/semantic-color";
+import { fmt, fmtSigned } from "_utilities/fmt";
+
+const DOW_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+
+/**
+ * 종목 상세(매매) — 명세서 배치 (plan/2.md, Figma 45:130).
+ * 모바일: ‹ 종목명 · 수정 → hero(평가금액 + 평가손익) → StatGrid(수량·평단·현재가) → 평가액 추이(+기간 칩)
+ * → 매수/매도 outline 2열 → 매매 내역(날짜 헤더 + 행). 데스크톱: 우 레일에 매수/매도 + 매입금액.
+ */
 
 interface Props {
   portfolioId: string;
@@ -48,7 +47,9 @@ interface Props {
 export default function PortfolioTradeSection({ portfolioId }: Props) {
   const t = useTranslations("portfolio");
   const tGeneral = useTranslations("general");
-  const money = useMoney();
+  const tg = useTranslations("general.common");
+  const tTx = useTranslations("transaction");
+  const tMarket = useTranslations("enum.market");
   const router = useRouter();
   const routeParams = useParams<{ locale: string }>();
   const queryClient = useQueryClient();
@@ -116,211 +117,184 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
     handleCloseModal();
   };
 
+  // 매매 내역 날짜 헤더 "08.21 목" — 거래 목록(account-ledger-view)과 같은 표기
+  const formatDate = (yyyymmdd: string): string => {
+    const [y, m, d] = yyyymmdd.slice(0, 10).split("-").map(Number) as [number, number, number];
+    const dayKey = DOW_KEYS[new Date(y, m - 1, d).getDay()] ?? "sun";
+    return tTx("date_header", {
+      month: String(m).padStart(2, "0"),
+      day: String(d).padStart(2, "0"),
+      weekday: tGeneral(`weekday.${dayKey}`),
+    });
+  };
+
+  // 날짜별 묶음(목록은 이미 최신순)
+  const grouped = useMemo(() => {
+    const map = new Map<string, PortfolioTransactionItemType[]>();
+    for (const tx of trades) {
+      const key = tx.txDate.slice(0, 10);
+      const list = map.get(key) ?? [];
+      list.push(tx);
+      map.set(key, list);
+    }
+    return [...map.entries()];
+  }, [trades]);
+
+  const canSell = portfolio.quantity > 0;
+  const tradeButtons = (
+    <SimpleGrid cols={2} spacing={12}>
+      <Button variant="default" onClick={() => openTrade("BUY")} c={semanticColor("up")}>
+        {t("trade_buy")}
+      </Button>
+      <Button variant="default" onClick={() => openTrade("SELL")} disabled={!canSell} c={semanticColor("down")}>
+        {t("trade_sell")}
+      </Button>
+    </SimpleGrid>
+  );
+
+  const editLinkStyle = {
+    fontSize: 13,
+    lineHeight: "19px",
+    fontWeight: 700,
+    color: "var(--moeum-accent)",
+    padding: "8px 0 8px 12px",
+    margin: "-8px 0",
+    flexShrink: 0,
+  } as const;
+
   return (
-    <Stack gap="md">
-      <SubHeader
-        title={portfolio.name}
-        right={
-          <ActionIcon
-            variant="subtle"
-            onClick={handleEditPortfolio}
-            aria-label="edit"
-          >
-            <IconPencil size={18} />
-          </ActionIcon>
-        }
-      />
+    <div className="moeum-main-rail">
+      <Stack gap={0}>
+        <SubHeader
+          title={portfolio.name}
+          right={
+            <UnstyledButton onClick={handleEditPortfolio} style={editLinkStyle}>
+              {tg("update")}
+            </UnstyledButton>
+          }
+        />
 
-      {/* 종목 hero */}
-      <Card radius="xl" p="xl" shadow="md">
-        <Stack gap={4}>
-          <Text size="xs" fw={500} c="dimmed">
-            {t("valuation_amount")}
-          </Text>
-          <Text
-            size="2rem"
-            fw={800}
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
-            {money(portfolio.currentValue)}
-          </Text>
-          <Group gap={6}>
-            <Text
-              size="sm"
-              fw={700}
-              c={profitColor(portfolio.profitLoss)}
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              {formatProfitAmount(portfolio.profitLoss, money)}
-            </Text>
-            <Text
-              size="sm"
-              fw={700}
-              c={profitColor(portfolio.profitLoss)}
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              ({formatProfitRate(portfolio.profitLossRate)})
-            </Text>
-          </Group>
-
-          <SimpleGrid cols={3} spacing="xs" mt="sm">
-            <Stack gap={2}>
-              <Text size="10px" c="dimmed" fw={600}>
-                {t("holding_qty")}
+        <HeroAmount
+          compact
+          label={
+            <>
+              {t("valuation_amount")}{" "}
+              <Text component="span" className="moeum-mono" fw={600} c="dimmed" style={{ fontSize: 11, letterSpacing: "0.06em" }}>
+                {portfolio.code} · {tMarket(portfolio.market)}
               </Text>
-              <Text
-                size="xs"
-                fw={700}
-                style={{ fontVariantNumeric: "tabular-nums" }}
-              >
-                {portfolio.quantity}
-              </Text>
-            </Stack>
-            <Stack gap={2}>
-              <Text size="10px" c="dimmed" fw={600}>
-                {t("avg_unit_price")}
-              </Text>
-              <Text
-                size="xs"
-                fw={700}
-                style={{ fontVariantNumeric: "tabular-nums" }}
-              >
-                {money(portfolio.avgPrice)}
-              </Text>
-            </Stack>
-            <Stack gap={2}>
-              <Text size="10px" c="dimmed" fw={600}>
-                {t("current_price")}
-              </Text>
-              <Text
-                size="xs"
-                fw={700}
-                style={{ fontVariantNumeric: "tabular-nums" }}
-              >
-                {money(portfolio.currentPrice)}
-              </Text>
-            </Stack>
-          </SimpleGrid>
-        </Stack>
-      </Card>
-
-      {/* 평가액 추이 차트 */}
-      <Suspense
-        fallback={
-          <Center py="md">
-            <Loader size="sm" />
-          </Center>
-        }
-      >
-        <PortfolioValueTrend portfolioId={portfolioId} />
-      </Suspense>
-
-      {/* 매수/매도 버튼 */}
-      <SimpleGrid cols={2} spacing="sm">
-        <UnstyledButton
-          onClick={() => openTrade("BUY")}
-          style={{
-            padding: "14px 0",
-            borderRadius: 12,
-            background: "var(--mantine-color-danger-0)",
-            textAlign: "center",
-          }}
+            </>
+          }
+          amount={portfolio.currentValue}
         >
-          <Text size="sm" fw={700} c="danger.5">
-            {t("trade_buy")}
-          </Text>
-        </UnstyledButton>
-        <UnstyledButton
-          onClick={() => openTrade("SELL")}
-          style={{
-            padding: "14px 0",
-            borderRadius: 12,
-            background: "var(--mantine-color-info-0)",
-            textAlign: "center",
-          }}
-        >
-          <Text size="sm" fw={700} c="info.5">
-            {t("trade_sell")}
-          </Text>
-        </UnstyledButton>
-      </SimpleGrid>
-
-      {/* 거래내역 (매매손익은 계좌 상세로 이동 — 전량매도 시 종목이 사라져도 추적 가능) */}
-      <Group justify="space-between" align="center" px={4}>
-        <Text size="sm" fw={700}>
-          {t("transactions")}
-        </Text>
-      </Group>
-
-      {trades.length === 0 ? (
-        <Card radius="lg" p="xl">
-          <Center>
-            <Text size="sm" c="dimmed">
-              {t("no_transactions")}
-            </Text>
-          </Center>
-        </Card>
-      ) : (
-        <>
-          <Card radius="lg" p="xs">
-            <Stack gap={0}>
-              {trades.map((tx) => (
-                <UnstyledButton
-                  key={tx.txId}
-                  onClick={() => {
-                    setEditingTx(tx);
-                    open();
-                  }}
-                  style={{ width: "100%" }}
-                >
-                  <Stack gap={4} style={{ padding: 12, borderRadius: 12 }}>
-                    <Group justify="space-between" align="center">
-                      <Group gap={6}>
-                        <Badge
-                          color={tx.ptType === "BUY" ? "danger" : "info"}
-                          variant="light"
-                          size="sm"
-                        >
-                          {tx.ptType === "BUY" ? t("trade_buy") : t("trade_sell")}
-                        </Badge>
-                        <Text size="xs" fw={600} c="dimmed">
-                          {tx.txDate}
-                        </Text>
-                      </Group>
-                      <Text
-                        size="sm"
-                        fw={700}
-                        style={{ fontVariantNumeric: "tabular-nums" }}
-                      >
-                        {money(tx.total)}
-                      </Text>
-                    </Group>
-                    <Group gap={8}>
-                      <Text size="11px" c="dimmed">
-                        {tGeneral("unit.stock", { count: tx.quantity })}
-                      </Text>
-                      <Text size="11px" c="dimmed">
-                        × {money(tx.price)}
-                      </Text>
-                    </Group>
-                    {tx.memo && (
-                      <Text size="11px" c="dimmed">
-                        {tx.memo}
-                      </Text>
-                    )}
-                  </Stack>
-                </UnstyledButton>
-              ))}
-            </Stack>
-          </Card>
-
-          <InfiniteSentinel
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
-            onLoadMore={fetchNextPage}
+          <DeltaPill
+            size="sm"
+            value={portfolio.profitLoss}
+            variant="asset"
+            rate={portfolio.profitLossRate}
+            caption={t("profit_label")}
           />
-        </>
-      )}
+        </HeroAmount>
+
+        <StatGrid
+          items={[
+            { label: t("holding_qty"), value: tGeneral("unit.stock", { count: portfolio.quantity }) },
+            { label: t("avg_unit_price"), value: fmt(portfolio.avgPrice) },
+            { label: t("current_price"), value: fmt(portfolio.currentPrice) },
+          ]}
+        />
+
+        {/* 평가액 추이 + 기간 칩 */}
+        <Suspense
+          fallback={
+            <Center py="md">
+              <Loader size="sm" />
+            </Center>
+          }
+        >
+          <PortfolioValueTrend portfolioId={portfolioId} currentValue={portfolio.currentValue} />
+        </Suspense>
+
+        {/* 매수 / 매도 — 모바일은 판면, 데스크톱은 우측 레일 */}
+        <Box hiddenFrom="lg">
+          <Hairline />
+          {tradeButtons}
+        </Box>
+
+        {/* 매매 내역 (매매손익 누적은 계좌 상세 — 전량매도 시 종목이 사라져도 추적 가능) */}
+        <Section title={t("transactions")}>
+          {trades.length === 0 ? (
+            <EmptyText
+              message={t("first_trade_empty")}
+              action={{ label: t("trade_buy"), onClick: () => openTrade("BUY") }}
+            />
+          ) : (
+            <>
+              {grouped.map(([date, txs]) => (
+                <Box key={date}>
+                  <Text
+                    className="moeum-mono"
+                    fw={600}
+                    c="dimmed"
+                    pt={10}
+                    pb={2}
+                    style={{ fontSize: 11, lineHeight: "16px", letterSpacing: "0.06em", textTransform: "uppercase" }}
+                  >
+                    {formatDate(date)}
+                  </Text>
+                  {txs.map((tx, i) => {
+                    const isBuy = tx.ptType === "BUY";
+                    const meta = [
+                      `${tGeneral("unit.stock", { count: tx.quantity })} × ${fmt(tx.price)}`,
+                      tx.realizedPnl != null ? `${t("realized_pnl")} ${fmtSigned(tx.realizedPnl)}` : null,
+                      tx.memo,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ");
+                    return (
+                      <ListRow
+                        key={tx.txId}
+                        tall
+                        title={
+                          <Text component="span" inherit style={{ color: semanticColor(isBuy ? "up" : "down") }}>
+                            {isBuy ? t("trade_buy") : t("trade_sell")}
+                          </Text>
+                        }
+                        meta={meta}
+                        value={fmt(tx.total)}
+                        sub={tx.realizedPnl != null ? fmtSigned(tx.realizedPnl) : undefined}
+                        subColor={tx.realizedPnl != null ? signColor(tx.realizedPnl, "asset") : undefined}
+                        last={i === txs.length - 1}
+                        onClick={() => {
+                          setEditingTx(tx);
+                          open();
+                        }}
+                      />
+                    );
+                  })}
+                </Box>
+              ))}
+              <InfiniteSentinel
+                hasNextPage={hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                onLoadMore={fetchNextPage}
+              />
+            </>
+          )}
+        </Section>
+      </Stack>
+
+      {/* 데스크톱 레일 — 매수/매도 + 매입금액 */}
+      <Box visibleFrom="lg" pt={48}>
+        <Hairline />
+        {tradeButtons}
+        <Box pt={12}>
+          <ListRow
+            title={t("buy_cost_label")}
+            value={fmt(portfolio.quantity * portfolio.avgPrice)}
+            last
+          />
+        </Box>
+      </Box>
 
       {/* 거래 추가 시트(quick-add-sheet) 와 동일 패턴 — FormSheet 이 BottomTab
           높이 보정(maxHeight/paddingBottom)까지 처리한다. */}
@@ -344,6 +318,6 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
           onCancel={handleCloseModal}
         />
       </FormSheet>
-    </Stack>
+    </div>
   );
 }

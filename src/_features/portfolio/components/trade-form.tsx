@@ -5,6 +5,7 @@ import {
   NumberInput,
   SegmentedControl,
   Stack,
+  Text,
   Textarea,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
@@ -17,6 +18,7 @@ import { useState } from "react";
 import FormActions from "_features/common/components/form-actions";
 import { useEnumOptions } from "_features/enum/queries/use-query";
 import { getErrorMessage } from "_libraries/fetch/error-message";
+import { semanticColor } from "_styles/semantic-color";
 import { todayIsoKst } from "_utilities/datetime";
 
 import { usePortfolioMutations } from "../queries/use-mutations";
@@ -215,11 +217,16 @@ export default function TradeForm({
         <SegmentedControl
           {...form.getInputProps("tradeType")}
           fullWidth
+          // 인디케이터는 흰 표면(테마) — color 로 채우면 활성 라벨이 흰색이 돼 사라진다.
+          // 대신 라벨 글자에 매수=up · 매도=down 색 (DESIGN.md §2-3)
           data={ptTypeData.body.data.map((v) => ({
             value: v,
-            label: tPt(v),
+            label: (
+              <Text component="span" inherit fw={700} style={{ color: semanticColor(v === "BUY" ? "up" : "down") }}>
+                {tPt(v)}
+              </Text>
+            ),
           }))}
-          color={isBuy ? "danger" : "info"}
           disabled={isEdit}
         />
         <NumberInput
