@@ -1,0 +1,72 @@
+{
+  "runId": "ds-moeum-redesign-20260911",
+  "fileKey": "j1xaab6icKdvERz6SbU6E0",
+  "phase": "S5 batch1 code done · Figma invest 25:179 갱신(CompositionBar B)",
+  "step": "next: S5",
+  "decisions": {
+    "fontSans": "Noto Sans KR (Pretendard 대역)",
+    "fontMono": "Geist Mono",
+    "scope": "Phase 1 only (user B)"
+  },
+  "entities": {
+    "collections": {
+      "Primitives": "VariableCollectionId:2:2",
+      "Color": "VariableCollectionId:2:3",
+      "Spacing": "VariableCollectionId:2:4",
+      "Typography": "VariableCollectionId:2:5"
+    },
+    "variables": {
+      "semantic ids": "VariableID:2:103..2:122 (surface/bg .. chart/5)"
+    },
+    "pages": {
+      "Page 1": "0:1",
+      "배치1 · 390": "10:2"
+    },
+    "styles": {
+      "Shadow/Modal": "S:bc7a6b3b4e1a4c2a109bfee86b9af6b170d4f316,",
+      "text": "Hero/Mobile Hero/Desktop Amount/Delta Amount/Row Label/Mono Title/Page Title/Section Body/Default Body/Sub Body/Caption"
+    },
+    "modes": {
+      "Color.Light": "2:1",
+      "Color.Dark": "2:2"
+    },
+    "components": {
+      "ListRow": "11:2",
+      "SectionHeader": "11:9",
+      "TabBar": "20:80",
+      "FAB": "20:98",
+      "StatGrid3": "20:100",
+      "Button": "20:114 (Filled 20:110 / Outline 20:112)"
+    },
+    "smoke": {
+      "Home / Smoke (light)": "10:3"
+    },
+    "screens": {
+      "home": "10:3",
+      "transactions": "22:90",
+      "invest": "25:179",
+      "settings": "27:257"
+    }
+  },
+  "completedSteps": [
+    "phase0",
+    "P1.a",
+    "P1.b",
+    "P1.c",
+    "P1.d",
+    "P1.e",
+    "P1.f",
+    "P1.g",
+    "P1.h",
+    "S2-c smoke",
+    "S4 batch1"
+  ],
+  "notes": [
+    "FAB 높이: DESIGN 40 vs size/button-sm 36 → S3 결정",
+    "size/content-mobile-px 코드구문 px 리터럴 → var(--20px) 로 출력됨, S4 전 정리",
+    "캡처 6:2 삭제됨(레이아웃 참고용)"
+  ],
+  "components": {
+    "CompositionBar": "38:370 (invest 25:179 종목 비중 아래 인스턴스 38:376, wrap 38:381)"
+  }
+}

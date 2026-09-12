@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700;800&family=Geist+Mono:wght@500;600;700&display=swap">
+  <style>
+:root{--bg:#FAF6EF;--surface:#FFFDF9;--surface2:#F3EEE4;--text:#3C3530;--dim:#7A6F63;--hair:#DDD5C9;--hair2:#EDE8E0;
+--accent:#647A5C;--accent-soft:rgba(124,148,115,.14);--on-accent:#FFFFFF;--up:#DC2626;--down:#2563EB;--income:#2F855A;--expense:#C2674A;
+--chart2:#C2674A;--chart3:#3C3530;--chart4:#A99C8D;--purple:#8B5CF6;
+--sans:"Noto Sans KR",Pretendard,-apple-system,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg)}
+a{color:var(--accent);text-decoration:none}a:hover{color:#4F6348}
+.phone{width:390px;height:844px;background:var(--bg);color:var(--text);font-family:var(--sans);letter-spacing:-0.01em;position:relative;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased}
+.body{flex-grow:1;padding:16px 20px 0;overflow:hidden;display:flex;flex-direction:column}
+.hdr{display:flex;justify-content:space-between;align-items:center;height:48px;flex-shrink:0}
+.brand{font-size:15px;font-weight:800;color:var(--accent);letter-spacing:-0.03em}
+.pill{display:flex;align-items:center;gap:4px;height:28px;padding:0 10px;border:1px solid var(--hair);border-radius:8px;font-size:12px;font-weight:600;color:var(--text)}
+.title{font-size:22px;font-weight:800;letter-spacing:-0.03em}
+.hdr-acts{display:flex;align-items:center;gap:14px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:0}
+.cap{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--dim);letter-spacing:.02em}
+.lbl{font-size:13px;font-weight:600;color:var(--dim)}
+.hero{display:flex;flex-direction:column;gap:6px;padding:24px 0 10px}
+.hero.compact{padding:24px 0 8px}
+.n44{font-family:var(--mono);font-size:44px;font-weight:700;letter-spacing:-0.04em;line-height:1.05;white-space:nowrap;display:flex;align-items:baseline;gap:6px}
+.n28{font-family:var(--mono);font-size:28px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;white-space:nowrap;display:flex;align-items:baseline;gap:6px}
+.won{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--dim);letter-spacing:-0.01em}
+.delta{display:flex;align-items:baseline;gap:8px;padding-top:4px}
+.delta .d{font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta .c{font-size:13px;font-weight:500;color:var(--dim)}
+.up{color:var(--up)}.down{color:var(--down)}.inc{color:var(--income)}.exp{color:var(--expense)}.dim{color:var(--dim)}.acc{color:var(--accent)}
+.spark{display:block;width:100%;height:44px;margin:10px 0 4px}
+.hr{height:1px;background:var(--hair);margin:12px 0;flex-shrink:0}
+.sec{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0 2px}
+.sec h4{margin:0;font-size:14px;font-weight:700;letter-spacing:-0.03em}
+.sec a{font-size:12px;font-weight:600}
+.r{display:flex;justify-content:space-between;align-items:center;height:46px;border-bottom:1px solid var(--hair2);flex-shrink:0}
+.r.tall{height:52px}.r.big{height:56px}
+.r:last-child{border-bottom:0}
+.r .l{display:flex;flex-direction:column;gap:2px}
+.r .t{font-size:14px;font-weight:600}
+.r .m{font-size:11px;color:var(--dim);display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;border-radius:3px;display:inline-block}
+.r .rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.r .v{font-family:var(--mono);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.r .v.v18{font-size:18px}
+.r .sub{font-family:var(--mono);font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+.bar{width:120px;height:2px;background:var(--hair2);display:flex}
+.bar i{height:2px;display:block}
+.subbar{display:flex;align-items:center;gap:8px}.subbar .bar{width:80px}
+.stat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:6px 0 8px}
+.stat .l{font-size:12px;font-weight:600;color:var(--dim)}
+.stat .v{font-family:var(--mono);font-size:18px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chips{display:flex;gap:16px;height:32px;align-items:flex-end;margin-top:10px}
+.chips span{font-size:13px;font-weight:600;color:var(--dim);padding-bottom:6px;border-bottom:2px solid transparent}
+.chips span.on{color:var(--accent);border-bottom-color:var(--accent)}
+.chart{display:block;width:100%;height:140px;margin-top:12px}
+.axis{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));font-family:var(--mono);font-size:10px;color:var(--dim);text-align:center;margin-top:6px}
+.fab{position:absolute;right:16px;bottom:78px;height:40px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.tab{height:64px;border-top:1px solid var(--hair);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--bg);flex-shrink:0}
+.tab div{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--dim);gap:4px;font-weight:600}
+.tab div.on{color:var(--accent)}
+.tab svg{width:20px;height:20px}
+.ico{width:20px;height:20px;color:var(--dim)}
+.empty{font-size:13px;color:var(--dim);padding:12px 0}
+</style>
+</helmet>
+<div class="phone">
+  <div class="body">
+<div class="hdr"><span class="title">투자</span><div class="hdr-acts"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.5 4.5L20 16"/><path d="M20 20v-4h-4"/></svg><a style="font-size:13px;font-weight:600">종목 추가</a></div></div>
+<div class="hero"><span class="cap">2026.09.11 15:30 시세</span><span class="lbl">평가손익</span><div class="n44 up">▲ 1,440,000</div><div class="delta"><span class="d up" style="font-size:16px">+1.46%</span><span class="c">평가 100,000,000 · 매입 98,560,000</span></div></div>
+<div class="hr"></div>
+<div class="sec"><h4>종목별 손익</h4><a>전체</a></div>
+<div class="r big"><div class="l"><div class="t">삼성전자</div><div class="m">500주 · 84,000</div></div><div class="rt"><div class="v v18 up">+1,250,000</div><div class="sub">+3.1%</div></div></div>
+<div class="r big"><div class="l"><div class="t">TIGER 미국S&amp;P500</div><div class="m">1,200주 · 25,830</div></div><div class="rt"><div class="v v18 up">+410,000</div><div class="sub">+1.3%</div></div></div>
+<div class="r big"><div class="l"><div class="t">NAVER</div><div class="m">40주 · 210,000</div></div><div class="rt"><div class="v v18 down">−220,000</div><div class="sub">−2.6%</div></div></div>
+<div class="hr"></div>
+<div class="sec"><h4>계좌</h4><a>전체</a></div>
+<div class="r tall"><div class="l"><div class="t">테스트증권</div><div class="m">3종목</div></div><div class="rt"><div class="v ">72,000,000</div><div class="sub"><span class="up">▲ 1.9%</span></div></div></div>
+<div class="r tall"><div class="l"><div class="t">키움 ISA</div><div class="m">2종목</div></div><div class="rt"><div class="v ">28,000,000</div><div class="sub"><span class="down">▼ 0.4%</span></div></div></div>
+  </div>
+  
+  <div class="tab"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div>
+</div>
+</x-dc>
+</body>
+</html>

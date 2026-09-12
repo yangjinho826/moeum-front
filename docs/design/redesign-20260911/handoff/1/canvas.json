@@ -1,0 +1,95 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "home · 390"
+    },
+    {
+      "file": "Transactions.dc.html",
+      "x": 500,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "transactions · 390"
+    },
+    {
+      "file": "Invest.dc.html",
+      "x": 1000,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "invest · 390"
+    },
+    {
+      "file": "Settings.dc.html",
+      "x": 1500,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "settings · 390"
+    },
+    {
+      "file": "States.dc.html",
+      "x": 2000,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "상태 3종 · 홈"
+    },
+    {
+      "file": "HomeDesktop.dc.html",
+      "x": 0,
+      "y": 1004,
+      "w": 1440,
+      "h": 900,
+      "title": "home · 1440"
+    },
+    {
+      "file": "TransactionsDesktop.dc.html",
+      "x": 1550,
+      "y": 1004,
+      "w": 1440,
+      "h": 900,
+      "title": "transactions · 1440"
+    },
+    {
+      "file": "InvestDesktop.dc.html",
+      "x": 0,
+      "y": 2064,
+      "w": 1440,
+      "h": 900,
+      "title": "invest · 1440"
+    },
+    {
+      "file": "SettingsDesktop.dc.html",
+      "x": 1550,
+      "y": 2064,
+      "w": 1440,
+      "h": 900,
+      "title": "settings · 1440"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "pick",
+      "x": 0,
+      "y": -200,
+      "w": 520,
+      "text": "배치1 handoff — pick = A(홈: 결과 하나) + C(투자: 12개월 추이).\n셸: 헤더 48(브랜드 + 가계부 pill) · 탭바 64 · '＋ 기록' 40px 은 홈·거래만 · 데스크톱 사이드바 220 + 판면 720 + 레일 320.\n색은 금액과 ▲▼ 에만: 수입 초록 / 지출 테라코타 / 이체 보라 / 상승 빨강 / 하락 파랑 / 행동 세이지. 폰트 Noto Sans KR 은 Pretendard 대역."
+    },
+    {
+      "id": "nav",
+      "x": 2000,
+      "y": -120,
+      "w": 390,
+      "text": "화면 이동 = 탭바 4개(홈·거래·투자·내정보). 이 캔버스는 아트보드 간 링크가 안 돼 정적. 상태 3종은 우측 아트보드."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}
