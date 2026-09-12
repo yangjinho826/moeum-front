@@ -147,11 +147,6 @@ export default function SettingsSection() {
           {currentHousehold && (
             <ListRow
               title={t("member_manage")}
-              meta={
-                currentHousehold.memberCount != null
-                  ? t("member_count", { count: currentHousehold.memberCount })
-                  : undefined
-              }
               chevron
               last
               onClick={() => openMembers(currentHousehold.householdId)}

@@ -21,7 +21,6 @@
     "scheme_dark": "다크",
     "scheme_auto": "시스템",
     "household_section": "가계부",
-    "member_count": "{count}명",
     "category": "카테고리",
     "fixed": "고정지출",
     "account": "통장",
@@ -498,9 +497,7 @@
     "name_required_message": "이름을 입력해주세요.",
     "description": "설명",
     "started_at": "시작일",
-    "member_count": "{count}명",
     "switcher_title": "가계부 선택",
-    "switcher_count": "관리 중인 가계부 {count}개",
     "managing": "관리 중 {count}개",
     "create_new": "새 가계부 만들기",
     "member": {

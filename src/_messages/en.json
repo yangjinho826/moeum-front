@@ -21,7 +21,6 @@
     "scheme_dark": "Dark",
     "scheme_auto": "System",
     "household_section": "Household",
-    "member_count": "{count} members",
     "category": "Categories",
     "fixed": "Fixed expenses",
     "account": "Accounts",
@@ -500,9 +499,7 @@
     "name_required_message": "Please enter name.",
     "description": "Description",
     "started_at": "Started at",
-    "member_count": "{count} members",
     "switcher_title": "Select household",
-    "switcher_count": "Managing {count} households",
     "managing": "Managing {count}",
     "create_new": "New household",
     "member": {

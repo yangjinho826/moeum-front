@@ -22,7 +22,6 @@ export interface HouseholdListItemType {
   currency: string;
   startedAt: string;
   role?: HouseholdRole;
-  memberCount?: number;
 }
 
 export interface HouseholdDetailItemType {
@@ -33,7 +32,6 @@ export interface HouseholdDetailItemType {
   currency: string;
   startedAt: string;
   role?: HouseholdRole;
-  memberCount?: number;
 }
 
 // Members
