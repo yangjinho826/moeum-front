@@ -9,6 +9,7 @@ import Section from "./section";
 import SectionSkeleton from "./section-skeleton";
 
 interface CatcherProps {
+  resetKey?: unknown;
   onReset: () => void;
   fallback: (retry: () => void) => ReactNode;
   children: ReactNode;
@@ -27,6 +28,11 @@ class ErrorCatcher extends Component<CatcherProps, { failed: boolean }> {
     this.setState({ failed: false });
   };
 
+  // 조회 조건(선택 월 등)이 바뀌면 실패를 풀고 새 조건으로 다시 그린다 — 한 달 실패가 다른 달까지 막지 않게
+  componentDidUpdate(prev: CatcherProps) {
+    if (this.state.failed && prev.resetKey !== this.props.resetKey) this.retry();
+  }
+
   render() {
     return this.state.failed ? this.props.fallback(this.retry) : this.props.children;
   }
@@ -37,6 +43,8 @@ interface SectionBoundaryProps {
   title?: string;
   /** 로딩 자리표시. 기본 = 행 1개 스켈레톤 */
   loading?: ReactNode;
+  /** 바뀌면 실패 상태를 초기화(예: 선택 월) */
+  resetKey?: unknown;
   children: ReactNode;
 }
 
@@ -45,7 +53,7 @@ interface SectionBoundaryProps {
  * (plan/2.md 에러 상태). 한 섹션 조회 실패가 (user)/error.tsx 로 화면 전체를 갈아치우지 않게 한다.
  * 화면의 주 쿼리(hero 데이터)는 감싸지 않는다 — 그건 화면 에러(재시도 포함)가 맞다.
  */
-export default function SectionBoundary({ title, loading, children }: SectionBoundaryProps) {
+export default function SectionBoundary({ title, loading, resetKey, children }: SectionBoundaryProps) {
   const t = useTranslations("general.common");
   const te = useTranslations("error");
 
@@ -53,6 +61,7 @@ export default function SectionBoundary({ title, loading, children }: SectionBou
     <QueryErrorResetBoundary>
       {({ reset }) => (
         <ErrorCatcher
+          resetKey={resetKey}
           onReset={reset}
           fallback={(retry) => {
             const message = (

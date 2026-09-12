@@ -277,7 +277,7 @@
     "day_format": "Day {day}",
     "color": "Color",
     "icon": "Icon",
-    "month_total": "{month} fixed",
+    "month_total": "Fixed in {month}",
     "summary_caption": "{recorded} recorded · {count} not yet",
     "used_total": "Spent",
     "recorded": "Recorded",

@@ -230,13 +230,14 @@ export default function ListRow({
   );
 }
 
-/** 18px 글리프(stroke 1.5 — Figma Icon/* 와 같은 굵기). 아이콘 없는·목록 밖 이름은 요술봉 대신 자리만 맞추고 색 점 */
+/** 18px 글리프(stroke 2 — DESIGN §4 리스트 아이콘). 아이콘 없는·목록 밖 이름은 요술봉 대신 자리만 맞추고 색 점 */
 function LeadGlyph({ lead }: { lead: ListRowLead }) {
   const color = lead.color ?? "var(--moeum-text-dim)";
   return (
-    <Box w={18} h={18} style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color }}>
+    // 장식 — 제목이 이미 이름을 말한다
+    <Box aria-hidden w={18} h={18} style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color }}>
       {isKnownIcon(lead.icon) ? (
-        <DynamicIcon name={lead.icon} size={18} stroke={1.5} />
+        <DynamicIcon name={lead.icon} size={18} stroke={2} />
       ) : (
         <Box w={6} h={6} style={{ borderRadius: 3, background: color }} />
       )}

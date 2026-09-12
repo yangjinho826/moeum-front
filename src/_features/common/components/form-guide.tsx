@@ -21,22 +21,25 @@ interface FormGuideProps {
 export default function FormGuide({ items }: FormGuideProps) {
   const tg = useTranslations("general.common");
 
+  // 보조 콘텐츠 랜드마크 — 스크린리더가 폼과 따로 건너뛸 수 있게
   return (
-    <Section title={tg("guide")}>
-      {items.map((it, i) => (
-        <Box
-          key={it.title}
-          py={10}
-          style={{ borderBottom: i < items.length - 1 ? "1px solid var(--moeum-hair-2)" : undefined }}
-        >
-          <Text fw={700} c="var(--moeum-text)" style={{ fontSize: 13, lineHeight: "19px" }}>
-            {it.title}
-          </Text>
-          <Text c="dimmed" mt={4} style={{ fontSize: 12, lineHeight: 1.6 }}>
-            {it.body}
-          </Text>
-        </Box>
-      ))}
-    </Section>
+    <Box component="aside" aria-label={tg("guide")}>
+      <Section title={tg("guide")}>
+        {items.map((it, i) => (
+          <Box
+            key={it.title}
+            py={10}
+            style={{ borderBottom: i < items.length - 1 ? "1px solid var(--moeum-hair-2)" : undefined }}
+          >
+            <Text fw={700} c="var(--moeum-text)" style={{ fontSize: 13, lineHeight: "19px" }}>
+              {it.title}
+            </Text>
+            <Text c="dimmed" mt={4} style={{ fontSize: 12, lineHeight: 1.6 }}>
+              {it.body}
+            </Text>
+          </Box>
+        ))}
+      </Section>
+    </Box>
   );
 }

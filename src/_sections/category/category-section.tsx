@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Stack, Text } from "@mantine/core";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -9,6 +10,7 @@ import { useCategorySearch } from "_features/category/hooks/use-sub/use-search";
 import type { CategoryListItemType } from "_features/category/types";
 import AccentLink from "_features/common/components/accent-link";
 import EmptyText from "_features/common/components/empty-text";
+import FormGuide from "_features/common/components/form-guide";
 import FormSheet from "_features/common/components/form-sheet";
 import ListRow from "_features/common/components/list-row";
 import Section from "_features/common/components/section";
@@ -22,8 +24,8 @@ import { InfiniteSentinel } from "_libraries/query/infinite-sentinel";
 export default function CategorySection() {
   const t = useTranslations("category");
   const tKind = useTranslations("enum.category-kind");
-  const tg = useTranslations("general.common");
 
+  const { locale } = useParams<{ locale: string }>();
   const [opened, setOpened] = useState(false);
   const [editId, setEditId] = useState<string | undefined>(undefined);
   const openSheet = (id?: string) => {
@@ -54,6 +56,8 @@ export default function CategorySection() {
       <Stack gap={0}>
         <SubHeader
           title={t("list_title")}
+          // 내정보 "관리"의 하위 화면 — 새로고침·직접 진입에서도 뒤로 = 내정보 (멤버 화면과 같게)
+          back={`/${locale}/settings`}
           right={
             <AccentLink variant="header" onClick={() => openSheet()}>
               {t("add")}
@@ -95,11 +99,7 @@ export default function CategorySection() {
 
       {/* 데스크톱 레일 — 삭제 규칙을 미리 알려 둔다(개수는 섹션 제목이 말함) */}
       <Box visibleFrom="lg" pt={48}>
-        <Section title={tg("guide")}>
-          <Text c="dimmed" pt={8} style={{ fontSize: 12, lineHeight: 1.6 }}>
-            {t("guide.delete_body")}
-          </Text>
-        </Section>
+        <FormGuide items={[{ title: t("guide.delete_title"), body: t("guide.delete_body") }]} />
       </Box>
     </div>
   );
