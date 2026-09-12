@@ -32,6 +32,9 @@ export default function FilterChip({ label, active, onClick }: FilterChipProps) 
         // 터치타깃 ≥32: 텍스트 19 + 언더라인 2 + 위 6/아래 5 패딩(밑줄이 칩 하단에 붙게 아래는 짧게)
         paddingTop: 6,
         paddingBottom: 5,
+        // 가로도 ≥32("전체" 22px) — 좌우 6 패딩을 음수 마진으로 상쇄해 글자 위치·칩 간격은 그대로
+        paddingInline: 6,
+        marginInline: -6,
         transition: "color 150ms ease-out",
       }}
     >

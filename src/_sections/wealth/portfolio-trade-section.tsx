@@ -1,13 +1,14 @@
 "use client";
 
-import { Box, Button, Center, Loader, SimpleGrid, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Box, Button, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter, useParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { queryKeys } from "_constants/queries";
+import AccentLink from "_features/common/components/accent-link";
 import DeltaPill from "_features/common/components/delta-pill";
 import EmptyText from "_features/common/components/empty-text";
 import FormSheet from "_features/common/components/form-sheet";
@@ -15,6 +16,8 @@ import Hairline from "_features/common/components/hairline";
 import HeroAmount from "_features/common/components/hero-amount";
 import ListRow from "_features/common/components/list-row";
 import Section from "_features/common/components/section";
+import SectionBoundary from "_features/common/components/section-boundary";
+import SectionSkeleton from "_features/common/components/section-skeleton";
 import StatGrid from "_features/common/components/stat-grid";
 import SubHeader from "_features/layout/components/sub-header";
 import TradeForm from "_features/portfolio/components/trade-form";
@@ -29,7 +32,7 @@ import type {
   PortfolioTransactionItemType,
   PortfolioTxType,
 } from "_features/portfolio/types";
-import { semanticColor, signColor } from "_styles/semantic-color";
+import { semanticColor } from "_styles/semantic-color";
 import { fmt, fmtSigned } from "_utilities/fmt";
 
 const DOW_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
@@ -146,21 +149,12 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
       <Button variant="default" onClick={() => openTrade("BUY")} c={semanticColor("up")}>
         {t("trade_buy")}
       </Button>
-      <Button variant="default" onClick={() => openTrade("SELL")} disabled={!canSell} c={semanticColor("down")}>
+      {/* 비활성이면 색을 빼 Mantine disabled 색이 보이게 — 인라인 c 가 덮으면 눌릴 것처럼 보임 */}
+      <Button variant="default" onClick={() => openTrade("SELL")} disabled={!canSell} c={canSell ? semanticColor("down") : undefined}>
         {t("trade_sell")}
       </Button>
     </SimpleGrid>
   );
-
-  const editLinkStyle = {
-    fontSize: 13,
-    lineHeight: "19px",
-    fontWeight: 700,
-    color: "var(--moeum-accent)",
-    padding: "8px 0 8px 12px",
-    margin: "-8px 0",
-    flexShrink: 0,
-  } as const;
 
   return (
     <div className="moeum-main-rail">
@@ -168,9 +162,9 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
         <SubHeader
           title={portfolio.name}
           right={
-            <UnstyledButton onClick={handleEditPortfolio} style={editLinkStyle}>
+            <AccentLink variant="header" onClick={handleEditPortfolio}>
               {tg("update")}
-            </UnstyledButton>
+            </AccentLink>
           }
         />
 
@@ -179,7 +173,7 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
           label={
             <>
               {t("valuation_amount")}{" "}
-              <Text component="span" className="moeum-mono" fw={600} c="dimmed" style={{ fontSize: 11, letterSpacing: "0.06em" }}>
+              <Text component="span" className="moeum-mono moeum-label" fw={600} c="dimmed">
                 {portfolio.code} · {tMarket(portfolio.market)}
               </Text>
             </>
@@ -203,16 +197,10 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
           ]}
         />
 
-        {/* 평가액 추이 + 기간 칩 */}
-        <Suspense
-          fallback={
-            <Center py="md">
-              <Loader size="sm" />
-            </Center>
-          }
-        >
+        {/* 평가액 추이 + 기간 칩 — 조회 실패해도 이 섹션만 "다시 시도" */}
+        <SectionBoundary title={t("trend_label")} loading={<SectionSkeleton chart />}>
           <PortfolioValueTrend portfolioId={portfolioId} currentValue={portfolio.currentValue} />
-        </Suspense>
+        </SectionBoundary>
 
         {/* 매수 / 매도 — 모바일은 판면, 데스크톱은 우측 레일 */}
         <Box hiddenFrom="lg">
@@ -221,7 +209,7 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
         </Box>
 
         {/* 매매 내역 (매매손익 누적은 계좌 상세 — 전량매도 시 종목이 사라져도 추적 가능) */}
-        <Section title={t("transactions")}>
+        <Section title={t("trade_history")}>
           {trades.length === 0 ? (
             <EmptyText
               message={t("first_trade_empty")}
@@ -232,17 +220,18 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
               {grouped.map(([date, txs]) => (
                 <Box key={date}>
                   <Text
-                    className="moeum-mono"
+                    className="moeum-mono moeum-label"
                     fw={600}
                     c="dimmed"
                     pt={10}
                     pb={2}
-                    style={{ fontSize: 11, lineHeight: "16px", letterSpacing: "0.06em", textTransform: "uppercase" }}
+                    style={{ textTransform: "uppercase" }}
                   >
                     {formatDate(date)}
                   </Text>
                   {txs.map((tx, i) => {
                     const isBuy = tx.ptType === "BUY";
+                    // 실현손익은 메타 한 곳에만(Figma 45:130 "· 실현 −10,744") — 우측 sub 에 또 쓰면 같은 숫자 두 번
                     const meta = [
                       `${tGeneral("unit.stock", { count: tx.quantity })} × ${fmt(tx.price)}`,
                       tx.realizedPnl != null ? `${t("realized_pnl")} ${fmtSigned(tx.realizedPnl)}` : null,
@@ -261,8 +250,6 @@ export default function PortfolioTradeSection({ portfolioId }: Props) {
                         }
                         meta={meta}
                         value={fmt(tx.total)}
-                        sub={tx.realizedPnl != null ? fmtSigned(tx.realizedPnl) : undefined}
-                        subColor={tx.realizedPnl != null ? signColor(tx.realizedPnl, "asset") : undefined}
                         last={i === txs.length - 1}
                         onClick={() => {
                           setEditingTx(tx);

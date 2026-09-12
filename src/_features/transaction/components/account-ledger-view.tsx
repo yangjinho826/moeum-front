@@ -93,10 +93,10 @@ export default function AccountLedgerView({
           <Box key={date}>
             <Stack gap={4} pt={14}>
               <Text
-                className="moeum-mono"
+                className="moeum-mono moeum-label"
                 fw={600}
                 c="dimmed"
-                style={{ fontSize: 11, lineHeight: "16px", letterSpacing: "0.06em", textTransform: "uppercase" }}
+                style={{ textTransform: "uppercase" }}
               >
                 {formatDate(date)}
               </Text>

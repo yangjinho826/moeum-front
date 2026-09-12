@@ -1,9 +1,9 @@
 "use client";
 
-import { Box, Group, Text, UnstyledButton } from "@mantine/core";
-import Link from "next/link";
+import { Box, Group, Text } from "@mantine/core";
 import type { ReactNode } from "react";
 
+import AccentLink from "./accent-link";
 import Hairline from "./hairline";
 
 export interface SectionLink {
@@ -63,26 +63,9 @@ export default function Section({
 }
 
 function SectionLinkView({ link }: { link: SectionLink }) {
-  // 텍스트는 12/16 이지만 히트영역은 32px — 위아래 8 패딩을 음수 마진으로 상쇄해 행 높이는 그대로
-  const style = {
-    fontSize: 12,
-    lineHeight: "16px",
-    fontWeight: 600,
-    color: "var(--moeum-accent)",
-    flexShrink: 0,
-    padding: "8px 0 8px 12px",
-    margin: "-8px 0",
-  } as const;
-  if (link.href) {
-    return (
-      <UnstyledButton component={Link} href={link.href} prefetch={false} style={style}>
-        {link.label}
-      </UnstyledButton>
-    );
-  }
   return (
-    <UnstyledButton onClick={link.onClick} style={style}>
+    <AccentLink href={link.href} onClick={link.onClick}>
       {link.label}
-    </UnstyledButton>
+    </AccentLink>
   );
 }

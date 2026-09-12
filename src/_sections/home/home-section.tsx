@@ -8,12 +8,13 @@ import { useParams } from "next/navigation";
 import EmptyText from "_features/common/components/empty-text";
 import ListRow from "_features/common/components/list-row";
 import Section from "_features/common/components/section";
+import { ASSET_CLASS_COLOR } from "_features/portfolio/constants";
 import { usePortfolioOverview } from "_features/portfolio/queries/use-query";
 import { topExpenseCategories } from "_features/stats/utils";
 import { useQuickAddStore } from "_features/transaction/store";
 import TxRow from "_features/transaction/components/tx-row";
 import { queryKeys } from "_constants/queries";
-import { chartColor, signColor } from "_styles/semantic-color";
+import { signColor } from "_styles/semantic-color";
 import { fmt, fmtSigned, fmtSignedPct } from "_utilities/fmt";
 
 import TotalAssetHero from "./components/total-asset-hero";
@@ -117,7 +118,7 @@ export default function HomeSection() {
           title={tAssetClass(s.assetClass)}
           value={fmt(s.valuation)}
           sub={`${Math.round(s.ratio)}%`}
-          bar={{ ratio: s.ratio / 100, color: chartColor(i) }}
+          bar={{ ratio: s.ratio / 100, color: ASSET_CLASS_COLOR[s.assetClass] }}
           last={i === allocation.length - 1}
           href={`/${locale}/wealth`}
         />

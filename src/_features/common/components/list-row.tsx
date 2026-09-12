@@ -154,13 +154,10 @@ export default function ListRow({
               <Group gap={8} wrap="nowrap" align="center">
                 {sub != null && (
                   <Text
-                    className="moeum-mono"
+                    className="moeum-mono moeum-label"
                     fw={600}
                     ta="right"
                     style={{
-                      fontSize: 11,
-                      lineHeight: "16px",
-                      letterSpacing: "0.06em",
                       color: semanticColor(subColor),
                       whiteSpace: "nowrap",
                     }}

@@ -17,6 +17,8 @@ import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import { ACCOUNT_TYPE_HEX } from "_features/account/constants";
+import { useAccountSheetStore } from "_features/account/store";
+import EmptyText from "_features/common/components/empty-text";
 import FormActions from "_features/common/components/form-actions";
 import { queryKeys } from "_constants/queries";
 import { semanticColor, signColor } from "_styles/semantic-color";
@@ -24,9 +26,6 @@ import { fmt } from "_utilities/fmt";
 
 import { useTransactionForm } from "../hooks/use-sub/use-form";
 import type { TxType } from "../types";
-
-/** 잔액·평가 힌트 — 모노 11 dim, 필드 바로 아래 (Figma 46:451 Field/통장 Caption) */
-const HINT_STYLE = { fontSize: 11, lineHeight: "16px", letterSpacing: "0.06em" } as const;
 
 interface TransactionFormProps {
   transactionId?: string;
@@ -47,6 +46,8 @@ export default function TransactionForm({
   const t = useTranslations("transaction");
   const tTxType = useTranslations("enum.tx-type");
   const tg = useTranslations("general.common");
+  const tWealth = useTranslations("wealth");
+  const openAccountSheet = useAccountSheetStore((s) => s.open);
 
   const { data: txTypeData } = useSuspenseQuery({
     ...queryKeys.enum.options("tx-type"),
@@ -129,7 +130,7 @@ export default function TransactionForm({
     if (isUpdate || !account) return null;
     const after = account.balance + delta;
     return (
-      <Text className="moeum-mono" fw={600} c="dimmed" mt={-8} style={HINT_STYLE}>
+      <Text className="moeum-mono moeum-label" fw={600} c="dimmed" mt={-8}>
         {t("balance_current")} {fmt(account.balance)}
         {t("won")}
         {amountNum > 0 && (
@@ -150,7 +151,7 @@ export default function TransactionForm({
     if (isUpdate || !selectedAccount) return null;
     const diff = (Number(form.values.valuation) || 0) - selectedAccount.balance;
     return (
-      <Text className="moeum-mono" fw={600} c="dimmed" mt={-8} style={HINT_STYLE}>
+      <Text className="moeum-mono moeum-label" fw={600} c="dimmed" mt={-8}>
         {t("balance_current")} {fmt(selectedAccount.balance)}
         {t("won")}
         {diff !== 0 && (
@@ -203,10 +204,14 @@ export default function TransactionForm({
     />
   );
 
-  // 금액 — 큰 모노 28 · 높이 56 · 우측 "원" (Figma 46:646). 생성이면 첫 포커스
+  // 금액 — 큰 모노 28 · 높이 56 · 우측 "원" (Figma 46:646). 생성이면 첫 포커스.
+  // 상태는 숫자 0 그대로, 화면만 빈칸 + placeholder "0" — 실제 값 "0" 을 지우고 입력하지 않게
   const amountField = (
     <NumberInput
       {...form.getInputProps("amount")}
+      value={form.values.amount || ""}
+      onChange={(v) => form.setFieldValue("amount", typeof v === "number" ? v : 0)}
+      placeholder="0"
       label={t("amount")}
       min={0}
       classNames={{ input: "moeum-amount-input" }}
@@ -244,6 +249,8 @@ export default function TransactionForm({
     <>
       <NumberInput
         {...form.getInputProps("valuation")}
+        value={form.values.valuation || ""}
+        onChange={(v) => form.setFieldValue("valuation", typeof v === "number" ? v : 0)}
         label={t("valuation_new")}
         placeholder={t("valuation_new_placeholder")}
         min={0}
@@ -338,6 +345,23 @@ export default function TransactionForm({
       </Stack>
     </form>
   );
+
+  // 통장 0 — 빈 Select + 비활성 버튼 막다른 길 대신 다음 행동을 준다(plan/2.md 빈 상태)
+  if (accounts.length === 0) {
+    const empty = (
+      <EmptyText
+        message={t("need_account")}
+        action={{
+          label: tWealth("add_account"),
+          onClick: () => {
+            handleCancel();
+            openAccountSheet();
+          },
+        }}
+      />
+    );
+    return hideCard ? empty : <Card>{empty}</Card>;
+  }
 
   return hideCard ? formContent : <Card>{formContent}</Card>;
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import { ActionIcon, Box, Group, Stack, Text, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Box, Group, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconRefresh } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 
+import AccentLink from "_features/common/components/accent-link";
 import EmptyText from "_features/common/components/empty-text";
 import Hairline from "_features/common/components/hairline";
 import HeroAmount from "_features/common/components/hero-amount";
@@ -20,7 +21,8 @@ import { usePortfolioMutations } from "_features/portfolio/queries/use-mutations
 import { usePortfolioOverview } from "_features/portfolio/queries/use-query";
 import { usePortfolioSheetStore } from "_features/portfolio/store";
 import { queryKeys } from "_constants/queries";
-import { signColor } from "_styles/semantic-color";
+import { semanticColor, signColor } from "_styles/semantic-color";
+import { todayIsoKst } from "_utilities/datetime";
 import { fmt, fmtArrowPct, fmtSigned } from "_utilities/fmt";
 
 
@@ -63,7 +65,8 @@ export default function PortfolioSection() {
     }))
     .sort((a, b) => a.date.localeCompare(b.date));
   if (hasAccounts) {
-    trendPoints.push({ date: new Date().toISOString().slice(0, 10), value: summary.totalValuation });
+    // KST 오늘 — toISOString 은 UTC 라 자정~09시에 전날로 찍힘
+    trendPoints.push({ date: todayIsoKst(), value: summary.totalValuation });
   }
 
   // 종목 비중 — 전체 활성 종목 + 현금 (StockShares 가 정렬·상위 4·외 N·막대)
@@ -78,23 +81,23 @@ export default function PortfolioSection() {
     <div className="moeum-main-rail">
       <Stack gap={0}>
         <PageTitle title={t("title")}>
-          <Group gap={14} wrap="nowrap">
+          {/* 아이콘 히트 44 · 링크 좌패딩 12 가 간격을 채우므로 gap 은 최소 */}
+          <Group gap={2} wrap="nowrap">
+            {/* 히트 44(DESIGN 터치 44) — 세로 음수 마진으로 타이틀 행 높이는 그대로 */}
             <ActionIcon
               variant="subtle"
               color="gray"
-              size="lg"
+              size={44}
+              my={-5}
               onClick={handleRefresh}
               loading={refreshMutation.isPending}
               aria-label={t("refresh")}
             >
               <IconRefresh size={20} stroke={2} color="var(--moeum-text-dim)" />
             </ActionIcon>
-            <UnstyledButton
-              onClick={() => openSheet()}
-              style={{ fontSize: 13, lineHeight: "19px", fontWeight: 700, color: "var(--moeum-accent)", padding: "8px 0", margin: "-8px 0" }}
-            >
+            <AccentLink variant="header" onClick={() => openSheet()}>
               {t("add_stock")}
-            </UnstyledButton>
+            </AccentLink>
           </Group>
         </PageTitle>
 
@@ -108,7 +111,7 @@ export default function PortfolioSection() {
                 <Text
                   className="moeum-mono"
                   fw={600}
-                  style={{ fontSize: 14, lineHeight: "20px", color: semanticColorFor(summary.totalRate) }}
+                  style={{ fontSize: 14, lineHeight: "20px", color: semanticColor(signColor(summary.totalRate, "asset")) }}
                 >
                   {fmtArrowPct(summary.totalRate)}
                 </Text>
@@ -160,7 +163,3 @@ export default function PortfolioSection() {
     </div>
   );
 }
-
-/** 수익률 부호색 (0 = dim) */
-const semanticColorFor = (rate: number): string =>
-  `var(--moeum-${rate > 0 ? "up" : rate < 0 ? "down" : "text-dim"})`;

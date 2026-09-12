@@ -14,12 +14,12 @@ export const todayIso = (): string => todayIsoKst();
 export const fmtSigned = (n: number): string =>
   `${n > 0 ? "+" : n < 0 ? "−" : ""}${fmt(Math.abs(n))}`;
 
-/** 부호 붙은 % — `+6.09%` (기본 소수 2) */
-export const fmtSignedPct = (n: number, digits = 2): string =>
+/** 부호 붙은 % — `+6.1%` (기본 소수 1 — DeltaPill·추이와 같은 자릿수) */
+export const fmtSignedPct = (n: number, digits = 1): string =>
   `${n > 0 ? "+" : n < 0 ? "−" : ""}${Math.abs(n).toFixed(digits)}%`;
 
-/** 방향 화살표 % — `▲ 6.09%` (투자 상승/하락 표기) */
-export const fmtArrowPct = (n: number, digits = 2): string =>
+/** 방향 화살표 % — `▲ 6.1%` (투자 상승/하락 표기, 기본 소수 1) */
+export const fmtArrowPct = (n: number, digits = 1): string =>
   `${n > 0 ? "▲ " : n < 0 ? "▼ " : ""}${Math.abs(n).toFixed(digits)}%`;
 
 export const newId = (): string => Math.random().toString(36).slice(2, 10);

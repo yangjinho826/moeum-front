@@ -1,16 +1,18 @@
+import type { SemanticColor } from "_styles/semantic-color";
+
 import type { AssetClass } from "./types";
 
 /**
- * 자산군별 배분 파이 색상 (hex — PortfolioDonut 용).
- * Warm Ledger 팔레트 (DESIGN.md). 카테고리 구분색이라 의미색(info/danger/positive)과 별개.
- * 부동산=브랜드 sage, 투자=terracotta, 현금=웜그레이, 연금=벽돌, 금=골드.
+ * 자산군 → 차트 계열색 고정 매핑 (DESIGN.md §2-4).
+ * 비중 순위가 바뀌어도 색 의미가 유지돼야 과거 배분 추이와 현재 구성 막대가 같은 말을 한다.
+ * 금·적금·기타는 chart-5 하나로 묶는다(작은 비중 — 이름은 행·툴팁 라벨로 구분).
  */
-export const ASSET_CLASS_COLOR: Record<AssetClass, string> = {
-  REAL_ESTATE: "#7C9473", // sage (보통 최대 비중 → 브랜드색)
-  INVESTMENT: "#D98E73", // terracotta
-  CASH: "#C3B9A9", // 웜그레이 (중립)
-  PENSION: "#C2674A", // terracotta-deep (벽돌)
-  COMMODITY: "#E0B84C", // 골드 (금·원자재)
-  SAVINGS: "#7FA98C", // 적금 (세이지 녹색)
-  OTHER: "#A99C8D", // 웜그레이 진한
+export const ASSET_CLASS_COLOR: Record<AssetClass, SemanticColor> = {
+  INVESTMENT: "chart1",
+  CASH: "chart2",
+  REAL_ESTATE: "chart3",
+  PENSION: "chart4",
+  COMMODITY: "chart5",
+  SAVINGS: "chart5",
+  OTHER: "chart5",
 };

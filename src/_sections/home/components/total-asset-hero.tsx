@@ -104,12 +104,9 @@ export default function TotalAssetHero() {
     <UnstyledButton
       onClick={handleTakeSnapshot}
       disabled={createMutation.isPending}
-      className="moeum-mono"
+      className="moeum-mono moeum-label"
       style={{
-        fontSize: 11,
-        lineHeight: "16px",
         fontWeight: 600,
-        letterSpacing: "0.06em",
         color: "var(--moeum-accent)",
         opacity: createMutation.isPending ? 0.5 : 1,
         // 캡션 링크 히트영역 32px(위아래 8 패딩, 음수 마진으로 캡션 행 높이 유지)

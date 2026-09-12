@@ -71,10 +71,9 @@ export default function HeroAmount({
       {(caption || toggle) && (
         <Group justify="space-between" align="center" wrap="nowrap">
           <Text
-            className="moeum-mono"
+            className="moeum-mono moeum-label"
             fw={600}
             c="dimmed"
-            style={{ fontSize: 11, lineHeight: "16px", letterSpacing: "0.06em" }}
           >
             {caption}
           </Text>

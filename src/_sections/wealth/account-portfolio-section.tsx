@@ -1,15 +1,17 @@
 "use client";
 
-import { Box, Center, Loader, Stack } from "@mantine/core";
+import { Box, Stack } from "@mantine/core";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Suspense, useMemo } from "react";
+import { useMemo } from "react";
 
 import DeltaPill from "_features/common/components/delta-pill";
 import EmptyText from "_features/common/components/empty-text";
 import HeroAmount from "_features/common/components/hero-amount";
 import ListRow from "_features/common/components/list-row";
 import Section from "_features/common/components/section";
+import SectionBoundary from "_features/common/components/section-boundary";
+import SectionSkeleton from "_features/common/components/section-skeleton";
 import StatGrid from "_features/common/components/stat-grid";
 import SubHeader from "_features/layout/components/sub-header";
 import StockShares from "_features/portfolio/components/stock-shares";
@@ -18,7 +20,7 @@ import { usePortfolioSheetStore } from "_features/portfolio/store";
 import AccountBalanceTrend from "_sections/wealth/components/account-balance-trend";
 import RealizedPnlRail from "_sections/wealth/components/realized-pnl-rail";
 import { signColor } from "_styles/semantic-color";
-import { fmt, fmtArrowPct, fmtSigned } from "_utilities/fmt";
+import { fmt, fmtArrowPct } from "_utilities/fmt";
 
 interface Props {
   accountId: string;
@@ -50,12 +52,12 @@ export default function AccountPortfolioSection({ accountId }: Props) {
   // 종목 비중 + 누적 매매수익 — 모바일은 판면 중간, 데스크톱은 우측 레일
   const rail = (
     <>
-      {/* 종목 비중 — 투자 메인과 같은 구성 막대 + 색 점 행 */}
-      <StockShares stocks={portfolios} cash={cash} />
+      {/* 종목 비중 — 투자 메인과 같은 구성 막대 + 색 점 행. 종목 0 이면 현금 100% 뿐이라 숨김(plan ⑤) */}
+      {portfolios.length > 0 && <StockShares stocks={portfolios} cash={cash} />}
       {/* 누적 매매수익 — 얇은 행, 탭하면 시트 (전량매도된 종목 포함) */}
-      <Suspense fallback={null}>
+      <SectionBoundary title={t("cumulative_realized")}>
         <RealizedPnlRail accountId={accountId} />
-      </Suspense>
+      </SectionBoundary>
     </>
   );
 
@@ -76,16 +78,10 @@ export default function AccountPortfolioSection({ accountId }: Props) {
           ]}
         />
 
-        {/* 통장 전체 자산 추이 */}
-        <Suspense
-          fallback={
-            <Center py="md">
-              <Loader size="sm" />
-            </Center>
-          }
-        >
+        {/* 통장 전체 자산 추이 — 조회 실패해도 이 섹션만 "다시 시도" */}
+        <SectionBoundary title={t("balance_trend")} loading={<SectionSkeleton chart />}>
           <AccountBalanceTrend accountId={accountId} />
-        </Suspense>
+        </SectionBoundary>
 
         <Box hiddenFrom="lg">{rail}</Box>
 
@@ -111,7 +107,8 @@ export default function AccountPortfolioSection({ accountId }: Props) {
                   title={p.name}
                   meta={`${p.code} · ${tMarket(p.market)} · ${tGeneral("unit.stock", { count: p.quantity })} · ${t("avg_short")} ${fmt(p.avgPrice)}`}
                   value={fmt(p.currentValue)}
-                  sub={`${fmtSigned(profit)} (${fmtArrowPct(rate)})`}
+                  // 손익은 % 만(plan ⑦) — 금액까지 붙이면 390 에서 메타(평단)가 잘림
+                  sub={fmtArrowPct(rate)}
                   subColor={signColor(profit, "asset")}
                   last={i === portfolios.length - 1}
                   href={`/${locale}/invest/portfolio/${p.portfolioId}`}

@@ -16,7 +16,7 @@
   --container-max: 448px; /* 휴대폰 박스 */
   --z-app-header: 30;
   --z-fab: 150; /* 콘텐츠 위 · Drawer/Modal(200) 아래 — 열린 시트의 하단 버튼을 가리지 않게 (배치2 S5) */
-  --z-bottom-tab: 500;
+  --z-bottom-tab: 190; /* FAB 위 · Drawer/Modal(200) 아래 — 열린 시트가 탭바를 덮는다(Figma 46:451, 배치2 S6 B-3) */
 }
 
 /* 패드 (>= sm = 768) — 메인 박스 768, 카드 grid 반응 영역 */
@@ -216,6 +216,14 @@ small,
 }
 
 /* .moeum-mono 의 letter-spacing:0 이 hero 자간을 덮지 않게 — 결합 선택자로 우선 */
+
+/* 모노 라벨 11/16 · .06em (DESIGN §3 "라벨 11/600 대문자") — 인라인 복붙 대신 이 한 곳.
+   .moeum-mono 의 letter-spacing:0 과 Mantine Text 단일클래스 font-size 를 이기려고 결합 선택자 */
+.moeum-mono.moeum-label {
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+}
 
 /* StatGrid 금액 — 390 에서 3열 셀(~106px)에 11자리가 들어가게 뷰포트 비례, lg 부터 18 고정 */
 .moeum-mono.moeum-stat-value {

@@ -20,11 +20,17 @@ export interface TrendPoint {
 
 type Period = "1m" | "3m" | "12m" | "all";
 const PERIODS: { key: Period; months: number | null }[] = [
-  { key: "1m", months: 2 },
-  { key: "3m", months: 4 },
-  { key: "12m", months: 13 },
+  { key: "1m", months: 1 },
+  { key: "3m", months: 3 },
+  { key: "12m", months: 12 },
   { key: "all", months: null },
 ];
+
+/** "YYYY-MM-DD" 에서 back 개월 전의 "YYYY-MM" */
+const monthKeyBefore = (iso: string, back: number): string => {
+  const total = Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1 - back;
+  return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, "0")}`;
+};
 
 interface TrendLineProps {
   /** 시간순 월별 값(마지막 = 현재) */
@@ -55,14 +61,19 @@ export default function TrendLine({ points, periods = false, showLast = false, t
   const [period, setPeriod] = useState<Period>("12m");
 
   const months = periods ? (PERIODS.find((p) => p.key === period)?.months ?? null) : null;
-  const sliced = months ? points.slice(-months) : points;
+  // 기간은 날짜로 자른다 — 점 개수로 자르면 박제가 빠진 달이 있을 때 "1개월" 이 몇 달로 늘어남
+  const lastDate = points[points.length - 1]?.date;
+  const cutoff = months && lastDate ? monthKeyBefore(lastDate, months) : null;
+  const sliced = cutoff ? points.filter((p) => p.date.slice(0, 7) >= cutoff) : points;
   const data: ChartRow[] = sliced.map((p, i) => {
-    const prev = i > 0 ? sliced[i - 1]?.value : undefined;
+    const prevPoint = i > 0 ? sliced[i - 1] : undefined;
+    // "전월" 은 바로 앞 점이 정말 전월일 때만 — 달이 비면 비교 기준이 틀어진다
+    const isPrevMonth = prevPoint !== undefined && prevPoint.date.slice(0, 7) === monthKeyBefore(p.date, 1);
     return {
       m: Number(p.date.slice(5, 7)),
       v: p.value,
       date: p.date,
-      mom: prev && prev > 0 ? ((p.value - prev) / prev) * 100 : null,
+      mom: isPrevMonth && prevPoint.value > 0 ? ((p.value - prevPoint.value) / prevPoint.value) * 100 : null,
     };
   });
   if (data.length < 2) return null;
@@ -70,17 +81,18 @@ export default function TrendLine({ points, periods = false, showLast = false, t
   const lastIdx = data.length - 1;
   const last = data[lastIdx]?.v ?? 0;
   const prev = data[lastIdx - 1]?.v ?? 0;
-  const dirColor = semanticColor(last - prev >= 0 ? "up" : "down");
+  // 변화 0 은 dim — `>= 0` 으로 두면 제자리인데 상승(빨강)으로 보임
+  const dirColor = semanticColor(signColor(last - prev, "asset"));
   const compact = new Intl.NumberFormat(locale, { notation: "compact", maximumFractionDigits: 1 });
 
   return (
     <Box pt={showLast ? 12 : 4}>
       {showLast && (
         <Text
-          className="moeum-mono"
+          className="moeum-mono moeum-label"
           fw={600}
           ta="right"
-          style={{ fontSize: 11, lineHeight: "16px", letterSpacing: "0.06em", color: dirColor }}
+          style={{ color: dirColor }}
         >
           {compact.format(last)}
         </Text>

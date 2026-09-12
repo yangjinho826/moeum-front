@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
@@ -9,15 +9,16 @@ import { useState } from "react";
 import AssetForm from "_features/account/components/asset-form";
 import { useAccountSheetStore } from "_features/account/store";
 import type { AccountListItemType } from "_features/account/types";
+import AccentLink from "_features/common/components/accent-link";
 import CompositionBar from "_features/common/components/composition-bar";
 import EmptyText from "_features/common/components/empty-text";
 import FormSheet from "_features/common/components/form-sheet";
 import ListRow from "_features/common/components/list-row";
 import PageTitle from "_features/common/components/page-title";
 import Section from "_features/common/components/section";
+import { ASSET_CLASS_COLOR } from "_features/portfolio/constants";
 import type { AssetClass } from "_features/portfolio/types";
 import { queryKeys } from "_constants/queries";
-import { chartColor, type SemanticColor } from "_styles/semantic-color";
 import { fmt } from "_utilities/fmt";
 
 import AllocationTrendChart from "./components/allocation-trend-chart";
@@ -26,7 +27,7 @@ import AllocationTrendChart from "./components/allocation-trend-chart";
  * 자산 상세(/wealth) — 명세서 배치 (plan/2.md, Figma 46:195).
  * 모바일: 자산 PageTitle(+ 자산 추가) → 자산 구성(구성 막대 + 행) → 배분 추이(적층 영역 12개월)
  * → 자산(수동자산: 부동산·연금·금·적금) → 통장. 데스크톱: 좌 판면(추이·통장) + 우 레일(구성·자산).
- * 색은 자산 구성의 현재 비중 순위(chart-1..5) 하나로 막대·행·추이를 맞춘다(홈 자산 구성과 같은 규칙).
+ * 색은 자산군 고정 매핑(ASSET_CLASS_COLOR, DESIGN §2-4) 하나로 막대·행·추이를 맞춘다(홈 자산 구성과 같은 규칙).
  */
 export default function WealthSection() {
   const { locale } = useParams<{ locale: string }>();
@@ -52,30 +53,18 @@ export default function WealthSection() {
   const manualAssets = accounts.filter((a) => a.isManualAsset);
   const visibleAccounts = accounts.filter((a) => !a.isManualAsset);
 
-  // 자산 구성 — 현재 비중 큰 순. 순위 = 차트 색(막대·행·추이 공통)
+  // 자산 구성 — 현재 비중 큰 순(막대·행 순서, 추이 적층 순서). 색은 자산군 고정
   const allocation = overview.allocation.currentAllocation
     .filter((s) => s.valuation > 0)
     .sort((a, b) => b.valuation - a.valuation);
   const order: AssetClass[] = allocation.map((s) => s.assetClass);
-  const colorOf = (c: AssetClass): SemanticColor => {
-    const i = order.indexOf(c);
-    return i >= 0 ? chartColor(i) : "chart5";
-  };
+  const colorOf = (c: AssetClass) => ASSET_CLASS_COLOR[c];
   const trend = overview.allocation.allocationTrend;
 
   const openAssetForm = (asset?: AccountListItemType) => {
     setAssetEdit(asset);
     setAssetFormOpen(true);
   };
-
-  const addLinkStyle = {
-    fontSize: 13,
-    lineHeight: "19px",
-    fontWeight: 700,
-    color: "var(--moeum-accent)",
-    padding: "8px 0 8px 12px",
-    margin: "-8px 0",
-  } as const;
 
   const compositionSection = allocation.length > 0 && (
     <Section title={tHome("asset_allocation")} hairline={false}>
@@ -120,9 +109,9 @@ export default function WealthSection() {
     <div className="moeum-main-rail">
       <Stack gap={0}>
         <PageTitle title={tWealth("title")}>
-          <UnstyledButton onClick={() => openAssetForm()} style={addLinkStyle}>
+          <AccentLink variant="header" onClick={() => openAssetForm()}>
             + {tWealth("add_asset")}
-          </UnstyledButton>
+          </AccentLink>
         </PageTitle>
 
         <Box hiddenFrom="lg">{compositionSection}</Box>
@@ -132,10 +121,9 @@ export default function WealthSection() {
             title={tWealth("allocation_trend")}
             right={
               <Text
-                className="moeum-mono"
+                className="moeum-mono moeum-label"
                 fw={600}
                 c="dimmed"
-                style={{ fontSize: 11, lineHeight: "16px", letterSpacing: "0.06em" }}
               >
                 {tPortfolio("recent_months", { count: trend.length })}
               </Text>

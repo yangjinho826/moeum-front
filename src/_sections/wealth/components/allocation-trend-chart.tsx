@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Text } from "@mantine/core";
+import { Box, Group, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 
@@ -18,7 +18,7 @@ interface ChartRow {
 
 interface Props {
   data: AllocationTrendPoint[];
-  /** 자산군 → 차트 색. 자산 구성 막대·행과 같은 색(현재 비중 순위) */
+  /** 자산군 → 차트 색. 자산 구성 막대·행과 같은 색(자산군 고정 매핑) */
   colorOf: (assetClass: AssetClass) => SemanticColor;
   /** 쌓는 순서(아래 → 위) — 현재 비중 큰 순 */
   order: AssetClass[];
@@ -27,6 +27,7 @@ interface Props {
 /**
  * 월별 자산군 배분 추이 — 적층 영역 (plan/2.md ③, Figma 46:195 AllocationTrend).
  * 채움 = chart-1..5 단색 0.9, 선·그라데이션·그리드 없음, 월 축 모노 11 dim, 툴팁 surface + hair.
+ * 높이는 모바일도 200 — 자산군 여러 겹을 읽을 공간(plan ③). 공용 `.moeum-chart`(모바일 140) 대신 고정.
  */
 export default function AllocationTrendChart({ data, colorOf, order }: Props) {
   const tAssetClass = useTranslations("enum.asset-class");
@@ -45,8 +46,8 @@ export default function AllocationTrendChart({ data, colorOf, order }: Props) {
   });
 
   return (
-    <Box className="moeum-chart" pt={4}>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 320, height: 140 }}>
+    <Box h={200} pt={4}>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 320, height: 200 }}>
         <AreaChart data={rows} margin={{ top: 6, right: 8, bottom: 0, left: 8 }}>
           {classes.map((c) => (
             <Area
@@ -85,10 +86,14 @@ export default function AllocationTrendChart({ data, colorOf, order }: Props) {
                   {[...classes].reverse().map((c) => {
                     const v = Number(row[c] ?? 0);
                     if (v === 0) return null;
+                    // 글자는 본문색 — chart-4/5 는 글자로 쓰면 대비 부족(1.4~2.6:1), 색은 앞 점으로
                     return (
-                      <Text key={c} className="moeum-mono" fw={600} style={{ fontSize: 12, lineHeight: "18px", color: semanticColor(colorOf(c)) }}>
-                        {tAssetClass(c)} {fmt(v)}
-                      </Text>
+                      <Group key={c} gap={6} wrap="nowrap">
+                        <Box w={6} h={6} style={{ borderRadius: 999, flex: "none", background: semanticColor(colorOf(c)) }} />
+                        <Text className="moeum-mono" fw={600} c="var(--moeum-text)" style={{ fontSize: 12, lineHeight: "18px" }}>
+                          {tAssetClass(c)} {fmt(v)}
+                        </Text>
+                      </Group>
                     );
                   })}
                 </Box>

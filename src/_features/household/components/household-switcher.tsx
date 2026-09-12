@@ -62,13 +62,11 @@ export function HouseholdSwitcher({ opened, onClose }: HouseholdSwitcherProps) {
           borderTopRightRadius: 24,
           maxWidth: 448,
           margin: "0 auto",
-          // BottomTab + 홈 인디케이터 영역까지 합산해서 가림 방지
-          maxHeight:
-            "min(80dvh, calc(100dvh - var(--bottom-tab-h) - var(--safe-bottom)))",
+          // 시트가 BottomTab(190) 위라 탭바 보정 없이 홈 인디케이터만 띄움
+          maxHeight: "80dvh",
         },
         body: {
-          paddingBottom:
-            "calc(var(--bottom-tab-h) + var(--safe-bottom) + 8px)",
+          paddingBottom: "calc(var(--safe-bottom) + 8px)",
         },
       }}
     >

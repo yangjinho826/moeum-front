@@ -29,13 +29,10 @@ export default function StatGrid({ items, cols }: StatGridProps) {
       {items.map((it, i) => (
         <Stack key={i} gap={4} style={{ minWidth: 0 }}>
           <Text
-            className="moeum-mono"
+            className="moeum-mono moeum-label"
             fw={600}
             c="dimmed"
             style={{
-              fontSize: 11,
-              lineHeight: "16px",
-              letterSpacing: "0.06em",
               textTransform: "uppercase",
             }}
           >

@@ -147,7 +147,8 @@
       "copy": "Copy",
       "prev_month": "Previous month",
       "next_month": "Next month",
-      "back": "Back"
+      "back": "Back",
+      "load_failed": "Couldn't load"
     },
     "money": "₩{amount}",
     "won": "₩",
@@ -195,7 +196,7 @@
     "empty_flow": "No income or expense to show",
     "balance_trend": "Balance trend",
     "asset": {
-      "section_title": "Real estate · Pension · Commodity",
+      "section_title": "Manual assets",
       "empty": "No assets registered yet",
       "type": "Asset type",
       "name": "Name",
@@ -353,7 +354,8 @@
     "recent_months": "Last {count} months",
     "mom": "MoM {pct}",
     "first_trade_empty": "No trades yet",
-    "buy_cost_label": "Cost basis"
+    "buy_cost_label": "Cost basis",
+    "trade_history": "Trades"
   },
   "transaction": {
     "list_title": "Transactions",
@@ -405,7 +407,8 @@
     "tx_default_label": "Transaction",
     "date_tx": "{month}/{day} transactions",
     "date_header": "{month}.{day} {weekday}",
-    "date_with_weekday": "{weekday}, {month}/{day}"
+    "date_with_weekday": "{weekday}, {month}/{day}",
+    "need_account": "Create an account first"
   },
   "wealth": {
     "title": "Assets",

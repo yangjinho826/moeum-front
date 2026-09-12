@@ -49,12 +49,9 @@ export default function AccountBalanceTrend({ accountId, title }: Props) {
       right={
         periodPct !== null ? (
           <Text
-            className="moeum-mono"
+            className="moeum-mono moeum-label"
             fw={600}
             style={{
-              fontSize: 11,
-              lineHeight: "16px",
-              letterSpacing: "0.06em",
               color: semanticColor(signColor(periodPct, "asset")),
             }}
           >

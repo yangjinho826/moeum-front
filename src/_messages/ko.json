@@ -147,7 +147,8 @@
       "copy": "복사",
       "prev_month": "이전 달",
       "next_month": "다음 달",
-      "back": "뒤로"
+      "back": "뒤로",
+      "load_failed": "불러오지 못했어요"
     },
     "money": "{amount}원",
     "won": "원",
@@ -193,7 +194,7 @@
     "empty_flow": "표시할 수입·지출 내역이 없어요",
     "balance_trend": "잔액 추이",
     "asset": {
-      "section_title": "부동산·연금·금",
+      "section_title": "직접 입력 자산",
       "empty": "등록된 자산이 없어요",
       "type": "자산 종류",
       "name": "이름",
@@ -294,7 +295,7 @@
     "current_price_required_message": "현재가를 입력해주세요.",
     "account_total": "계좌 총액",
     "holdings": "보유 종목",
-    "empty_holdings": "보유 종목이 없습니다",
+    "empty_holdings": "보유 종목이 없어요",
     "cumulative_realized": "누적 매매수익",
     "sell_count": "매도 {count}건",
     "realized_all_period": "전체 매도기간",
@@ -317,7 +318,7 @@
     "sell_amount": "매도금액",
     "buy_amount": "매수금액",
     "sell_history": "매도 내역",
-    "no_sell_history": "매도 내역이 없습니다",
+    "no_sell_history": "매도 내역이 없어요",
     "quantity_required": "수량을 입력해주세요",
     "price_required": "단가를 입력해주세요",
     "tx_date_required": "거래일을 입력해주세요",
@@ -351,7 +352,8 @@
     "recent_months": "최근 {count}개월",
     "mom": "전월 {pct}",
     "first_trade_empty": "아직 매매 기록이 없어요",
-    "buy_cost_label": "매입금액"
+    "buy_cost_label": "매입금액",
+    "trade_history": "매매 내역"
   },
   "transaction": {
     "list_title": "거래",
@@ -403,7 +405,8 @@
     "tx_default_label": "거래",
     "date_tx": "{month}월 {day}일 거래",
     "date_header": "{month}.{day} {weekday}",
-    "date_with_weekday": "{month}월 {day}일 ({weekday})"
+    "date_with_weekday": "{month}월 {day}일 ({weekday})",
+    "need_account": "통장을 먼저 만들어요"
   },
   "wealth": {
     "title": "자산",

@@ -35,9 +35,9 @@ export default function SubHeader({ title, back = true, right }: SubHeaderProps)
 
   return (
     <Group justify="space-between" align="center" wrap="nowrap" h={48} gap="sm">
-      <Group gap={4} align="center" wrap="nowrap" style={{ minWidth: 0, flex: 1 }}>
-        {/* 아이콘 20 · 히트 36 — 좌측 음수 마진으로 아이콘 선이 본문 좌측선(20)에 맞게 */}
-        <ActionIcon variant="subtle" color="gray" size={36} onClick={onBack} aria-label={tg("back")} ml={-8}>
+      <Group gap={0} align="center" wrap="nowrap" style={{ minWidth: 0, flex: 1 }}>
+        {/* 아이콘 20 · 히트 44(DESIGN 터치 44) — 좌측 음수 마진으로 아이콘 선이 본문 좌측선(20)에 맞게, 제목 위치는 그대로 */}
+        <ActionIcon variant="subtle" color="gray" size={44} onClick={onBack} aria-label={tg("back")} ml={-12}>
           <IconChevronLeft size={20} stroke={2} color="var(--moeum-text)" />
         </ActionIcon>
         <Title
