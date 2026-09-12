@@ -497,8 +497,6 @@
     "add": "Add",
     "delete_confirm_title": "Delete this household?",
     "delete_confirm_message": "All data in this household (accounts, transactions, holdings, categories, fixed expenses, etc.) will be deleted too. Delete anyway?",
-    "search_term": "Search",
-    "search_term_placeholder": "Search by name",
     "name": "Name",
     "name_placeholder": "e.g. My Family",
     "name_required_message": "Please enter name.",
@@ -529,6 +527,15 @@
       "this_member": "this member",
       "role_owner": "Owner",
       "role_member": "Member"
+    },
+    "row_meta": "{role} · since {date}",
+    "in_use": "In use",
+    "empty": "No ledgers yet",
+    "guide": {
+      "role_title": "Owner · member",
+      "role_body": "Only the owner can edit or delete a ledger and invite members.",
+      "switch_title": "Switching",
+      "switch_body": "Switch the ledger you use from the ledger picker at the top."
     }
   },
   "enum": {
