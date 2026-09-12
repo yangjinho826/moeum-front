@@ -272,7 +272,6 @@
     "name": "Name",
     "name_placeholder": "e.g. Rent",
     "name_required_message": "Please enter name.",
-    "amount": "Amount",
     "day_of_month": "Day of Month",
     "day_format": "Day {day}",
     "color": "Color",
@@ -283,7 +282,23 @@
     "recorded": "Recorded",
     "unrecorded": "Unrecorded",
     "count_unit": "{count}",
-    "empty": "No fixed expenses. Add recurring costs like rent or subscriptions"
+    "empty": "No fixed expenses. Add recurring costs like rent or subscriptions",
+    "category_desc": "Shown next to the item in the list",
+    "category_placeholder": "None",
+    "category_empty": "No categories yet",
+    "day_unit": "th",
+    "day_range_message": "Enter a day from 1 to 31",
+    "look_desc": "Leave empty to use the category color and icon (tap again to clear)",
+    "archived": "Archive",
+    "archived_desc": "Hidden when recording transactions. Past records stay",
+    "guide": {
+      "day_body": "Used for sorting and display. Nothing is recorded automatically on that day.",
+      "used_title": "Spent",
+      "used_body": "Pick this item when recording a transaction and it adds to that month.",
+      "delete_title": "Delete",
+      "delete_body": "Past transactions keep the fixed expense name after deletion."
+    },
+    "category": "Category"
   },
   "portfolio": {
     "period_1m": "1M",

@@ -9,7 +9,10 @@ import { USER_COLOR_PALETTE } from "_styles/palette";
 interface ColorPickerProps {
   value?: string | null;
   onChange?: (color: string) => void;
+  /** 있으면 고른 색을 다시 눌러 비운다(비움 = 다른 값을 따른다 — 고정지출은 카테고리 색) */
+  onClear?: () => void;
   label?: string;
+  description?: string;
 }
 
 /**
@@ -20,13 +23,21 @@ interface ColorPickerProps {
 export default function ColorPicker({
   value,
   onChange,
+  onClear,
   label,
+  description,
 }: ColorPickerProps) {
   const t = useTranslations("general.picker");
   const labelId = useId();
 
   return (
-    <Input.Wrapper label={label} labelElement="div" labelProps={{ id: labelId }}>
+    <Input.Wrapper
+      label={label}
+      labelElement="div"
+      labelProps={{ id: labelId }}
+      description={description}
+      inputWrapperOrder={["label", "input", "description"]}
+    >
       {/* 44 히트 안의 28 원 — 음수 마진으로 첫 원을 라벨 선에 맞춘다 */}
       <SimpleGrid
         cols={6}
@@ -43,7 +54,7 @@ export default function ColorPicker({
           return (
             <UnstyledButton
               key={c}
-              onClick={() => onChange?.(c)}
+              onClick={() => (selected && onClear ? onClear() : onChange?.(c))}
               aria-label={t("color_option", { n: i + 1 })}
               aria-pressed={selected}
               w={44}

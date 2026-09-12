@@ -7,6 +7,7 @@ import {
   createTheme,
   Drawer,
   InputWrapper,
+  Switch,
   Modal,
   Notification,
   NumberInput,
@@ -243,6 +244,13 @@ export const mantineTheme = createTheme({
           lineHeight: rem(17),
           marginBottom: rem(6),
         },
+      },
+    }),
+    // 스위치 라벨도 폼 필드 라벨과 같은 13/500 dim, 설명 12 (배치5 고정지출 "보관" — 앱의 첫 Switch)
+    Switch: Switch.extend({
+      styles: {
+        label: { fontSize: rem(13), lineHeight: rem(19), fontWeight: 500, color: "var(--moeum-text-dim)" },
+        description: { fontSize: rem(12), lineHeight: rem(17) },
       },
     }),
     TextInput: TextInput.extend({

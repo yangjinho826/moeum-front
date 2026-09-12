@@ -270,7 +270,6 @@
     "name": "이름",
     "name_placeholder": "예) 월세",
     "name_required_message": "이름을 입력해주세요.",
-    "amount": "금액",
     "day_of_month": "결제일",
     "day_format": "매월 {day}일",
     "color": "색상",
@@ -281,7 +280,23 @@
     "recorded": "기록",
     "unrecorded": "미기록",
     "count_unit": "{count}개",
-    "empty": "고정지출이 없어요. 월세·구독처럼 매달 나가는 돈을 등록해요"
+    "empty": "고정지출이 없어요. 월세·구독처럼 매달 나가는 돈을 등록해요",
+    "category_desc": "고르면 목록에 카테고리가 함께 보여요",
+    "category_placeholder": "선택 안 함",
+    "category_empty": "카테고리가 없어요",
+    "day_unit": "일",
+    "day_range_message": "1~31 사이로 입력해 주세요",
+    "look_desc": "비우면 카테고리 색·아이콘을 써요(다시 누르면 비움)",
+    "archived": "보관",
+    "archived_desc": "거래 기록할 때 선택지에서 빠져요. 지난 기록은 그대로예요",
+    "guide": {
+      "day_body": "목록 정렬·표시용이에요. 날짜가 돼도 자동으로 기록되지는 않아요.",
+      "used_title": "사용액",
+      "used_body": "거래를 기록할 때 이 항목을 고르면 그 달 사용액에 더해져요.",
+      "delete_title": "삭제",
+      "delete_body": "지워도 이미 기록한 거래엔 고정지출 이름이 남아요."
+    },
+    "category": "카테고리"
   },
   "portfolio": {
     "period_1m": "1개월",

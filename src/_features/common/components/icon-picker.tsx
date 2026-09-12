@@ -12,7 +12,10 @@ import DynamicIcon, {
 interface IconPickerProps {
   value?: string | null;
   onChange?: (icon: IconKey) => void;
+  /** 있으면 고른 아이콘을 다시 눌러 비운다 */
+  onClear?: () => void;
   label?: string;
+  description?: string;
 }
 
 /**
@@ -22,13 +25,21 @@ interface IconPickerProps {
 export default function IconPicker({
   value,
   onChange,
+  onClear,
   label,
+  description,
 }: IconPickerProps) {
   const t = useTranslations("general.picker");
   const labelId = useId();
 
   return (
-    <Input.Wrapper label={label} labelElement="div" labelProps={{ id: labelId }}>
+    <Input.Wrapper
+      label={label}
+      labelElement="div"
+      labelProps={{ id: labelId }}
+      description={description}
+      inputWrapperOrder={["label", "input", "description"]}
+    >
       <SimpleGrid
         cols={8}
         spacing={6}
@@ -41,7 +52,7 @@ export default function IconPicker({
           return (
             <UnstyledButton
               key={key}
-              onClick={() => onChange?.(key)}
+              onClick={() => (selected && onClear ? onClear() : onChange?.(key))}
               aria-label={t(`icons.${key}`)}
               aria-pressed={selected}
               h={44}
