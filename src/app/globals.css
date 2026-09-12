@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
-/* Mantine body 배경 (light-only) — Warm Ledger 크림 bg (DESIGN.md).
-   Mantine 의 selector specificity 와 매칭: :root[data-mantine-color-scheme='light'] */
-:root[data-mantine-color-scheme="light"],
-:host([data-mantine-color-scheme="light"]) {
-  --mantine-color-body: #faf6ef;
-}
+/* 표면·의미색은 전부 --moeum-* (css-variables.ts 가 스킴별로 발급). 여기서 색 정의 X */
 
 /* 모바일 PWA 골격 토큰. fixed/sticky 요소가 모두 이 토큰 참조 — magic number 일원화.
    env(safe-area-inset-*) 는 standalone 외 환경에선 0px → 항상 적용해도 무해. */
@@ -14,11 +9,13 @@
   --safe-bottom: env(safe-area-inset-bottom);
   --safe-left: env(safe-area-inset-left);
   --safe-right: env(safe-area-inset-right);
-  --app-header-h: 56px;
+  --app-header-h: 48px; /* DESIGN §5 셸 */
   --bottom-tab-h: 64px;
-  --sidebar-w: 240px;
+  --sidebar-w: 220px;
+  --content-px: 20px; /* 콘텐츠 좌우 여백 — 모바일 20 / 데스크톱 40 (DESIGN §4) */
   --container-max: 448px; /* 휴대폰 박스 */
   --z-app-header: 30;
+  --z-fab: 300; /* Drawer(200) 위 · BottomTab(500) 아래 */
   --z-bottom-tab: 500;
 }
 
@@ -29,11 +26,42 @@
   }
 }
 
-/* 데스크탑 (>= lg = 1200) — 사이드바 240 + 메인 합쳐서 1280 max */
+/* 데스크탑 (>= lg = 1200) — 사이드바 220 + 여백 40 + 판면 720 + gap 48 + 레일 320 + 여백 40 = 1388 */
 @media (min-width: 1200px) {
   :root {
-    --container-max: 1280px;
+    --container-max: 1400px;
+    --content-px: 40px;
     --bottom-tab-h: 0px; /* 데스크탑은 BottomTab 숨김 → 하단 여백 기준 0 */
+  }
+}
+
+/* 데스크톱 판면 720 + 보조 레일 320 (DESIGN §4). lg 미만은 단일 컬럼 */
+.moeum-main-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-md);
+}
+@media (min-width: 1200px) {
+  .moeum-main-rail {
+    display: grid;
+    grid-template-columns: minmax(0, 720px) minmax(0, 320px);
+    column-gap: 48px;
+    align-items: start;
+  }
+}
+
+/* HeroAmount 큰 숫자 — 모바일 44 / 데스크톱 60 (DESIGN §3) */
+/* Mantine Text(.mantine-Text-root, 단일 클래스)가 나중에 로드돼 font-size 를 덮는다 → 2클래스 선택자로 우선 */
+.moeum-mono.moeum-hero-amount {
+  font-size: 44px;
+  line-height: 48px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+@media (min-width: 1200px) {
+  .moeum-mono.moeum-hero-amount {
+    font-size: 60px;
+    line-height: 64px;
   }
 }
 
@@ -45,7 +73,7 @@
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
-  background: #faf6ef;
+  background: var(--moeum-bg);
 }
 @media (min-width: 1200px) {
   .user-shell-wrap {
@@ -79,9 +107,11 @@ body {
   min-height: 100dvh;
 }
 
-/* iOS PWA 의 pull-to-refresh / overscroll bounce 차단 — 네이티브 앱 느낌 */
+/* iOS PWA 의 pull-to-refresh / overscroll bounce 차단 — 네이티브 앱 느낌.
+   양옆 거터는 박스(--moeum-bg)보다 한 단계 눌린 면 */
 body {
   overscroll-behavior-y: contain;
+  background: var(--moeum-surface-2);
 }
 
 /* 글로벌 타이포 — Pretendard + 한글 본문 표준 자간/행간.
@@ -89,9 +119,9 @@ body {
    tnum 으로 가계부 금액 자릿수 정렬. */
 html {
   font-family:
-    Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-feature-settings: "tnum" on;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -106,9 +136,17 @@ small,
   letter-spacing: 0;
 }
 
-/* 브랜드 워드마크 — 세리프(Noto Serif KR). DESIGN.md: 세리프는 브랜드명/로고에만. */
+/* 브랜드 워드마크 — Pretendard 800, accent (DESIGN.md §5 셸). 세리프 없음 */
 .brand-wordmark {
-  font-family: "Noto Serif KR", Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--moeum-accent);
+}
+
+/* 금액·날짜·라벨 — Geist Mono tabular (DESIGN.md §3) */
+.moeum-mono {
+  font-family: var(--mantine-font-family-monospace);
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0;
 }
 
@@ -122,5 +160,93 @@ small,
 @media (min-width: 768px) {
   .stat-amount {
     font-size: 18px;
+  }
+}
+
+/* ListRow press — 배경 surface-2 즉시 (DESIGN.md §6). hover 는 150ms */
+.moeum-row-press {
+  transition: background-color 150ms ease-out;
+}
+.moeum-row-press:hover {
+  background-color: var(--moeum-surface-2);
+}
+.moeum-row-press:active {
+  background-color: var(--moeum-surface-2);
+  transition: none;
+}
+
+/* 컴팩트 hero(투자 평가금액) 28 */
+.moeum-mono.moeum-hero-amount-compact {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* 12개월 추이 차트 — 모바일 140 / 데스크톱 200 (Figma invest 25:198) */
+.moeum-chart {
+  height: 140px;
+}
+@media (min-width: 1200px) {
+  .moeum-chart {
+    height: 200px;
+  }
+}
+
+/* 홈 추이선 — 모바일 44 / 데스크톱 판면 120 (DESIGN.md §5 Sparkline) */
+.moeum-spark {
+  height: 58px; /* 44 + 위아래 14 */
+}
+/* Sparkline 탭 가능한 점 — hover/포커스 시 4px accent (recharts activeDot 대신, 클릭 히트영역 유지) */
+.moeum-spark-dot {
+  cursor: pointer;
+}
+.moeum-spark-dot:hover circle:last-child,
+.moeum-spark-dot:focus-visible circle:last-child {
+  r: 4;
+  fill: var(--moeum-accent);
+}
+.moeum-spark-dot:focus-visible {
+  outline: none;
+}
+@media (min-width: 1200px) {
+  .moeum-spark {
+    height: 134px;
+  }
+}
+
+/* .moeum-mono 의 letter-spacing:0 이 hero 자간을 덮지 않게 — 결합 선택자로 우선 */
+
+/* StatGrid 금액 — 390 에서 3열 셀(~106px)에 11자리가 들어가게 뷰포트 비례, lg 부터 18 고정 */
+.moeum-mono.moeum-stat-value {
+  font-size: clamp(13px, 4vw, 18px);
+}
+@media (min-width: 1200px) {
+  .moeum-mono.moeum-stat-value {
+    font-size: 18px;
+  }
+}
+
+/* FAB 시각 40 · 터치 48 (DESIGN.md §4 터치 44 이상) */
+.moeum-fab::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+/* 키보드 포커스 — UnstyledButton 행·링크·점 (Mantine 컴포넌트는 자체 링 유지) */
+.moeum-row-press:focus-visible,
+.moeum-fab:focus-visible {
+  outline: 2px solid var(--moeum-accent);
+  outline-offset: 2px;
+}
+
+/* DESIGN.md §6 — 모션은 피드백용. 줄이기 설정이면 전부 즉시 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
