@@ -41,6 +41,8 @@ export default function FormSheet({
       position="bottom"
       size="auto"
       withCloseButton={false}
+      // 본문 좌우 20 = 모바일 콘텐츠 여백과 같게(Figma 시트 46:451 패딩 20, DESIGN §4). Mantine 기본 md 는 12
+      padding={20}
       classNames={{ inner: "moeum-sheet-inner", content: "moeum-sheet-content" }}
       styles={{
         // size="auto" 여도 Mantine --drawer-height 가 최대 높이로 풀려 푸터 아래 빈칸 → 내용 높이로(Figma 46:451)
@@ -53,7 +55,7 @@ export default function FormSheet({
         <Box w={40} h={4} style={{ borderRadius: 2, background: "var(--moeum-hair)" }} />
       </Group>
 
-      <Group justify="space-between" align="center" wrap="nowrap" px="xs" pb="xs">
+      <Group justify="space-between" align="center" wrap="nowrap" pb="xs">
         {/* Drawer.Title = h2 + 다이얼로그 aria-labelledby 자동 연결(스크린리더가 시트 이름을 읽음) */}
         <Drawer.Title fw={800} c="var(--moeum-text)" style={{ fontSize: 16, lineHeight: "24px", letterSpacing: "-0.03em" }}>
           {title}

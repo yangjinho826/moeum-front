@@ -136,13 +136,6 @@ small,
   letter-spacing: 0;
 }
 
-/* 브랜드 워드마크 — Pretendard 800, accent (DESIGN.md §5 셸). 세리프 없음 */
-.brand-wordmark {
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--moeum-accent);
-}
-
 /* 금액·날짜·라벨 — Geist Mono tabular (DESIGN.md §3) */
 .moeum-mono {
   font-family: var(--mantine-font-family-monospace);

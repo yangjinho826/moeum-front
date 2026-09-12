@@ -49,9 +49,11 @@ export default function AppHeader() {
           marginTop: "calc(var(--mantine-spacing-lg) * -1)",
         }}
       >
+        {/* 브랜드 accent 800(DESIGN §5 셸) — Mantine Text 기본 굵기·색이 클래스보다 우선이라 props 로 */}
         <Text
-          className="brand-wordmark"
-          style={{ fontSize: 15, lineHeight: "20px" }}
+          fw={800}
+          c="var(--moeum-accent)"
+          style={{ fontSize: 15, lineHeight: "20px", letterSpacing: "-0.03em" }}
         >
           {ta("brand_name")}
         </Text>

@@ -52,6 +52,8 @@ export interface ListRowProps {
   chevron?: boolean;
   /** 52px 터치 주요 행(기본 46) */
   tall?: boolean;
+  /** 행 끝 보조 행동(멤버 "내보내기" 등). 행 자체가 누를 수 없을 때만 — 버튼 안 버튼 금지 */
+  action?: ReactNode;
   /** 마지막 행이면 하단 구분선 생략 */
   last?: boolean;
   href?: string;
@@ -78,6 +80,7 @@ export default function ListRow({
   bar,
   chevron = false,
   tall = false,
+  action,
   last = false,
   href,
   onClick,
@@ -206,6 +209,7 @@ export default function ListRow({
         {chevron && (
           <IconChevronRight size={18} stroke={2} color="var(--moeum-text-dim)" />
         )}
+        {!interactive && action}
       </Group>
     </Group>
   );

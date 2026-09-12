@@ -60,7 +60,7 @@ export function SidebarNav() {
         {/* 앱 브랜드 마크 */}
         <Group gap={8} px={8} pt={2} pb={20} wrap="nowrap">
           <BrandLogo size={28} />
-          <Text className="brand-wordmark" style={{ fontSize: 18, lineHeight: "24px" }}>
+          <Text fw={800} c="var(--moeum-accent)" style={{ fontSize: 18, lineHeight: "24px", letterSpacing: "-0.03em" }}>
             {ta("brand_name")}
           </Text>
         </Group>

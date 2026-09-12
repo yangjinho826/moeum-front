@@ -103,10 +103,11 @@ export default function FormActions({
         zIndex: 1,
         // 시트·모달 표면(surface)과 같은 색 — 스크롤되는 필드가 버튼 뒤로 비치지 않게
         background: "var(--moeum-surface)",
-        marginInline: "calc(var(--mantine-spacing-md) * -1)",
+        // 좌우는 시트 본문 패딩(--mb-padding = FormSheet padding 20)만큼 파고들어 표면 끝까지 덮는다
+        marginInline: "calc(var(--mb-padding, var(--mantine-spacing-md)) * -1)",
         marginBottom: "calc(var(--mantine-spacing-md) * -1)",
         padding:
-          "var(--mantine-spacing-sm) var(--mantine-spacing-md) var(--mantine-spacing-md)",
+          "var(--mantine-spacing-sm) var(--mb-padding, var(--mantine-spacing-md)) var(--mantine-spacing-md)",
       }}
     >
       {buttons}
