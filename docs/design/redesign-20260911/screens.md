@@ -10,10 +10,10 @@
 | invest/portfolio/[portfolioId] | /invest/portfolio/[portfolioId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 45:130 | f499775 | invest-portfolio.jpg·invest-portfolio-desktop.jpg |
 | transactions/new | /transactions/new | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:451 | 03e493f | transactions-new.jpg(시트 · 데스크톱 모달 560 DOM 실측) |
 | wealth | /wealth | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:195 | c501efc | wealth.jpg·wealth-desktop.jpg |
-| account | /account | P2 | 3 | → /wealth 리다이렉트(배치3 S3 사용자 결정 — 들어오는 링크 0, 자산 화면 통장 섹션과 중복) | ⏭ | | |
-| account/[accountId] | /account/[accountId] | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
-| account/[accountId]/edit | /account/[accountId]/edit | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
-| account/new | /account/new | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
+| account | /account | P2 | 3 | → /wealth 리다이렉트(배치3 S3 사용자 결정 — 들어오는 링크 0, 자산 화면 통장 섹션과 중복) | ⏭ | d50f0b4 | ⏭ |
+| account/[accountId] | /account/[accountId] | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | 58:383 | 67340e3 | account-detail.jpg·account-detail-desktop.jpg |
+| account/[accountId]/edit | /account/[accountId]/edit | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | 60:249 | e06f89f | account-edit.jpg(시트 · 삭제 좌측) |
+| account/new | /account/new | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | 60:77 | e06f89f | account-new-desktop.jpg(페이지 모드 560) |
 | category | /category | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | | | |
 | category/[categoryId] | /category/[categoryId] | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | | | |
 | category/new | /category/new | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | | | |

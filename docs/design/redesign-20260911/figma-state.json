@@ -1,8 +1,8 @@
 {
   "runId": "ds-moeum-redesign-20260911",
   "fileKey": "j1xaab6icKdvERz6SbU6E0",
-  "phase": "S4 batch2 Figma 4/4 done",
-  "step": "next: S5 batch2",
+  "phase": "S4 batch3 Figma 4/4 done",
+  "step": "next: S5 batch3",
   "decisions": {
     "fontSans": "Noto Sans KR (Pretendard 대역)",
     "fontMono": "Geist Mono",
@@ -21,7 +21,8 @@
     "pages": {
       "Page 1": "0:1",
       "배치1 · 390": "10:2",
-      "배치2 · 390": "41:364"
+      "배치2 · 390": "41:364",
+      "배치3 · 390": "58:382"
     },
     "styles": {
       "Shadow/Modal": "S:bc7a6b3b4e1a4c2a109bfee86b9af6b170d4f316,",
@@ -50,7 +51,11 @@
       "invest/account": "41:365",
       "invest/portfolio": "45:130",
       "transactions/new": "46:451",
-      "wealth": "46:195"
+      "wealth": "46:195",
+      "account/[accountId]": "58:383",
+      "account/new": "60:77",
+      "account/[accountId]/edit": "60:249",
+      "trade-sheet(매수)": "61:115"
     }
   },
   "completedSteps": [
