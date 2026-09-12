@@ -20,6 +20,10 @@ CSS = CSS + """
 .guide{font-size:12px;color:var(--dim);line-height:1.6;padding:8px 0 4px}
 .chev2{color:var(--dim);display:flex}
 .r,.sec,.month,.hero,.chips,.guide{flex-shrink:0}
+.gd{padding:10px 0;border-bottom:1px solid var(--hair2)}
+.gd:last-child{border-bottom:0}
+.gd b{display:block;font-size:13px;font-weight:700;margin-bottom:4px}
+.gd span{display:block;font-size:12px;color:var(--dim);line-height:1.6}
 """
 
 def glyph(i, color):
@@ -93,6 +97,20 @@ fx_d_col = "\n".join([sub_hdr("고정지출", "추가"), MONTH, FX_HERO_D, '<div
 fx_d_rail = "\n".join(['<div class="hr"></div>', sec("9월", ""), irow("예정 합계", v="926,900", chev=False),
                        irow("사용 합계", v="792,000", chev=False), irow("미기록", v="2개", vcls="dim", chev=False)])
 
+# ---------- 폼 페이지 모드(fallback 라우트) — 앱 격자 그대로: 좌 720 폼 · 우 320 도움말 ----------
+def guide_rail(items):
+    return '<div class="hr"></div>' + sec("도움말", "") + "".join(f'<div class="gd"><b>{t}</b><span>{b}</span></div>' for t, b in items)
+cat_page_d = desk(sub_hdr("카테고리 추가") + cat_form_new.replace('class="foot3"', 'class="foot3 page"'),
+                  guide_rail([("분류", "지출 · 수입 중 하나. 거래를 기록할 때 이 분류의 카테고리만 보여요."),
+                              ("정렬", "숫자가 작을수록 목록 위에 보여요. 같으면 추가한 순서."),
+                              ("삭제", "거래나 고정지출이 연결된 카테고리는 삭제할 수 없어요.")]), "내정보")
+acc_form_page = (text_field("이름", "예: 국민 급여통장", dim=True) + seg_field("유형", ["생활", "적립", "투자"], 0)
+                 + num("시작 잔액", '<span class="dim">0</span>') + swatches(0) + icons(0) + foot("추가", page=True))
+acc_page_d = desk(sub_hdr("통장 추가") + acc_form_page,
+                  guide_rail([("유형", "생활 = 매일 쓰는 입출금 · 적립 = 예적금·비상금 · 투자 = 증권 계좌(종목은 투자 탭에서)."),
+                              ("시작 잔액", "기록을 시작하는 날의 잔액이에요. 이후 잔액은 거래로 계산돼요."),
+                              ("삭제", "거래나 종목이 있는 통장은 삭제할 수 없어요.")]), "홈")
+
 # ---------- 상태 ----------
 states = "\n".join([hdr_home(), hdr_title("배치4 상태"),
     '<div class="statebox"><div class="h">빈 — 카테고리 0</div>' + sub_hdr("카테고리", "추가") + '<div class="empty">카테고리가 없어요 <a>추가</a></div></div>',
@@ -114,6 +132,8 @@ FILES = {
     "States.dc.html": phone(states, "내정보", fab=False).replace('<div class="phone">', '<div class="phone" style="height:1080px">', 1),
     "CategoryDesktop.dc.html": desk(cat_d_col, cat_d_rail, "내정보"),
     "FixedDesktop.dc.html": desk(fx_d_col, fx_d_rail, "내정보"),
+    "CategoryPageDesktop.dc.html": cat_page_d,
+    "AccountPageDesktop.dc.html": acc_page_d,
 }
 for name, html in FILES.items():
     (OUT / name).write_text(html, encoding="utf-8")
@@ -123,11 +143,11 @@ mob = ["Main.dc.html", "CategoryChips.dc.html", "CategorySheet.dc.html", "Catego
 titles = {"Main.dc.html": "category · A 섹션 + 아이콘(추천)", "CategoryChips.dc.html": "category · B 칩 필터 + 점",
           "CategorySheet.dc.html": "category/new · 시트", "CategorySheetEdit.dc.html": "category/[id] · 시트(삭제 좌측)",
           "Fixed.dc.html": "fixed · 390", "States.dc.html": "상태"}
-desks = ["CategoryDesktop.dc.html", "FixedDesktop.dc.html"]
-dtitles = {"CategoryDesktop.dc.html": "category · 1440", "FixedDesktop.dc.html": "fixed · 1440"}
+desks = ["CategoryDesktop.dc.html", "FixedDesktop.dc.html", "CategoryPageDesktop.dc.html", "AccountPageDesktop.dc.html"]
+dtitles = {"CategoryDesktop.dc.html": "category · 1440", "FixedDesktop.dc.html": "fixed · 1440", "CategoryPageDesktop.dc.html": "category/new 페이지 모드 · 1440(좌 폼 · 우 도움말)", "AccountPageDesktop.dc.html": "account/new 페이지 모드 · 1440(배치3 가운데 정렬 대체)"}
 canvas = {"artboards": [{"file": f, "x": i * (W + GX), "y": 0, "w": W, "h": 1080 if f == "States.dc.html" else H, "title": titles[f]} for i, f in enumerate(mob)]
-          + [{"file": f, "x": i * (DW + GX), "y": 1080 + GY, "w": DW, "h": DH, "title": dtitles[f]} for i, f in enumerate(desks)],
-          "annotations": [{"id": "pick4", "x": 0, "y": -200, "w": 620, "text": "배치4 handoff — 가설 A+C 확장. 관리 화면 2개(카테고리 · 고정지출) + 카테고리 시트. 카드·아이콘 박스·분류 배지 제거, 헤더는 SubHeader + 추가. 고를 것: 카테고리 목록 A(지출·수입 섹션 + 18px 아이콘, 추천) vs B(칩 필터 + 색 점). 고정지출 = 이번 달 사용 합계 hero + 행마다 예정 금액. 관리 화면에서 내정보 탭 활성."}],
+          + [{"file": f, "x": (i % 2) * (DW + GX), "y": 1080 + GY + (i // 2) * (DH + GY), "w": DW, "h": DH, "title": dtitles[f]} for i, f in enumerate(desks)],
+          "annotations": [{"id": "pick4", "x": 0, "y": -200, "w": 620, "text": "배치4 handoff — 가설 A+C 확장. 관리 화면 2개(카테고리 · 고정지출) + 카테고리 시트. 카드·아이콘 박스·분류 배지 제거, 헤더는 SubHeader + 추가. 고를 것: 카테고리 목록 A(지출·수입 섹션 + 18px 아이콘, 추천) vs B(칩 필터 + 색 점). 고정지출 = 이번 달 사용 합계 hero + 행마다 예정 금액. 관리 화면에서 내정보 탭 활성. 폼 페이지 모드(fallback)는 앱 격자 그대로 좌 폼 · 우 도움말(배치3 가운데 정렬을 대체, 사용자 피드백). pick = A."}],
           "launch": {"view": "canvas"}}
 (OUT / "canvas.json").write_text(json.dumps(canvas, ensure_ascii=False, indent=2), encoding="utf-8")
 print("ok", len(FILES))
