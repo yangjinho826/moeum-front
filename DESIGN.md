@@ -66,6 +66,8 @@
 - 색은 **금액 텍스트와 ▲▼ 부호**에만. 행 배경·아이콘 박스를 물들이지 않는다.
 - 5계열(세이지·초록·테라코타·빨강·파랑)이 전부 다른 색상이라 한 화면에 섞여도 충돌 없음 — 이전 `danger` 3중 사용(지출·상승·감소)을 없애는 규칙.
 - `profitColor()` → up/down. `DeltaPill variant="asset"`(up/down) / `"ledger"`(income/expense).
+- **0 은 방향이 없다 → dim.** 수입·지출·고정지출 합계가 0 이면 의미색 대신 `--moeum-text-dim` (`amountColor(value, color)`, 부호 있는 값은 `signColor`). 개별 거래 행은 0 이 없어 해당 없음 (배치3 H-306).
+- 알림(`notifications.show`)·확인 모달도 의미색만: 성공 `positive` · 실패·삭제 확인 `danger`. 팔레트 이름(`red`·`green`·`blue`) 금지, 매수/매도 성공도 `positive`(방향 색은 세그먼트 글자에만) (배치3 H-309).
 
 ### 2-4. 차트
 | 변수 | 라이트 | 다크 | 용도 |
@@ -107,11 +109,11 @@
 | `StatRow` | "왜 늘었나" 2행: 제목/메타 + 우측 금액 + 2px 기여 막대(accent / up) |
 | `Sparkline` | 44px, 축 없음, 1.5px 선, 마지막 점 강조(탭 가능하면 각 점 2px) |
 | 필터 칩 | 활성 = accent 텍스트 + 하단 2px 언더라인(배경 채움 없음). 히트 ≥32 |
-| 세그먼트 | Mantine SegmentedControl 그대로 — 트랙 surface-2 + 인디케이터 surface(채움). 화면 전환(목록/달력·화면 모드)에만, 필터에는 칩 (S6 D-5 결정) |
+| 세그먼트 | Mantine SegmentedControl — 트랙 surface-2 + 인디케이터 surface(채움). **기본 높이 44**(테마: 라벨 8·20·8 + 트랙 4, size 미지정일 때만 — 배치3 H-301). 헤더 안 보기 전환(거래 목록/달력)만 `size="xs"` 30. 화면 전환(목록/달력·화면 모드)과 폼 선택지 3개 이하에, 필터에는 칩 (S6 D-5 결정) |
 | 셸 | 모바일 헤더 48(브랜드 accent 15/800 · 우측 모노 기준일 · 가계부 pill) · 탭바 64(bg 배경 · 상단 hair · 활성 accent) · `＋ 기록` 8px 라운드 accent 버튼 40px(탭바 위 우측, 홈·거래) / 데스크톱 사이드바 220(활성 = accent-soft 배경 + accent 텍스트, 하단 "기록하기") |
 | 시트 · 모달 | 바텀시트 448 · 상단 16 · 핸들 40×4 hair / 데스크톱 모달 560(같은 Drawer 를 CSS `@media` 로 가운데), surface 배경, 높이는 내용에 맞춤(최대 90dvh, 넘치면 안에서 스크롤 + 푸터 sticky). 제목은 `Drawer.Title`(다이얼로그 이름). **시트가 탭바를 덮는다** — z: 헤더 30 < FAB 150 < 탭바 190 < Drawer/Modal 200 < 드롭다운 300·1100 (배치2 S6 B-3) |
 | 상태 | 로딩 = `SectionSkeleton`(페이지 `hero rows={3}` · 보조 섹션 `rows`/`chart`, 실제 레이아웃 모양) · 에러 = 보조 섹션은 `SectionBoundary`(섹션 제목 + "불러오지 못했어요 · 다시 시도"), 화면 주 쿼리는 (user)/error.tsx · 빈 = `EmptyText`(문장 "~어요" + 행동 링크) |
-| 폼 필드 | filled surface-2 · 높이 44 · 라운드 8. 라벨 13/500 dim(설명 12 보다 커야 함 — 배치2 S5 피드백으로 11→13), 금액 입력만 모노 28 · 높이 56. 세그먼트에 `color` 채움 금지(흰 인디케이터 위 흰 글자) → 의미색은 라벨 글자에. 숫자 입력은 상태 0 이어도 빈 칸 + placeholder `0`, 단위(원·주)는 우측 dim 13. 선택지 3개 이하는 Select 대신 세그먼트. 색 선택 = 원 28(히트 44) · 6열 · 선택 본문색 2px 링은 box-shadow(outline 은 키보드 포커스 몫, 팔레트는 `palette.ts` `USER_COLOR_PALETTE` — 저장되는 데이터), 아이콘 선택 = 8열 · 높이 44 · 선택 accent-soft + accent 2px 안쪽 테두리. 묶음은 `role=group` + 라벨 연결. 페이지 모드(fallback 라우트) 폼은 Card 없이 폭 560 (배치3) |
+| 폼 필드 | filled surface-2 · 높이 44 · 라운드 8. 라벨 13/500 dim(설명 12 보다 커야 함 — 배치2 S5 피드백으로 11→13), 금액 입력만 모노 28 · 높이 56. 세그먼트에 `color` 채움 금지(흰 인디케이터 위 흰 글자) → 의미색은 라벨 글자에. 숫자 입력은 상태 0 이어도 빈 칸 + placeholder `0`, 단위(원·주)는 우측 dim 13. 선택지 3개 이하는 Select 대신 세그먼트. 색 선택 = 원 28(히트 44) · 6열 · 선택 본문색 2px 링은 box-shadow(outline 은 키보드 포커스 몫, 팔레트는 `palette.ts` `USER_COLOR_PALETTE` — 저장되는 데이터), 아이콘 선택 = 8열 · 높이 44 · 선택 accent-soft + accent 2px 안쪽 테두리. 묶음은 `role=group` + 라벨 연결. 페이지 모드(fallback 라우트) 폼은 Card 없이 폭 560 · **본문 가운데**(좌측 붙이면 1440 에서 오른쪽 절반이 비어 쏠려 보임 — 배치3 S6 피드백) |
 | 버튼 | filled = accent + `on-accent`(라이트 흰 / 다크 딥브라운), outline = hair 테두리, subtle = accent 텍스트. 높이 36/44/52. 삭제 = subtle `danger` — 폼 푸터 **좌측** auto 폭, 취소·저장과 한 줄(`FormActions`, 배치3). 글자색은 `--mantine-color-danger-text`(다크 primaryShade 4 에서 Mantine light-color 가 danger.0 로 풀림), 비활성은 배경 투명(`.moeum-remove-action`). 기록·저장 버튼은 매수/매도여도 accent(의미색은 세그먼트 글자에만). 아이콘 버튼 히트 44 |
 
 ## 6. 모션
