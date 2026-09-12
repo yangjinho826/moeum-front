@@ -291,6 +291,7 @@
     "look_desc": "Leave empty to use the category color and icon (tap again to clear)",
     "archived": "Archive",
     "archived_desc": "Hidden when recording transactions. Past records stay",
+    "archived_title": "Archived",
     "guide": {
       "day_body": "Used for sorting and display. Nothing is recorded automatically on that day.",
       "used_title": "Spent",
@@ -298,8 +299,7 @@
       "delete_title": "Delete",
       "delete_body": "Past transactions keep the fixed expense name after deletion."
     },
-    "category": "Category",
-    "archived_title": "Archived"
+    "category": "Category"
   },
   "portfolio": {
     "period_1m": "1M",
@@ -501,7 +501,6 @@
     "name_placeholder": "e.g. My Family",
     "name_required_message": "Please enter name.",
     "description": "Description",
-    "currency": "Currency",
     "started_at": "Started at",
     "member_count": "{count} members",
     "switcher_title": "Select household",
@@ -531,11 +530,18 @@
     "row_meta": "{role} · since {date}",
     "in_use": "In use",
     "empty": "No ledgers yet",
+    "started_at_desc": "The day you started recording — for display",
+    "description_placeholder": "Optional — who shares it and what for",
     "guide": {
       "role_title": "Owner · member",
       "role_body": "Only the owner can edit or delete a ledger and invite members.",
       "switch_title": "Switching",
-      "switch_body": "Switch the ledger you use from the ledger picker at the top."
+      "switch_body": "Switch the ledger you use from the ledger picker at the top.",
+      "book_title": "Ledger",
+      "book_body": "A separate book of accounts, transactions and categories. You can share it with members.",
+      "started_body": "The day you started recording. Display only — not used in calculations.",
+      "delete_title": "Delete",
+      "delete_body": "Only the owner can delete it, and all of its data is deleted with it."
     }
   },
   "enum": {

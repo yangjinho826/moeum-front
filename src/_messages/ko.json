@@ -289,6 +289,7 @@
     "look_desc": "비우면 카테고리 색·아이콘을 써요(다시 누르면 비움)",
     "archived": "보관",
     "archived_desc": "거래 기록할 때 선택지에서 빠져요. 지난 기록은 그대로예요",
+    "archived_title": "보관",
     "guide": {
       "day_body": "목록 정렬·표시용이에요. 날짜가 돼도 자동으로 기록되지는 않아요.",
       "used_title": "사용액",
@@ -296,8 +297,7 @@
       "delete_title": "삭제",
       "delete_body": "지워도 이미 기록한 거래엔 고정지출 이름이 남아요."
     },
-    "category": "카테고리",
-    "archived_title": "보관"
+    "category": "카테고리"
   },
   "portfolio": {
     "period_1m": "1개월",
@@ -499,7 +499,6 @@
     "name_placeholder": "예) 우리 가족",
     "name_required_message": "이름을 입력해주세요.",
     "description": "설명",
-    "currency": "통화",
     "started_at": "시작일",
     "member_count": "{count}명",
     "switcher_title": "가계부 선택",
@@ -529,11 +528,18 @@
     "row_meta": "{role} · {date} 시작",
     "in_use": "사용 중",
     "empty": "가계부가 없어요",
+    "started_at_desc": "기록을 시작한 날이에요 — 표시용",
+    "description_placeholder": "선택 — 누구와 무엇을 모으는지",
     "guide": {
       "role_title": "소유자 · 멤버",
       "role_body": "가계부 수정·삭제와 멤버 초대는 소유자만 할 수 있어요.",
       "switch_title": "전환",
-      "switch_body": "쓰는 가계부는 상단 가계부 선택에서 바꿔요."
+      "switch_body": "쓰는 가계부는 상단 가계부 선택에서 바꿔요.",
+      "book_title": "가계부",
+      "book_body": "통장·거래·카테고리를 따로 모으는 장부예요. 멤버와 함께 쓸 수 있어요.",
+      "started_body": "기록을 시작한 날이에요. 표시용이라 계산엔 쓰지 않아요.",
+      "delete_title": "삭제",
+      "delete_body": "소유자만 지울 수 있고, 가계부의 모든 데이터가 함께 지워져요."
     }
   },
   "enum": {

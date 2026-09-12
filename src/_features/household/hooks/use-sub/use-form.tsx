@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { useHouseholdMutations } from "_features/household/queries/use-mutations";
 import { getErrorMessage } from "_libraries/fetch/error-message";
+import { todayIsoKst } from "_utilities/datetime";
 
 import { useHouseholdDetail as useHouseholdDetailQuery } from "../../queries/use-query";
 import type {
@@ -37,7 +38,8 @@ export function useHouseholdForm({
 
   const isUpdate = Boolean(householdId);
 
-  const todayDate = new Date().toISOString().slice(0, 10);
+  // KST 오늘 — toISOString 은 UTC 라 자정~오전 9시엔 어제가 된다(온보딩과 같은 유틸)
+  const todayDate = todayIsoKst();
 
   const form = useForm<HouseholdCreateRequest>({
     initialValues: {

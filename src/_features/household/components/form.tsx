@@ -35,30 +35,32 @@ export default function HouseholdForm({
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Stack gap="sm">
+      {/* 간격 14 — 폼 공통 리듬 (DESIGN §5) · 순서 = Figma 73:541. 통화는 앱 전체가 원 단위라 받지 않는다(생성 기본 KRW, 배치5 결정) */}
+      <Stack gap={14}>
         <TextInput
           {...form.getInputProps("name")}
           label={t("name")}
           placeholder={t("name_placeholder")}
+          data-autofocus={isUpdate ? undefined : true}
         />
         <Textarea
           {...form.getInputProps("description")}
+          // 서버 값 null 을 그대로 넘기면 uncontrolled 경고(배치3 H-307)
+          value={form.values.description ?? ""}
           label={t("description")}
+          placeholder={t("description_placeholder")}
           autosize
           minRows={2}
-        />
-        <TextInput
-          {...form.getInputProps("currency")}
-          label={t("currency")}
-          placeholder="KRW"
         />
         <DateInput
           value={form.values.startedAt || null}
           onChange={(value) => form.setFieldValue("startedAt", value ?? "")}
           error={form.errors.startedAt}
           label={t("started_at")}
-          placeholder="YYYY-MM-DD"
-          valueFormat="YYYY-MM-DD"
+          description={t("started_at_desc")}
+          inputWrapperOrder={["label", "input", "description", "error"]}
+          placeholder="YYYY.MM.DD"
+          valueFormat="YYYY.MM.DD"
         />
         <FormActions
           submitLabel={isUpdate ? tg("update") : tg("create")}
