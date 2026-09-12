@@ -1,10 +1,14 @@
 "use client";
 
-import { Card, Group, Stack, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
+import Section from "_features/common/components/section";
 import { useAccountSnapshotYearly } from "_features/account-snapshot/queries/use-query";
 import { useMonthLabel } from "_features/common/hooks/use-month-label";
+import { semanticColor, signColor } from "_styles/semantic-color";
+import { fmtSignedPct } from "_utilities/fmt";
 
 import ValueTrendChart, { type TrendPoint } from "./value-trend-chart";
 
@@ -13,13 +17,11 @@ interface Props {
   title?: string;
 }
 
-// 계좌 상세 — 그 통장의 월별 잔액(balance) 추이.
+// 계좌 상세 — 그 통장의 월별 잔액(balance) 추이 (Section, 카드 없음 — QA D-1).
 // 데이터는 account_snapshots(전 계좌 박제) 에서 이 계좌만 추출 → hero 잔액과 일치.
 // 투자계좌는 balance = 현금+평가, 일반 통장은 통장 잔액.
-export default function AccountBalanceTrend({
-  accountId,
-  title = "자산 추이",
-}: Props) {
+export default function AccountBalanceTrend({ accountId, title }: Props) {
+  const t = useTranslations("portfolio");
   const monthLabel = useMonthLabel();
   const { data } = useAccountSnapshotYearly();
   const months = data.body.data.months;
@@ -30,13 +32,9 @@ export default function AccountBalanceTrend({
       months
         .map((m) => {
           const acc = m.accounts.find((a) => a.accountId === accountId);
-          return acc
-            ? { snapshotDate: m.snapshotDate, balance: acc.balance }
-            : null;
+          return acc ? { snapshotDate: m.snapshotDate, balance: acc.balance } : null;
         })
-        .filter(
-          (x): x is { snapshotDate: string; balance: number } => x !== null,
-        ),
+        .filter((x): x is { snapshotDate: string; balance: number } => x !== null),
     [months, accountId],
   );
 
@@ -44,13 +42,8 @@ export default function AccountBalanceTrend({
     () =>
       balances.map((b, i) => {
         const prev = i > 0 ? (balances[i - 1]?.balance ?? null) : null;
-        const momPct =
-          prev && prev > 0 ? ((b.balance - prev) / prev) * 100 : null;
-        return {
-          month: monthLabel(b.snapshotDate),
-          value: b.balance,
-          momPct,
-        };
+        const momPct = prev && prev > 0 ? ((b.balance - prev) / prev) * 100 : null;
+        return { month: monthLabel(b.snapshotDate), value: b.balance, momPct };
       }),
     [balances, monthLabel],
   );
@@ -59,8 +52,7 @@ export default function AccountBalanceTrend({
   const periodPct = useMemo(() => {
     const first = balances[0]?.balance;
     const last = balances[balances.length - 1]?.balance;
-    if (!first || first <= 0 || last === undefined || balances.length < 2)
-      return null;
+    if (!first || first <= 0 || last === undefined || balances.length < 2) return null;
     return ((last - first) / first) * 100;
   }, [balances]);
 
@@ -68,27 +60,26 @@ export default function AccountBalanceTrend({
   if (trend.length < 2) return null;
 
   return (
-    // 툴팁 세로 이탈(allowEscapeViewBox) 허용 — 카드가 잘라내지 않게
-    <Card radius="xl" p="md" style={{ overflow: "visible" }}>
-      <Stack gap={6}>
-        <Group justify="space-between" align="center" px={4}>
-          <Text size="xs" fw={500} c="dimmed">
-            {title}
+    <Section
+      title={title ?? t("balance_trend")}
+      right={
+        periodPct !== null ? (
+          <Text
+            className="moeum-mono"
+            fw={600}
+            style={{
+              fontSize: 11,
+              lineHeight: "16px",
+              letterSpacing: "0.06em",
+              color: semanticColor(signColor(periodPct, "asset")),
+            }}
+          >
+            {t("recent_months", { count: trend.length })} {fmtSignedPct(periodPct, 1)}
           </Text>
-          {periodPct !== null && (
-            <Text
-              size="xs"
-              fw={700}
-              c={periodPct >= 0 ? "positive.6" : "danger.5"}
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              최근 {trend.length}개월 {periodPct >= 0 ? "+" : "−"}
-              {Math.abs(periodPct).toFixed(1)}%
-            </Text>
-          )}
-        </Group>
-        <ValueTrendChart data={trend} />
-      </Stack>
-    </Card>
+        ) : null
+      }
+    >
+      <ValueTrendChart data={trend} />
+    </Section>
   );
 }

@@ -44,11 +44,10 @@ function TrendTooltip({
   return (
     <div
       style={{
-        background: "var(--mantine-color-body)",
-        border: "1px solid var(--mantine-color-gray-2)",
-        borderRadius: 10,
+        background: "var(--moeum-surface)",
+        border: "1px solid var(--moeum-hair)",
+        borderRadius: "var(--mantine-radius-md)",
         padding: "8px 12px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
       }}
     >
       <Text size="xs" c="dimmed" fw={600}>
@@ -61,8 +60,7 @@ function TrendTooltip({
         <Text
           size="xs"
           fw={700}
-          c={p.momPct >= 0 ? "positive.6" : "danger.5"}
-          style={{ fontVariantNumeric: "tabular-nums" }}
+          style={{ fontVariantNumeric: "tabular-nums", color: `var(--moeum-${p.momPct >= 0 ? "up" : "down"})` }}
         >
           전월 {p.momPct >= 0 ? "+" : "−"}
           {Math.abs(p.momPct).toFixed(1)}%
