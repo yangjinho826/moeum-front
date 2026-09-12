@@ -1,8 +1,8 @@
 {
   "runId": "ds-moeum-redesign-20260911",
   "fileKey": "j1xaab6icKdvERz6SbU6E0",
-  "phase": "S4 batch3 Figma 4/4 done",
-  "step": "next: S5 batch3",
+  "phase": "S4 batch4 Figma 4/4 done",
+  "step": "next: S5 batch4 (user ✅ 후)",
   "decisions": {
     "fontSans": "Noto Sans KR (Pretendard 대역)",
     "fontMono": "Geist Mono",
@@ -22,7 +22,8 @@
       "Page 1": "0:1",
       "배치1 · 390": "10:2",
       "배치2 · 390": "41:364",
-      "배치3 · 390": "58:382"
+      "배치3 · 390": "58:382",
+      "배치4 · 390": "67:1012"
     },
     "styles": {
       "Shadow/Modal": "S:bc7a6b3b4e1a4c2a109bfee86b9af6b170d4f316,",
@@ -33,12 +34,13 @@
       "Color.Dark": "2:2"
     },
     "components": {
-      "ListRow": "11:2",
+      "ListRow": "11:2 (+ Lead#67:0 BOOLEAN · Lead icon#67:1 INSTANCE_SWAP, 배치4)",
       "SectionHeader": "11:9",
       "TabBar": "20:80",
       "FAB": "20:98",
       "StatGrid3": "20:100",
-      "Button": "20:114 (Filled 20:110 / Outline 20:112)"
+      "Button": "20:114 (Filled 20:110 / Outline 20:112)",
+      "Icon/* (16, DynamicIcon 키)": "67:364 (wallet 67:368 … dumbbell 67:424)"
     },
     "smoke": {
       "Home / Smoke (light)": "10:3"
@@ -55,7 +57,11 @@
       "account/[accountId]": "58:383",
       "account/new": "60:77",
       "account/[accountId]/edit": "60:249",
-      "trade-sheet(매수)": "61:115"
+      "trade-sheet(매수)": "61:115",
+      "category": "67:1013",
+      "category/new": "67:1061",
+      "category/[categoryId]": "67:1172",
+      "fixed": "67:1285"
     }
   },
   "completedSteps": [
@@ -79,5 +85,8 @@
   ],
   "components": {
     "CompositionBar": "38:370 (invest 25:179 종목 비중 아래 인스턴스 38:376, wrap 38:381)"
-  }
+  },
+  "syncs": [
+    "2026-09-12 H-301 세그먼트 44 동기화: 60:154 · 60:267 · 61:127 · 46:635 · 27:332 (거래 헤더 보기 전환 22:94 xs 는 유지)"
+  ]
 }
