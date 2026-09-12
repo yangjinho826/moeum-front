@@ -18,7 +18,7 @@ interface FormActionsProps {
 }
 
 /**
- * 폼 하단 액션 공통 블록 — 취소/저장(+선택적 삭제).
+ * 폼 하단 액션 공통 블록 — 취소(outline = hair 테두리)/저장(filled accent) + 선택적 삭제 (DESIGN.md §5 버튼).
  *
  * sticky 모드는 시트 스크롤 컨테이너 하단에 붙는다. FormSheet body 의
  * paddingBottom(--bottom-tab-h + --safe-bottom + 16px)을 음수 마진으로 파고들고,
@@ -44,7 +44,7 @@ export default function FormActions({
         {onCancel && (
           <Button
             type="button"
-            variant="light"
+            variant="default"
             onClick={onCancel}
             disabled={isPending}
           >
@@ -93,7 +93,8 @@ export default function FormActions({
         position: "sticky",
         bottom: "calc(var(--bottom-tab-h) + var(--safe-bottom))",
         zIndex: 1,
-        background: "var(--mantine-color-body)",
+        // 시트·모달 표면(surface)과 같은 색 — 스크롤되는 필드가 버튼 뒤로 비치지 않게
+        background: "var(--moeum-surface)",
         marginInline: "calc(var(--mantine-spacing-md) * -1)",
         marginBottom: "calc(var(--mantine-spacing-md) * -1)",
         padding:

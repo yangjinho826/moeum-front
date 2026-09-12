@@ -6,6 +6,7 @@ import {
   Container,
   createTheme,
   Drawer,
+  InputWrapper,
   Modal,
   Notification,
   NumberInput,
@@ -169,6 +170,15 @@ export const mantineTheme = createTheme({
             ...(isAccentFilled(props.variant, props.color)
               ? { "--button-color": "var(--moeum-on-accent)" }
               : {}),
+            // outline(보조) = 투명 + hair 테두리 + 본문색 (DESIGN.md §5 버튼, Figma Button Outline 20:112)
+            ...(props.variant === "default"
+              ? {
+                  "--button-bg": "transparent",
+                  "--button-hover": "var(--moeum-surface-2)",
+                  "--button-bd": "1px solid var(--moeum-hair)",
+                  "--button-color": "var(--moeum-text)",
+                }
+              : {}),
           },
         };
       },
@@ -213,6 +223,24 @@ export const mantineTheme = createTheme({
       styles: {
         root: {
           letterSpacing: "-0.01em",
+        },
+      },
+    }),
+    // 폼 필드 라벨 = 보조 13/500 dim, 필드와 6 간격. 설명(description)은 12 로 라벨보다 작게.
+    // (배치2 S5 에서 11 로 했다가 "라벨이 설명보다 작아 안 보임" 피드백으로 13 — 모든 인풋 공통)
+    InputWrapper: InputWrapper.extend({
+      styles: {
+        label: {
+          fontSize: rem(13),
+          lineHeight: rem(19),
+          fontWeight: 500,
+          color: "var(--moeum-text-dim)",
+          marginBottom: rem(6),
+        },
+        description: {
+          fontSize: rem(12),
+          lineHeight: rem(17),
+          marginBottom: rem(6),
         },
       },
     }),

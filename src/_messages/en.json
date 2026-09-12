@@ -146,7 +146,8 @@
       "update_has_been_completed": "Updated.",
       "copy": "Copy",
       "prev_month": "Previous month",
-      "next_month": "Next month"
+      "next_month": "Next month",
+      "back": "Back"
     },
     "money": "₩{amount}",
     "won": "₩",
@@ -349,7 +350,10 @@
     "settlement_amount": "Settlement",
     "total_fee": "Total fees",
     "balance_trend": "Balance trend",
-    "recent_months": "Last {count} months"
+    "recent_months": "Last {count} months",
+    "mom": "MoM {pct}",
+    "first_trade_empty": "No trades yet",
+    "buy_cost_label": "Cost basis"
   },
   "transaction": {
     "list_title": "Transactions",
@@ -406,7 +410,10 @@
   "wealth": {
     "title": "Assets",
     "allocation_trend": "Allocation trend",
-    "accounts_count": "Accounts ({count})"
+    "accounts_count": "Accounts ({count})",
+    "add_asset": "Add asset",
+    "add_account": "Add account",
+    "accounts": "Accounts"
   },
   "onboarding": {
     "welcome_title": "Welcome to your household",

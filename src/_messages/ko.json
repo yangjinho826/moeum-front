@@ -146,7 +146,8 @@
       "update_has_been_completed": "수정되었습니다.",
       "copy": "복사",
       "prev_month": "이전 달",
-      "next_month": "다음 달"
+      "next_month": "다음 달",
+      "back": "뒤로"
     },
     "money": "{amount}원",
     "won": "원",
@@ -347,7 +348,10 @@
     "settlement_amount": "정산금액",
     "total_fee": "제비용",
     "balance_trend": "자산 추이",
-    "recent_months": "최근 {count}개월"
+    "recent_months": "최근 {count}개월",
+    "mom": "전월 {pct}",
+    "first_trade_empty": "아직 매매 기록이 없어요",
+    "buy_cost_label": "매입금액"
   },
   "transaction": {
     "list_title": "거래",
@@ -403,8 +407,11 @@
   },
   "wealth": {
     "title": "자산",
-    "allocation_trend": "자산군 배분 추이",
-    "accounts_count": "통장 ({count})"
+    "allocation_trend": "배분 추이",
+    "accounts_count": "통장 ({count})",
+    "add_asset": "자산 추가",
+    "add_account": "통장 추가",
+    "accounts": "통장"
   },
   "onboarding": {
     "welcome_title": "가계부에 오신 걸 환영해요",

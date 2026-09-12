@@ -15,6 +15,7 @@ import ListRow from "_features/common/components/list-row";
 import Section from "_features/common/components/section";
 import StatGrid from "_features/common/components/stat-grid";
 import StockShares from "_features/portfolio/components/stock-shares";
+import TrendLine, { type TrendPoint } from "_features/common/components/trend-line";
 import { usePortfolioMutations } from "_features/portfolio/queries/use-mutations";
 import { usePortfolioOverview } from "_features/portfolio/queries/use-query";
 import { usePortfolioSheetStore } from "_features/portfolio/store";
@@ -22,7 +23,6 @@ import { queryKeys } from "_constants/queries";
 import { signColor } from "_styles/semantic-color";
 import { fmt, fmtArrowPct, fmtSigned } from "_utilities/fmt";
 
-import ValuationTrend, { type ValuationPoint } from "./components/valuation-trend";
 
 /**
  * 투자 — 12개월 추이가 주인공(C) (plan/1.md, Figma invest 25:179).
@@ -56,7 +56,7 @@ export default function PortfolioSection() {
   const hasAccounts = investmentAccounts.length > 0;
   const profit = summary.totalProfit;
 
-  const trendPoints: ValuationPoint[] = wealthRes.body.data.allocation.allocationTrend
+  const trendPoints: TrendPoint[] = wealthRes.body.data.allocation.allocationTrend
     .map((p) => ({
       date: p.snapshotDate,
       value: p.slices.find((s) => s.assetClass === "INVESTMENT")?.valuation ?? 0,
@@ -114,7 +114,7 @@ export default function PortfolioSection() {
                 </Text>
               }
             />
-            <ValuationTrend points={trendPoints} />
+            <TrendLine points={trendPoints} periods showLast />
             <Hairline />
             <StatGrid
               items={[

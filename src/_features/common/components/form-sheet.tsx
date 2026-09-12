@@ -1,6 +1,6 @@
 "use client";
 
-import { Drawer, Group, Text } from "@mantine/core";
+import { Box, Drawer, Group, Text } from "@mantine/core";
 import { Suspense } from "react";
 
 import { PageLoader } from "_features/common/components/page-loader";
@@ -15,11 +15,13 @@ interface FormSheetProps {
 }
 
 /**
- * 공용 bottom sheet — 추가/수정 폼을 담는 단일 패턴.
+ * 공용 폼 시트 — 추가/수정 폼을 담는 단일 패턴 (DESIGN.md §5 시트·모달, Figma 46:451).
  *
- * 핸들바 + 제목 + 모바일 컨테이너(448px). 닫히면 children unmount 라
- * 다음 진입 시 폼이 fresh. 내부 Suspense 로 폼의 useSuspenseQuery 캐시 miss 가
- * 페이지 전체로 throw 되어 깜박이는 걸 막는다(quick-add-sheet 와 동일 규칙).
+ * 모바일 = 바텀시트 448 · 상단 라운드 16 · 핸들 40×4 hair · surface.
+ * 데스크톱(≥1200) = 같은 Drawer 를 CSS 로 가운데 모달 560 · 라운드 12 로 바꾼다
+ * (`.moeum-sheet-*`, globals.css) — useMediaQuery 분기 없이 SSR 첫 렌더와 일치.
+ * 닫히면 children unmount 라 다음 진입 시 폼이 fresh. 내부 Suspense 로 폼의
+ * useSuspenseQuery 캐시 miss 가 페이지 전체로 throw 되어 깜박이는 걸 막는다.
  *
  * Drawer zIndex 는 Mantine 기본(200) — 내부 Select/DateInput dropdown(300)이
  * 자연스럽게 위에 뜨도록 명시하지 않는다.
@@ -38,14 +40,11 @@ export default function FormSheet({
       position="bottom"
       size="auto"
       withCloseButton={false}
+      classNames={{ inner: "moeum-sheet-inner", content: "moeum-sheet-content" }}
       styles={{
         content: {
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          maxWidth: 448,
-          margin: "0 auto",
           // BottomTab(z-index 500, 64px) 이 시트 위로 떠서 하단 버튼을 가로채는 걸 방지 —
-          // household-switcher 와 동일하게 BottomTab 높이까지 빼고 본문에 채워 끝 버튼을 띄운다.
+          // BottomTab 높이까지 빼고 본문에 채워 끝 버튼을 띄운다(데스크톱은 탭바 0).
           maxHeight:
             "min(90dvh, calc(100dvh - var(--bottom-tab-h) - var(--safe-bottom)))",
         },
@@ -55,20 +54,13 @@ export default function FormSheet({
         },
       }}
     >
-      {/* 핸들바 (household-switcher 와 동일) */}
-      <Group justify="center" pt={4} pb={8}>
-        <div
-          style={{
-            width: 40,
-            height: 4,
-            borderRadius: 2,
-            background: "var(--mantine-color-gray-3)",
-          }}
-        />
+      {/* 핸들 40×4 hair — 데스크톱 모달에선 숨김 */}
+      <Group justify="center" pt={4} pb={8} className="moeum-sheet-handle">
+        <Box w={40} h={4} style={{ borderRadius: 2, background: "var(--moeum-hair)" }} />
       </Group>
 
-      <Group justify="space-between" align="center" wrap="nowrap" px="md" pb="xs">
-        <Text size="md" fw={800}>
+      <Group justify="space-between" align="center" wrap="nowrap" px="xs" pb="xs">
+        <Text fw={800} c="var(--moeum-text)" style={{ fontSize: 16, lineHeight: "24px", letterSpacing: "-0.03em" }}>
           {title}
         </Text>
         {titleAction}

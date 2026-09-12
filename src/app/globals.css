@@ -15,7 +15,7 @@
   --content-px: 20px; /* 콘텐츠 좌우 여백 — 모바일 20 / 데스크톱 40 (DESIGN §4) */
   --container-max: 448px; /* 휴대폰 박스 */
   --z-app-header: 30;
-  --z-fab: 300; /* Drawer(200) 위 · BottomTab(500) 아래 */
+  --z-fab: 150; /* 콘텐츠 위 · Drawer/Modal(200) 아래 — 열린 시트의 하단 버튼을 가리지 않게 (배치2 S5) */
   --z-bottom-tab: 500;
 }
 
@@ -249,4 +249,33 @@ small,
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+}
+
+/* 폼 시트(FormSheet) — 모바일 바텀시트 448 · 상단 16 / 데스크톱 가운데 모달 560 · 12 (DESIGN.md §5).
+   Mantine Drawer 규칙(.m_*)이 globals 뒤에 로드돼 단일 클래스는 밀리므로 2클래스 선택자 */
+.mantine-Drawer-content.moeum-sheet-content {
+  max-width: 448px;
+  margin: 0 auto;
+  border-radius: 16px 16px 0 0;
+}
+@media (min-width: 75em) {
+  .mantine-Drawer-inner.moeum-sheet-inner {
+    align-items: center;
+  }
+  .mantine-Drawer-content.moeum-sheet-content {
+    max-width: 560px;
+    border-radius: var(--mantine-radius-lg);
+    padding-top: 12px;
+  }
+  .mantine-Group-root.moeum-sheet-handle {
+    display: none;
+  }
+}
+
+/* 거래 기록 금액 — 큰 모노 28 · 높이 56 (Figma 46:646). Mantine Input 규칙보다 뒤에 오게 2클래스 */
+.mantine-NumberInput-input.moeum-amount-input {
+  --input-height: 56px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
