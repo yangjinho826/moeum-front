@@ -176,10 +176,8 @@
     "record_full": "Add record"
   },
   "account": {
-    "list_title": "Accounts",
     "form_create_title": "New Account",
     "form_update_title": "Edit Account",
-    "add": "Add",
     "search_term": "Search",
     "search_term_placeholder": "Search by name",
     "name": "Name",

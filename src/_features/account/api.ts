@@ -1,16 +1,10 @@
 import { apiFetch } from "_libraries/fetch/api-fetch";
-import { objectToParams } from "_libraries/fetch/object-to-params";
-import type {
-  ApiCursorPage,
-  ApiResponse,
-} from "_libraries/fetch/response";
+import type { ApiResponse } from "_libraries/fetch/response";
 
 import type {
   AccountCreateRequest,
   AccountDetailItemType,
-  AccountListItemType,
   AccountReportType,
-  AccountSearchRequestType,
   AccountUpdateRequest,
 } from "./types";
 
@@ -18,51 +12,6 @@ import type {
 type BackendAccountResponse = Omit<AccountDetailItemType, "accountId"> & {
   id: string;
 };
-
-interface BackendCursorPage<T> {
-  items: T[];
-  nextCursor: string | null;
-  hasNext: boolean;
-  totalCount: number | null;
-}
-
-function toListItem(b: BackendAccountResponse): AccountListItemType {
-  const { id, ...rest } = b;
-  return { ...rest, accountId: id };
-}
-
-/** 통장 목록 — cursor 무한 스크롤. cursor=null 이면 첫 페이지. */
-export async function GetAccountSearchApi(
-  params: AccountSearchRequestType & { cursor?: string | null; limit?: number },
-) {
-  const queryParams: Record<string, unknown> = {};
-  if (params.searchTerm) queryParams.searchTerm = params.searchTerm;
-  if (params.accountType) queryParams.accountType = params.accountType;
-  if (params.isArchived !== undefined)
-    queryParams.isArchived = params.isArchived;
-  if (params.cursor) queryParams.cursor = params.cursor;
-  if (params.limit) queryParams.limit = params.limit;
-  const queryString = objectToParams(queryParams).toString();
-
-  const res = await apiFetch<
-    ApiResponse<BackendCursorPage<BackendAccountResponse>>
-  >(`/api/account/list${queryString ? `?${queryString}` : ""}`, {
-    method: "GET",
-  });
-  const items = res.body.data.items.map((b) => toListItem(b));
-  const wrapped: ApiCursorPage<AccountListItemType> = {
-    code: res.body.code,
-    message: res.body.message,
-    status: res.body.status,
-    data: {
-      items,
-      nextCursor: res.body.data.nextCursor,
-      hasNext: res.body.data.hasNext,
-      totalCount: res.body.data.totalCount,
-    },
-  };
-  return { ...res, body: wrapped };
-}
 
 export async function GetAccountDetailApi(accountId: string) {
   const res = await apiFetch<ApiResponse<BackendAccountResponse>>(

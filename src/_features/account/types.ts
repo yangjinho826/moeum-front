@@ -18,12 +18,6 @@ export type ManualAssetAccountType =
   | "COMMODITY"
   | "SAVINGS_ASSET";
 
-export interface AccountSearchRequestType {
-  searchTerm?: string;
-  accountType?: AccountType;
-  isArchived?: boolean;
-}
-
 export interface AccountBaseRequestType {
   name: string;
   accountType: AccountType;

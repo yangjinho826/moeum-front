@@ -174,10 +174,8 @@
     "settings": "설정"
   },
   "account": {
-    "list_title": "통장",
     "form_create_title": "통장 추가",
     "form_update_title": "통장 수정",
-    "add": "추가",
     "search_term": "검색어",
     "search_term_placeholder": "통장명 검색",
     "name": "통장명",
