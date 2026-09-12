@@ -1,146 +1,109 @@
 "use client";
 
-import { Text } from "@mantine/core";
+import { Box, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { useSyncExternalStore } from "react";
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-} from "recharts";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 
-import { ASSET_CLASS_COLOR } from "_features/portfolio/constants";
 import type { AssetClass } from "_features/portfolio/types";
 import type { AllocationTrendPoint } from "_features/wealth/types";
 import { useMonthLabel } from "_features/common/hooks/use-month-label";
-import { useMoney } from "_features/common/hooks/use-money";
-
-// 서버에선 false, 클라 마운트 후 true — hydration-safe. recharts SSR prerender 회피용.
-const noopSubscribe = () => () => {};
-const useMounted = () =>
-  useSyncExternalStore(
-    noopSubscribe,
-    () => true,
-    () => false,
-  );
-
-// 스택 순서 = ASSET_CLASS_COLOR 키 순서(STOCK→…→OTHER). 매월 동일 순서 보장.
-const ASSET_CLASS_ORDER = Object.keys(ASSET_CLASS_COLOR) as AssetClass[];
+import { type SemanticColor, semanticColor } from "_styles/semantic-color";
+import { fmt } from "_utilities/fmt";
 
 interface ChartRow {
-  month: string; // "5월"
+  m: number;
+  date: string;
   [assetClass: string]: string | number;
-}
-
-function buildRows(
-  data: AllocationTrendPoint[],
-  monthLabel: (isoDate: string) => string,
-): {
-  rows: ChartRow[];
-  classes: AssetClass[];
-} {
-  // 기간 내 한 번이라도 등장한 자산군만 — 없는 군은 차트에서 제외
-  const present = new Set<AssetClass>();
-  for (const p of data) {
-    for (const s of p.slices) present.add(s.assetClass);
-  }
-  const classes = ASSET_CLASS_ORDER.filter((c) => present.has(c));
-
-  const rows = data.map((p) => {
-    const row: ChartRow = { month: monthLabel(p.snapshotDate) };
-    // 없는 슬라이스는 0 패딩 — 스택 영역 라인 끊김 방지
-    for (const c of classes) row[c] = 0;
-    for (const s of p.slices) row[s.assetClass] = s.valuation;
-    return row;
-  });
-  return { rows, classes };
 }
 
 interface Props {
   data: AllocationTrendPoint[];
+  /** 자산군 → 차트 색. 자산 구성 막대·행과 같은 색(현재 비중 순위) */
+  colorOf: (assetClass: AssetClass) => SemanticColor;
+  /** 쌓는 순서(아래 → 위) — 현재 비중 큰 순 */
+  order: AssetClass[];
 }
 
-// 월별 자산군 배분추이 — 스택 영역 차트. 표시 전용.
-export default function AllocationTrendChart({ data }: Props) {
+/**
+ * 월별 자산군 배분 추이 — 적층 영역 (plan/2.md ③, Figma 46:195 AllocationTrend).
+ * 채움 = chart-1..5 단색 0.9, 선·그라데이션·그리드 없음, 월 축 모노 11 dim, 툴팁 surface + hair.
+ */
+export default function AllocationTrendChart({ data, colorOf, order }: Props) {
   const tAssetClass = useTranslations("enum.asset-class");
   const monthLabel = useMonthLabel();
-  const money = useMoney();
-  // recharts ResponsiveContainer 는 SSR prerender 에서 깨질 수 있어 클라 마운트 후에만 그림
-  const mounted = useMounted();
 
-  const { rows, classes } = buildRows(data, monthLabel);
+  // 기간 내 한 번이라도 등장한 자산군만 — 순서는 현재 비중 순, 지금 없는 군은 맨 위
+  const present = new Set<AssetClass>(data.flatMap((p) => p.slices.map((s) => s.assetClass)));
+  const classes = [...order.filter((c) => present.has(c)), ...[...present].filter((c) => !order.includes(c))];
 
-  // 마운트 전엔 차트 영역만 확보 (레이아웃 시프트 방지)
-  if (!mounted) return <div className="chart-trend-wrap" />;
+  const rows: ChartRow[] = data.map((p) => {
+    const row: ChartRow = { m: Number(p.snapshotDate.slice(5, 7)), date: p.snapshotDate };
+    // 없는 슬라이스는 0 패딩 — 스택 영역 끊김 방지
+    for (const c of classes) row[c] = 0;
+    for (const s of p.slices) row[s.assetClass] = s.valuation;
+    return row;
+  });
 
   return (
-    <div className="chart-trend-wrap">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-        <AreaChart data={rows} margin={{ top: 12, right: 0, bottom: 0, left: 0 }}>
+    <Box className="moeum-chart" pt={4}>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 320, height: 140 }}>
+        <AreaChart data={rows} margin={{ top: 6, right: 8, bottom: 0, left: 8 }}>
           {classes.map((c) => (
             <Area
               key={c}
               type="monotone"
               dataKey={c}
               stackId="allocation"
-              stroke={ASSET_CLASS_COLOR[c]}
-              strokeWidth={1.5}
-              fill={ASSET_CLASS_COLOR[c]}
-              fillOpacity={0.7}
+              stroke="none"
+              fill={semanticColor(colorOf(c))}
+              fillOpacity={0.9}
+              isAnimationActive={false}
+              activeDot={false}
             />
           ))}
           <Tooltip
-            // 자산군 수만큼 줄이 늘어나는 스택 툴팁 — 96px 차트에서 세로 이탈 허용해 잘림 방지
+            cursor={{ stroke: "var(--moeum-hair)", strokeWidth: 1 }}
+            // 자산군 수만큼 줄이 늘어나는 툴팁 — 세로 이탈 허용해 잘림 방지
             allowEscapeViewBox={{ x: false, y: true }}
             wrapperStyle={{ zIndex: 5 }}
-            content={({ active, payload, label }) => {
-              if (!active || !payload?.length) return null;
+            content={({ active, payload }) => {
+              const row = active ? (payload?.[0]?.payload as ChartRow | undefined) : undefined;
+              if (!row) return null;
               return (
-                <div
+                <Box
+                  px={12}
+                  py={8}
                   style={{
-                    background: "var(--mantine-color-body)",
-                    border: "1px solid var(--mantine-color-gray-2)",
-                    borderRadius: 10,
-                    padding: "8px 12px",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                    background: "var(--moeum-surface)",
+                    border: "1px solid var(--moeum-hair)",
+                    borderRadius: "var(--mantine-radius-md)",
                   }}
                 >
-                  <Text size="xs" c="dimmed" fw={600}>
-                    {label}
+                  <Text c="dimmed" style={{ fontSize: 11, lineHeight: "16px" }}>
+                    {monthLabel(row.date)}
                   </Text>
-                  {[...payload].reverse().map((entry) => {
-                    const c = entry.dataKey as AssetClass;
-                    const v = Number(entry.value ?? 0);
+                  {[...classes].reverse().map((c) => {
+                    const v = Number(row[c] ?? 0);
                     if (v === 0) return null;
                     return (
-                      <Text
-                        key={c}
-                        size="xs"
-                        fw={700}
-                        style={{
-                          color: ASSET_CLASS_COLOR[c],
-                          fontVariantNumeric: "tabular-nums",
-                        }}
-                      >
-                        {tAssetClass(c)} {money(v)}
+                      <Text key={c} className="moeum-mono" fw={600} style={{ fontSize: 12, lineHeight: "18px", color: semanticColor(colorOf(c)) }}>
+                        {tAssetClass(c)} {fmt(v)}
                       </Text>
                     );
                   })}
-                </div>
+                </Box>
               );
             }}
           />
           <XAxis
-            dataKey="month"
-            tick={{ fontSize: 9, fill: "#9C8F82" }}
-            axisLine={false}
+            dataKey="m"
+            tick={{ fontSize: 11, fill: "var(--moeum-text-dim)", fontFamily: "var(--mantine-font-family-monospace)" }}
+            axisLine={{ stroke: "var(--moeum-hair)" }}
             tickLine={false}
-            interval={1}
+            interval={0}
           />
         </AreaChart>
       </ResponsiveContainer>
-    </div>
+    </Box>
   );
 }
