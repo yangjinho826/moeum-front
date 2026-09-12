@@ -6,13 +6,13 @@ import {
   NumberInput,
   Select,
   Stack,
-  Text,
   TextInput,
 } from "@mantine/core";
 import { useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
 import FormActions from "_features/common/components/form-actions";
+import InputUnit from "_features/common/components/input-unit";
 import { useEnumOptions } from "_features/enum/queries/use-query";
 
 import { usePortfolioForm } from "../hooks/use-sub/use-form";
@@ -143,11 +143,8 @@ export default function PortfolioForm({
           placeholder={t("current_price_placeholder")}
           thousandSeparator=","
           min={0}
-          rightSection={
-            <Text size="xs" c="dimmed" pr={8}>
-              {tGeneral("won")}
-            </Text>
-          }
+          rightSection={<InputUnit>{tGeneral("won")}</InputUnit>}
+          rightSectionPointerEvents="none"
           description={isUpdate ? undefined : t("current_price_help")}
         />
         <FormActions

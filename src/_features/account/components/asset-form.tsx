@@ -1,11 +1,12 @@
 "use client";
 
-import { NumberInput, Select, Stack, Text, TextInput } from "@mantine/core";
+import { NumberInput, Select, Stack, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import { MANUAL_ASSET_ACCOUNT_TYPES } from "_features/account/constants";
 import FormActions from "_features/common/components/form-actions";
+import InputUnit from "_features/common/components/input-unit";
 import type { AccountListItemType } from "_features/account/types";
 
 import { useAssetForm } from "../hooks/use-sub/use-asset-form";
@@ -52,11 +53,8 @@ export default function AssetForm({ account, onClose }: AssetFormProps) {
           placeholder={t("start_balance_placeholder")}
           thousandSeparator=","
           min={0}
-          rightSection={
-            <Text size="xs" c="dimmed" pr={8}>
-              {tGeneral("won")}
-            </Text>
-          }
+          rightSection={<InputUnit>{tGeneral("won")}</InputUnit>}
+          rightSectionPointerEvents="none"
         />
         <FormActions
           submitLabel={isUpdate ? tg("update") : tg("create")}

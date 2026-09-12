@@ -1,11 +1,12 @@
 "use client";
 
-import { Input, NumberInput, SegmentedControl, Stack, Text, TextInput } from "@mantine/core";
+import { Input, NumberInput, SegmentedControl, Stack, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useId, useMemo } from "react";
 
 import ColorPicker from "_features/common/components/color-picker";
 import FormActions from "_features/common/components/form-actions";
+import InputUnit from "_features/common/components/input-unit";
 import IconPicker from "_features/common/components/icon-picker";
 import { useEnumOptions } from "_features/enum/queries/use-query";
 
@@ -85,11 +86,7 @@ export default function AccountForm({
           label={t("balance")}
           placeholder={t("balance_placeholder")}
           thousandSeparator=","
-          rightSection={
-            <Text c="dimmed" fw={500} style={{ fontSize: 13, lineHeight: "19px" }}>
-              {tGeneral("won")}
-            </Text>
-          }
+          rightSection={<InputUnit>{tGeneral("won")}</InputUnit>}
           rightSectionPointerEvents="none"
         />
         <ColorPicker

@@ -19,6 +19,7 @@ import { ACCOUNT_TYPE_HEX } from "_features/account/constants";
 import { useAccountSheetStore } from "_features/account/store";
 import EmptyText from "_features/common/components/empty-text";
 import FormActions from "_features/common/components/form-actions";
+import InputUnit from "_features/common/components/input-unit";
 import { queryKeys } from "_constants/queries";
 import { semanticColor, signColor } from "_styles/semantic-color";
 import { fmt } from "_utilities/fmt";
@@ -216,11 +217,7 @@ export default function TransactionForm({
       label={t("amount")}
       min={0}
       classNames={{ input: "moeum-amount-input" }}
-      rightSection={
-        <Text c="dimmed" fw={500} style={{ fontSize: 13, lineHeight: "19px" }}>
-          {t("won")}
-        </Text>
-      }
+      rightSection={<InputUnit>{t("won")}</InputUnit>}
       rightSectionPointerEvents="none"
       data-autofocus={isUpdate ? undefined : true}
     />

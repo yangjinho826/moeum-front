@@ -17,6 +17,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import FormActions from "_features/common/components/form-actions";
+import InputUnit from "_features/common/components/input-unit";
 import { useEnumOptions } from "_features/enum/queries/use-query";
 import { getErrorMessage } from "_libraries/fetch/error-message";
 import { semanticColor } from "_styles/semantic-color";
@@ -212,11 +213,7 @@ export default function TradeForm({
     removeTxMutation.isPending;
 
   // 인풋 오른쪽 단위 — 거래 폼 금액과 같은 dim 13 (Figma 61:115)
-  const unit = (label: string) => (
-    <Text c="dimmed" fw={500} style={{ fontSize: 13, lineHeight: "19px" }}>
-      {label}
-    </Text>
-  );
+  const unit = (label: string) => <InputUnit>{label}</InputUnit>;
   // 화면만 빈칸 + placeholder "0"(상태 0 을 지우고 입력하지 않게). 빈 칸만 0 으로 되돌리고
   // "1." · "0.0" 같은 입력 중 문자열은 그대로 둔다 — 숫자로 막으면 소수 수량을 칠 수 없다(배치3 S6 B-1). 제출 직전 숫자화
   const numProps = (field: "quantity" | "price" | "fee") => {
