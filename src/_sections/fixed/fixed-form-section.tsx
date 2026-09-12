@@ -15,12 +15,14 @@ export default function FixedFormSection({ fixedId }: FixedFormSectionProps) {
   const isUpdate = Boolean(fixedId);
 
   return (
-    // 페이지 모드(fallback 라우트) — Card 없이 모달과 같은 폭 560, 본문 가운데 (DESIGN §5 폼 필드)
-    <Stack gap="md" maw={560} w="100%" mx="auto">
-      <SubHeader
-        title={isUpdate ? t("form_update_title") : t("form_create_title")}
-      />
-      <FixedForm fixedId={fixedId} />
-    </Stack>
+    // 페이지 모드(fallback 라우트) — 앱 격자 그대로 좌 폼 칼럼. 우 레일 도움말은 이 폼 배치에서 문구와 함께 (배치4, DESIGN §5 폼 필드)
+    <div className="moeum-main-rail">
+      <Stack gap="md">
+        <SubHeader
+          title={isUpdate ? t("form_update_title") : t("form_create_title")}
+        />
+        <FixedForm fixedId={fixedId} />
+      </Stack>
+    </div>
   );
 }

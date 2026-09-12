@@ -32,7 +32,7 @@ interface TransactionFormProps {
   copyFromId?: string;
   /** 성공/취소 후 호출. 시트 모드용. 없으면 라우트 이동 (기존 동작). */
   onDone?: () => void;
-  /** 시트(FormSheet) 안에서 쓸 때 — 푸터 sticky. 페이지 모드 폭(560)은 폼 섹션이 잡는다 */
+  /** 시트(FormSheet) 안에서 쓸 때 — 푸터 sticky. 페이지 모드 폭은 폼 섹션(앱 격자 좌 칼럼)이 잡는다 */
   inSheet?: boolean;
 }
 

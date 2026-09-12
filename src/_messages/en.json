@@ -169,7 +169,8 @@
       "prev_month": "Previous month",
       "next_month": "Next month",
       "back": "Back",
-      "load_failed": "Couldn't load"
+      "load_failed": "Couldn't load",
+      "guide": "Guide"
     },
     "money": "₩{amount}",
     "won": "₩",
@@ -229,6 +230,12 @@
       "start_balance_placeholder": "Amount at registration",
       "start_balance_update_help": "Only the initial balance is updated. Record valuation changes as adjustments in transactions.",
       "start_balance_required_message": "Please enter the initial balance"
+    },
+    "guide": {
+      "delete_body": "Accounts with holdings can't be deleted. Deleting removes this account's transactions; transfers with other accounts stay.",
+      "delete_title": "Delete",
+      "type_body": "Living = everyday spending · Savings = deposits and emergency funds · Investment = brokerage (manage holdings in Invest).",
+      "start_balance_body": "The balance on the day you start tracking. Later balances are calculated from transactions."
     }
   },
   "category": {
@@ -245,7 +252,13 @@
     "kind_placeholder": "Select kind",
     "color": "Color",
     "icon": "Icon",
-    "sort_order": "Order"
+    "sort_order": "Order",
+    "guide": {
+      "delete_title": "Delete",
+      "delete_body": "A deleted category disappears only from new entries. Past transactions and fixed expenses keep its name.",
+      "kind_body": "Either expense or income. When recording, only categories of that kind are offered.",
+      "sort_body": "Smaller numbers appear higher. Ties keep the order they were added."
+    }
   },
   "fixed": {
     "list_title": "Fixed Expenses",
