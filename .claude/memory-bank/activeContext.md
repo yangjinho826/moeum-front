@@ -11,10 +11,10 @@
 ## Status
 
 ### 리디자인 Quiet Dark — 배치1~5 (2026-09-13, feat/redesign-quiet-dark)
-design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 배치1~4 push 완료(6e3f8eb). 배치5(고정지출 폼·가계부 목록·가계부 폼, pick A·A·A) S3~S6 — qa/5.md, S6 사용자 ✅ 대기 · 21b3f45 부터 로컬 커밋 **push 안 함**.
+design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 배치1~4 push 완료(6e3f8eb). 배치5(고정지출 폼·가계부 목록·가계부 폼, pick A·A·A) S3~S6 — qa/5.md, S6 사용자 ✅ 대기 · push 완료(60fcc39).
 - 배치5: 고정지출 금액·가계부 통화 입력 제거(백엔드에 없음/무효과) · 고정지출 카테고리 연결·보관 Switch · `InputUnit` · 가계부 목록 소유자 행만 수정 · ListRow `valueText`.
 - 팀에 확인: 백엔드 update_fixed_expense 가 null 을 "안 바꿈"으로 받아 수정에서 카테고리·색·아이콘 비우기 불가(H-501, moeum-back `model_fields_set` 필요).
-- 삭제 확인 대기: household search.tsx · table.tsx · use-search.ts · HouseholdSearchRequestType · fixed.search_term 키(H-508).
+- 참조 0 파일 삭제 완료(household search·table·use-search, 60fcc39).
 - 주의: dev 서버가 편집 누적 후 SSR `useContext null`/HMR module factory → 재시작. Chrome `type` 은 숫자 인풋에 안 먹음(`key`). 숨은 창 Drawer 는 rAF 멈춤 — 한 번만 열고 screenshot 으로 프레임 돌리기.
 
 ### 프로젝트 이름 정리 — `household` → `moeum` (2026-08-22, B·C 레이어만)
