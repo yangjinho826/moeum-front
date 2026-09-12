@@ -10,6 +10,11 @@
 
 ## Status
 
+### 리디자인 Quiet Dark — 배치1 완료·push, 배치2 S3 승인 (2026-09-12, feat/redesign-quiet-dark)
+design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). S1~S6 ✅, 커밋 7개(5ebe7e0~2b84b90). 배치1 = 토큰·셸·공통 컴포넌트 + 홈/거래/투자/내정보. S6 QA 에서 hero 15px 렌더 버그(Mantine Text 우선순위 → 2클래스 선택자) 등 15건 수정, 보류 8건 처리(계좌 상세 카드 제거·EmptyText/Hairline/PageTitle 공용·이유 방향=지난 기록 대비).
+- 배치2(계좌 상세·종목 상세·거래 기록 시트·자산): S3 ✅ plan/2.md + handoff/2 11 아트보드(캔버스 844e588b). 다음 = S4 Figma 4화면 node-id → S5. 인라인 fontSize 토큰화는 배치2 S5 규칙으로.
+- 주의: dev 서버는 이 세션 백그라운드에서 재시작됨(원래 터미널 프로세스 종료). Chrome 확장 모바일 shot 은 500px 최소.
+
 ### 프로젝트 이름 정리 — `household` → `moeum` (2026-08-22, B·C 레이어만)
 브랜드는 이미 "모음"인데 레포·디렉토리·문서에 옛 이름이 남아 거슬린다는 요청. 범위를 4레이어로 쪼개 **B(문서·주석)·C(디렉토리·레포명)만 실행**, D(인프라 식별자)·E(도메인 모델)는 보류.
 - **C**: GitHub 레포 `household-front` → `moeum-front` + 로컬 디렉토리 rename. `deploy.yml`/`rollback.yml` 이 레포명이 아니라 GHCR 이미지명·서버 경로를 하드코딩하고 있어 배포 무영향(착수 전 실측).
