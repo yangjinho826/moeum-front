@@ -287,3 +287,14 @@ small,
   font-weight: 700;
   letter-spacing: -0.03em;
 }
+
+/* 폼 푸터 삭제(FormActions) — subtle danger 글자는 --mantine-color-danger-text 로:
+   다크 primaryShade 4 에서 Mantine 의 danger-light-color 가 danger.0(거의 흰색)으로 풀림 (배치3 S6 B-3).
+   비활성은 Mantine :disabled 회색 배경이 음수 마진 때문에 필드 선 밖으로 삐져나와 투명으로 (B-2) */
+.moeum-remove-action:not(:disabled):not([data-disabled]) {
+  color: var(--mantine-color-danger-text);
+}
+.moeum-remove-action:disabled,
+.moeum-remove-action[data-disabled] {
+  background: transparent;
+}

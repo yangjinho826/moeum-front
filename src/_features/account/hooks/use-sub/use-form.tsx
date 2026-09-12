@@ -99,7 +99,12 @@ export function useAccountForm({ accountId, onDone }: UseAccountFormOptions) {
         });
       }
       if (onDone) onDone();
-      else router.replace(`/${routeParams.locale}/wealth`);
+      else router.replace(
+        // 수정은 그 통장 상세로, 생성은 목록(자산 화면)으로 (배치3 S6 F-310)
+        isUpdate && accountId
+          ? `/${routeParams.locale}/account/${accountId}`
+          : `/${routeParams.locale}/wealth`,
+      );
     } catch (error) {
       notifications.show({
         title: tg("notificationstitle"),

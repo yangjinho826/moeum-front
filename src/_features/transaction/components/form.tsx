@@ -320,7 +320,7 @@ export default function TransactionForm({
           onChange={(value) => form.setFieldValue("txDate", value ?? "")}
           error={form.errors.txDate}
           label={t("tx_date")}
-          placeholder="YYYY-MM-DD"
+          placeholder="YYYY.MM.DD"
           valueFormat="YYYY.MM.DD"
         />
         <Textarea

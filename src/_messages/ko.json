@@ -125,6 +125,27 @@
     "register_prompt": "처음 오셨어요?"
   },
   "general": {
+    "picker": {
+      "color_option": "색 {n}",
+      "icons": {
+        "wallet": "지갑",
+        "home": "집",
+        "building": "건물",
+        "briefcase": "가방",
+        "coffee": "커피",
+        "car": "자동차",
+        "bus": "버스",
+        "shopping-bag": "쇼핑백",
+        "heart": "하트",
+        "gift": "선물",
+        "trending-up": "상승",
+        "piggy-bank": "저금통",
+        "credit-card": "카드",
+        "phone": "전화",
+        "tv": "TV",
+        "dumbbell": "운동"
+      }
+    },
     "common": {
       "notificationstitle": "알림",
       "confirm": "확인",
@@ -189,6 +210,7 @@
     "icon": "아이콘",
     "current_balance": "현재 잔액",
     "balance_trend": "잔액 추이",
+    "same_as_last_month": "지난달과 같아요",
     "vs_last_month": "지난달보다",
     "this_month_income": "이번 달 수입",
     "fixed_expense": "고정지출",
@@ -287,6 +309,7 @@
     "lookup": "조회",
     "lookup_failed": "종목 조회에 실패했습니다",
     "quantity": "수량",
+    "trade_type_label": "매매 구분",
     "unit_share": "주",
     "avg_price": "평균 매입가",
     "current_value": "현재 평가금액",
@@ -344,8 +367,8 @@
     "label_memo": "메모",
     "memo_placeholder": "(선택)",
     "label_fee": "수수료",
-    "fee_buy_hint": "매수 수수료는 평단가에 포함됩니다",
-    "fee_sell_hint": "매도 수수료는 실현손익에서 차감됩니다",
+    "fee_buy_hint": "매수 수수료는 평단가에 포함돼요",
+    "fee_sell_hint": "매도 수수료는 실현손익에서 빠져요",
     "fee_negative": "수수료는 0 이상이어야 합니다",
     "settlement_amount": "정산금액",
     "total_fee": "제비용",
@@ -400,6 +423,7 @@
     "valuation_decrease": "평가감소",
     "valuation_amount": "변동 금액",
     "valuation_no_change_message": "현재 잔액과 다른 금액을 입력하세요",
+    "valuation_required_message": "새 평가액을 입력하세요",
     "valuation_hint_increase": "{amount}원 평가증가",
     "valuation_hint_decrease": "{amount}원 평가감소",
     "tx_default_label": "거래",

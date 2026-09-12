@@ -2,7 +2,7 @@
 
 import { Input, NumberInput, SegmentedControl, Stack, Text, TextInput } from "@mantine/core";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useId, useMemo } from "react";
 
 import ColorPicker from "_features/common/components/color-picker";
 import FormActions from "_features/common/components/form-actions";
@@ -35,6 +35,7 @@ export default function AccountForm({
   const tType = useTranslations("enum.account-type");
   const tg = useTranslations("general.common");
   const tGeneral = useTranslations("general");
+  const typeLabelId = useId();
 
   const { form, isUpdate, isPending, handleSubmit, handleRemove, handleCancel } =
     useAccountForm({ accountId, onDone });
@@ -60,9 +61,15 @@ export default function AccountForm({
           data-autofocus={isUpdate ? undefined : true}
         />
         {/* 유형 3개라 세그먼트로 한 번에 — 거래 폼 유형과 같은 패턴 (Figma 60:77 Field/유형) */}
-        <Input.Wrapper label={t("type")} error={form.errors.accountType}>
+        <Input.Wrapper
+          label={t("type")}
+          labelElement="div"
+          labelProps={{ id: typeLabelId }}
+          error={form.errors.accountType}
+        >
           <SegmentedControl
             fullWidth
+            aria-labelledby={typeLabelId}
             value={form.values.accountType}
             onChange={(v) => {
               if (isAccountType(v)) form.setFieldValue("accountType", v);
@@ -72,9 +79,9 @@ export default function AccountForm({
         </Input.Wrapper>
         <NumberInput
           {...form.getInputProps("startBalance")}
-          // 상태는 0 그대로, 화면만 빈칸 + placeholder "0" (거래 폼 금액과 같은 패턴)
+          // 화면만 빈칸 + placeholder "0". 빈 칸만 0 — "-" 같은 입력 중 문자열은 그대로(음수 잔액 입력, 배치3 S6 B-1)
           value={form.values.startBalance || ""}
-          onChange={(v) => form.setFieldValue("startBalance", typeof v === "number" ? v : 0)}
+          onChange={(v) => form.getInputProps("startBalance").onChange(v === "" ? 0 : v)}
           label={t("balance")}
           placeholder={t("balance_placeholder")}
           thousandSeparator=","

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 import { useQuickAddStore } from "_features/transaction/store";
 
-import { TABS } from "./bottom-tab";
+import { isHomeRoot, TABS } from "./bottom-tab";
 
 /**
  * `＋ 기록` — 모바일 탭바 위 우측 40px accent 버튼 (DESIGN.md §5 셸, Figma FAB 20:98).
@@ -18,9 +18,10 @@ export default function RecordFab() {
   const open = useQuickAddStore((s) => s.open);
   const t = useTranslations("nav");
 
-  const visible = TABS.some(
-    (tab) => (tab.id === "home" || tab.id === "transactions") && tab.match(pathname),
-  );
+  // 홈은 루트만 — 홈 탭 활성이 /wealth·/account 까지 넓어졌어도 FAB 는 거기 안 띄운다 (배치3 S6)
+  const visible =
+    isHomeRoot(pathname) ||
+    TABS.some((tab) => tab.id === "transactions" && tab.match(pathname));
   if (!visible) return null;
 
   return (

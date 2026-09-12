@@ -217,16 +217,20 @@ export default function TradeForm({
       {label}
     </Text>
   );
-  // 상태는 숫자 0 그대로, 화면만 빈칸 + placeholder "0" — "0" 을 지우고 입력하지 않게 (거래 폼과 같은 패턴)
-  const numProps = (field: "quantity" | "price" | "fee") => ({
-    ...form.getInputProps(field),
-    value: form.values[field] || "",
-    onChange: (v: number | string) => form.setFieldValue(field, typeof v === "number" ? v : 0),
-    placeholder: "0",
+  // 화면만 빈칸 + placeholder "0"(상태 0 을 지우고 입력하지 않게). 빈 칸만 0 으로 되돌리고
+  // "1." · "0.0" 같은 입력 중 문자열은 그대로 둔다 — 숫자로 막으면 소수 수량을 칠 수 없다(배치3 S6 B-1). 제출 직전 숫자화
+  const numProps = (field: "quantity" | "price" | "fee") => {
+    const input = form.getInputProps(field);
+    return {
+      ...input,
+      value: form.values[field] || "",
+      onChange: (v: number | string) => input.onChange(v === "" ? 0 : v),
+      placeholder: "0",
     min: 0,
-    thousandSeparator: ",",
-    rightSectionPointerEvents: "none" as const,
-  });
+      thousandSeparator: ",",
+      rightSectionPointerEvents: "none" as const,
+    };
+  };
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -234,6 +238,7 @@ export default function TradeForm({
         <SegmentedControl
           {...form.getInputProps("tradeType")}
           fullWidth
+          aria-label={t("trade_type_label")}
           // 인디케이터는 흰 표면(테마) — color 로 채우면 활성 라벨이 흰색이 돼 사라진다.
           // 대신 라벨 글자에 매수=up · 매도=down 색 (DESIGN.md §2-3)
           data={ptTypeData.body.data.map((v) => ({
@@ -274,7 +279,7 @@ export default function TradeForm({
             onChange={(value) => form.setFieldValue("txDate", value ?? "")}
             error={form.errors.txDate}
             label={t("label_tx_date")}
-            placeholder="YYYY-MM-DD"
+            placeholder="YYYY.MM.DD"
             valueFormat="YYYY.MM.DD"
           />
         </SimpleGrid>
@@ -290,7 +295,7 @@ export default function TradeForm({
             정산금액이 실제로 계좌를 드나드는 돈이라 굵게 강조한다. */}
         <Stack gap={0} pt={8} style={{ borderTop: "1px solid var(--moeum-hair-2)" }}>
           <SummaryRow label={isBuy ? t("buy_amount") : t("sell_amount")} value={`${fmt(total)}${tg("won")}`} />
-          <SummaryRow label={t("label_fee")} value={`${isBuy ? "+" : "−"}${fmt(fee)}${tg("won")}`} />
+          <SummaryRow label={t("label_fee")} value={`${fee === 0 ? "" : isBuy ? "+" : "−"}${fmt(fee)}${tg("won")}`} />
           <SummaryRow label={t("settlement_amount")} value={`${fmt(settlement)}${tg("won")}`} total />
         </Stack>
 

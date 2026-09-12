@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Button, Group, Stack, Text } from "@mantine/core";
+import { useId } from "react";
 
 interface FormActionsProps {
   submitLabel: string;
@@ -37,6 +38,7 @@ export default function FormActions({
   removeHint,
   sticky = false,
 }: FormActionsProps) {
+  const removeHintId = useId();
   // 한 줄: [삭제 subtle danger · 좌측 auto 폭] [취소 outline] [저장 filled] (Figma 60:249 FormActions)
   // 삭제는 글자 왼쪽 끝이 필드 왼쪽 선에 맞게 음수 마진으로 패딩을 먹는다
   const buttons = (
@@ -47,8 +49,11 @@ export default function FormActions({
             type="button"
             variant="subtle"
             color="danger"
+            // 글자색·비활성 배경은 globals .moeum-remove-action (다크 대비 · 음수 마진 블록)
+            className="moeum-remove-action"
             onClick={onRemove}
             disabled={isPending || removeDisabled}
+            aria-describedby={removeHint ? removeHintId : undefined}
             px={12}
             ml={-12}
             style={{ flexShrink: 0 }}
@@ -78,7 +83,7 @@ export default function FormActions({
         </Button>
       </Group>
       {onRemove && removeHint && (
-        <Text size="xs" c="dimmed">
+        <Text id={removeHintId} size="xs" c="dimmed">
           {removeHint}
         </Text>
       )}

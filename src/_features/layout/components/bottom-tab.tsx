@@ -18,13 +18,17 @@ export interface Tab {
   match: (pathname: string) => boolean;
 }
 
+/** 홈 루트(`/`, `/ko`) — 기록 FAB 노출 기준. 홈 탭 활성은 하위 화면까지 넓다 */
+export const isHomeRoot = (p: string): boolean => p === "/" || /^\/[a-z]{2}\/?$/.test(p);
+
 // 자산중심 4탭. label 은 nav i18n 키(id) 로 해석.
 export const TABS: Tab[] = [
   {
     id: "home",
     icon: IconChartPie,
     href: "/",
-    match: (p) => p === "/" || /^\/[a-z]{2}\/?$/.test(p),
+    // 자산(/wealth)·통장 상세(/account)는 홈에서 들어가는 하위 화면 — 활성 탭이 비지 않게 (배치3 S6 F-304)
+    match: (p) => isHomeRoot(p) || /^\/[a-z]{2}\/(wealth|account)(\/|$)/.test(p),
   },
   {
     id: "transactions",

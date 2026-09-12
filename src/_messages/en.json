@@ -125,6 +125,27 @@
     "register_prompt": "New here?"
   },
   "general": {
+    "picker": {
+      "color_option": "Color {n}",
+      "icons": {
+        "wallet": "Wallet",
+        "home": "Home",
+        "building": "Building",
+        "briefcase": "Briefcase",
+        "coffee": "Coffee",
+        "car": "Car",
+        "bus": "Bus",
+        "shopping-bag": "Shopping bag",
+        "heart": "Heart",
+        "gift": "Gift",
+        "trending-up": "Trending up",
+        "piggy-bank": "Piggy bank",
+        "credit-card": "Card",
+        "phone": "Phone",
+        "tv": "TV",
+        "dumbbell": "Workout"
+      }
+    },
     "common": {
       "notificationstitle": "Notice",
       "confirm": "OK",
@@ -191,6 +212,7 @@
     "icon": "Icon",
     "current_balance": "Current balance",
     "balance_trend": "Balance trend",
+    "same_as_last_month": "Same as last month",
     "vs_last_month": "vs last month",
     "this_month_income": "Income this month",
     "fixed_expense": "Fixed",
@@ -289,6 +311,7 @@
     "lookup": "Lookup",
     "lookup_failed": "Failed to look up stock.",
     "quantity": "Quantity",
+    "trade_type_label": "Trade type",
     "unit_share": "sh",
     "avg_price": "Avg Price",
     "current_value": "Current Value",
@@ -402,6 +425,7 @@
     "valuation_decrease": "Decrease",
     "valuation_amount": "Change amount",
     "valuation_no_change_message": "Enter an amount different from the current balance",
+    "valuation_required_message": "Enter the new valuation",
     "valuation_hint_increase": "+{amount} KRW valuation increase",
     "valuation_hint_decrease": "-{amount} KRW valuation decrease",
     "tx_default_label": "Transaction",

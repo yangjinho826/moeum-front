@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Stack } from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 
 import { LEDGER_ACCOUNT_TYPES } from "_features/account/constants";
@@ -65,10 +65,15 @@ export default function AccountReportSection({ accountId }: Props) {
         />
 
         <HeroAmount compact label={t("current_balance")} amount={report.balance}>
-          {delta !== null && (
-            // 잔액 증감 = 자산 방향(▲▼ up/down) — 잔액 추이 캡션과 같은 규칙 (DESIGN §2-3)
-            <DeltaPill size="sm" value={delta} variant="asset" rate={deltaRate} caption={t("vs_last_month")} />
-          )}
+          {/* 잔액 증감 = 자산 방향(▲▼ up/down) — 잔액 추이 캡션과 같은 규칙 (DESIGN §2-3). 0 이면 "0 0.0%" 대신 문장 */}
+          {delta !== null &&
+            (delta === 0 ? (
+              <Text fz={13} c="dimmed">
+                {t("same_as_last_month")}
+              </Text>
+            ) : (
+              <DeltaPill size="sm" value={delta} variant="asset" rate={deltaRate} caption={t("vs_last_month")} />
+            ))}
         </HeroAmount>
 
         <Box hiddenFrom="lg">
