@@ -21,7 +21,7 @@ export default function AccountSheet() {
       onClose={close}
       title={editId ? t("form_update_title") : t("form_create_title")}
     >
-      <AccountForm accountId={editId ?? undefined} onDone={close} hideCard />
+      <AccountForm accountId={editId ?? undefined} onDone={close} inSheet />
     </FormSheet>
   );
 }
