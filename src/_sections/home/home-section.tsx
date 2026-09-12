@@ -1,286 +1,199 @@
 "use client";
 
-import {
-  Anchor,
-  Card,
-  Center,
-  Group,
-  SimpleGrid,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import PortfolioDonut from "_features/portfolio/components/portfolio-donut";
-import { ASSET_CLASS_COLOR } from "_features/portfolio/constants";
+import EmptyText from "_features/common/components/empty-text";
+import ListRow from "_features/common/components/list-row";
+import Section from "_features/common/components/section";
 import { usePortfolioOverview } from "_features/portfolio/queries/use-query";
-import {
-  formatProfitAmount,
-  formatProfitRate,
-  profitColor,
-} from "_features/portfolio/utils";
+import { topExpenseCategories } from "_features/stats/utils";
+import { useQuickAddStore } from "_features/transaction/store";
 import TxRow from "_features/transaction/components/tx-row";
-import { useMoney } from "_features/common/hooks/use-money";
 import { queryKeys } from "_constants/queries";
+import { chartColor, signColor } from "_styles/semantic-color";
+import { fmt, fmtSigned, fmtSignedPct } from "_utilities/fmt";
 
 import TotalAssetHero from "./components/total-asset-hero";
 
+const pct = (n: number): string => `${n.toFixed(1)}%`;
+
+/**
+ * HomeSection — "결과 하나"(A) 홈 (plan/1.md, Figma home 10:3).
+ * hero(총자산 + 추이) → 이번 달 늘어난 이유(순저축·투자손익) → 자산 구성 → 최근 기록.
+ * 데스크톱은 우측 레일에 이번 달 · 지출 Top 3 · 투자 요약(handoff HomeDesktop).
+ */
 export default function HomeSection() {
-  const routeParams = useParams<{ locale: string }>();
+  const { locale } = useParams<{ locale: string }>();
   const t = useTranslations("home");
   const tAssetClass = useTranslations("enum.asset-class");
-  const money = useMoney();
+  const openQuickAdd = useQuickAddStore((st) => st.open);
 
   const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth() + 1;
-
-  // 홈 = 자산 대시보드. wealth(자산군 배분)·home(월간 가계부)·portfolio(투자) 요약 조합.
   const { data: homeRes } = useSuspenseQuery(
-    queryKeys.home.overview({ year: currentYear, month: currentMonth }),
+    queryKeys.home.overview({ year: now.getFullYear(), month: now.getMonth() + 1 }),
   );
   const { data: wealthRes } = useSuspenseQuery(queryKeys.wealth.overview({}));
   const { data: portfolioRes } = usePortfolioOverview();
 
   const home = homeRes.body.data;
-  const txns = home.recentTransactions;
   const stats = home.stats;
   const income = stats.monthlyIncome;
   const expense = stats.monthlyExpense;
-  const savingRate = income > 0 ? ((income - expense) / income) * 100 : 0;
-
-  const allocationItems = wealthRes.body.data.allocation.currentAllocation.map(
-    (s) => ({
-      key: s.assetClass,
-      label: tAssetClass(s.assetClass),
-      value: s.valuation,
-      color: ASSET_CLASS_COLOR[s.assetClass],
-    }),
-  );
+  const netSaving = income - expense;
+  const savingRate = income > 0 ? (netSaving / income) * 100 : 0;
 
   const summary = portfolioRes.body.data.summary;
-  const investAccounts = portfolioRes.body.data.investmentAccounts;
-  const hasInvestment = investAccounts.length > 0;
+  const hasInvestment = portfolioRes.body.data.investmentAccounts.length > 0;
+  const profit = hasInvestment ? summary.totalProfit : 0;
 
-  // B 레이아웃: hero 밑에 자산구성·투자를 2열로 묶어 첫 스크롤에 핵심을 모은다.
-  const hasAllocation = allocationItems.length > 0;
+  // 기여 막대 — 순저축·투자손익 절대값 합 대비
+  const contribTotal = Math.abs(netSaving) + Math.abs(profit);
+  const contrib = (v: number) => (contribTotal > 0 ? Math.abs(v) / contribTotal : 0);
+  // 제목 방향은 hero 와 같은 기준(지난 기록 대비 총자산 증감). 투자손익은 누적 평가손익이라
+  // 순저축+손익 부호로 판단하면 실제 증감과 어긋날 수 있음 (QA D-2). 기록이 없으면 순저축+손익
+  const wealth = wealthRes.body.data;
+  const lastSnapshot = wealth.yearlySnapshots.months.at(-1);
+  const monthUp = lastSnapshot
+    ? wealth.totalBalance - lastSnapshot.totalBalance >= 0
+    : netSaving + profit >= 0;
 
-  const assetCard = hasAllocation ? (
-    <Card h="100%">
-      <Group justify="space-between" align="center" mb="sm">
-        <Text size="sm" fw={700}>
-          {t("asset_allocation")}
-        </Text>
-        <Anchor
-          component={Link}
-          href={`/${routeParams.locale}/wealth`}
-          size="xs"
-          fw={600}
-          c="dimmed"
-        >
-          {t("go_wealth")}
-        </Anchor>
-      </Group>
-      <PortfolioDonut items={allocationItems} orientation="vertical" />
-    </Card>
-  ) : null;
+  const allocation = [...wealthRes.body.data.allocation.currentAllocation].sort(
+    (a, b) => b.valuation - a.valuation,
+  );
+  const expenseTop = topExpenseCategories(stats.byCategory, 3);
+  const recent = home.recentTransactions.slice(0, 3);
 
-  const investCard = hasInvestment ? (
-    <Card h="100%">
-      <Group justify="space-between" align="center" mb="sm">
-        <Text size="sm" fw={700}>
-          {t("invest")}
-        </Text>
-        <Anchor
-          component={Link}
-          href={`/${routeParams.locale}/invest`}
-          size="xs"
-          fw={600}
-          c="dimmed"
-        >
-          {t("go_invest")}
-        </Anchor>
-      </Group>
-      <Stack gap="md">
-        <Stack gap={2}>
-          <Text size="xs" c="dimmed" fw={500}>
-            {t("valuation")}
-          </Text>
-          <Text
-            size="lg"
-            fw={700}
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
-            {money(summary.totalValuation)}
-          </Text>
-        </Stack>
-        <Stack gap={2}>
-          <Text size="xs" c="dimmed" fw={500}>
-            {t("profit_loss")}
-          </Text>
-          <Text
-            size="md"
-            fw={700}
-            c={profitColor(summary.totalProfit)}
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
-            {formatProfitAmount(summary.totalProfit, money)}
-          </Text>
-          <Text
-            size="xs"
-            fw={700}
-            c={profitColor(summary.totalProfit)}
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
-            ({formatProfitRate(summary.totalRate)})
-          </Text>
-        </Stack>
+  const whySection = (
+    <Section
+      title={monthUp ? t("why_up") : t("why_down")}
+      link={{ label: t("why_detail"), href: `/${locale}/transactions` }}
+    >
+      <ListRow
+        title={t("net_saving")}
+        meta={
+          <>
+            <Text span inherit c="var(--moeum-income)">
+              {t("income")} {fmt(income)}
+            </Text>
+            {" − "}
+            <Text span inherit c="var(--moeum-expense)">
+              {t("expense")} {fmt(expense)}
+            </Text>
+          </>
+        }
+        value={fmtSigned(netSaving)}
+        bar={{ ratio: contrib(netSaving), color: "accent" }}
+        last={!hasInvestment}
+        href={`/${locale}/transactions`}
+      />
+      {hasInvestment && (
+        <ListRow
+          title={t("invest_profit")}
+          meta={t("meta_valuation", {
+            amount: fmt(summary.totalValuation),
+            rate: fmtSignedPct(summary.totalRate),
+          })}
+          value={fmtSigned(profit)}
+          valueColor={signColor(profit, "asset")}
+          bar={{ ratio: contrib(profit), color: signColor(profit, "asset") }}
+          last
+          href={`/${locale}/invest`}
+        />
+      )}
+    </Section>
+  );
 
-        {/* 보유 투자계좌별 평가액 — 빈공간 채움 + 투자 탭 미리보기 */}
-        <Stack
-          gap={8}
-          pt="sm"
-          style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
-        >
-          {investAccounts.slice(0, 3).map(({ account }) => (
-            <Group
-              key={account.accountId}
-              justify="space-between"
-              wrap="nowrap"
-              gap={8}
-            >
-              <Text size="xs" fw={500} c="dimmed" truncate>
-                {account.name}
-              </Text>
-              <Text
-                size="xs"
-                fw={600}
-                style={{
-                  fontVariantNumeric: "tabular-nums",
-                  flexShrink: 0,
-                }}
-              >
-                {money(account.portfolioValuation ?? 0)}
-              </Text>
-            </Group>
+  const allocationSection = allocation.length > 0 && (
+    <Section
+      title={t("asset_allocation")}
+      link={{ label: t("go_all_short"), href: `/${locale}/wealth` }}
+    >
+      {allocation.map((s, i) => (
+        <ListRow
+          key={s.assetClass}
+          title={tAssetClass(s.assetClass)}
+          value={fmt(s.valuation)}
+          sub={`${Math.round(s.ratio)}%`}
+          bar={{ ratio: s.ratio / 100, color: chartColor(i) }}
+          last={i === allocation.length - 1}
+          href={`/${locale}/wealth`}
+        />
+      ))}
+    </Section>
+  );
+
+  const recentSection = (
+    <Section
+      title={t("recent_transactions")}
+      link={{ label: t("go_all_short"), href: `/${locale}/transactions` }}
+    >
+      {recent.length === 0 ? (
+        <EmptyText message={t("no_transactions")} action={{ label: t("record_now"), onClick: () => openQuickAdd() }} />
+      ) : (
+        recent.map((tx, i) => (
+          <TxRow key={tx.transactionId} item={tx} withDate last={i === recent.length - 1} />
+        ))
+      )}
+    </Section>
+  );
+
+  const rail = (
+    <>
+      <Section
+        title={t("this_month")}
+        hairline={false}
+        link={{ label: t("go_transactions_all"), href: `/${locale}/transactions` }}
+      >
+        <ListRow title={t("income")} value={fmt(income)} valueColor="income" href={`/${locale}/transactions?filter=INCOME`} />
+        <ListRow title={t("expense")} value={fmt(expense)} valueColor="expense" href={`/${locale}/transactions?filter=EXPENSE`} />
+        <ListRow title={t("saving_rate")} value={pct(savingRate)} last href={`/${locale}/transactions`} />
+      </Section>
+      {expenseTop.length > 0 && (
+        <Section title={t("expense_top")}>
+          {expenseTop.map((c, i) => (
+            <ListRow
+              key={c.categoryId}
+              title={c.name}
+              dot={c.color}
+              value={fmt(c.amount)}
+              sub={expense > 0 ? `${Math.round((c.amount / expense) * 100)}%` : undefined}
+              bar={{ ratio: expense > 0 ? c.amount / expense : 0, color: "expense" }}
+              last={i === expenseTop.length - 1}
+              href={`/${locale}/transactions?filter=EXPENSE`}
+            />
           ))}
-        </Stack>
-      </Stack>
-    </Card>
-  ) : null;
+        </Section>
+      )}
+      {hasInvestment && (
+        <Section title={t("invest")} link={{ label: t("go_invest_all"), href: `/${locale}/invest` }}>
+          <ListRow title={t("valuation")} value={fmt(summary.totalValuation)} href={`/${locale}/invest`} />
+          <ListRow
+            title={t("profit_loss")}
+            value={fmtSigned(profit)}
+            valueColor={signColor(profit, "asset")}
+            sub={fmtSignedPct(summary.totalRate)}
+            last
+            href={`/${locale}/invest`}
+          />
+        </Section>
+      )}
+    </>
+  );
 
   return (
-    <Stack gap="md">
-      {/* [1] 총자산 hero — 월별 추이 / 드릴다운 / 지난달 박제 */}
-      <TotalAssetHero />
-
-      {/* [2] 자산구성 + 투자 2열 — 둘 다 있으면 그리드, 하나면 풀폭.
-          소형 폰(<xs)은 1열 — 도넛+범례가 반 칸에서 짓눌리는 것 방지 */}
-      {assetCard && investCard ? (
-        <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="md">
-          {assetCard}
-          {investCard}
-        </SimpleGrid>
-      ) : (
-        <>
-          {assetCard}
-          {investCard}
-        </>
-      )}
-
-      {/* [3] 이번 달 가계부 요약 — 상세는 거래 탭 */}
-      <Card>
-        <Group justify="space-between" align="center" mb="sm">
-          <Text size="sm" fw={700}>
-            {t("this_month")}
-          </Text>
-          <Anchor
-            component={Link}
-            href={`/${routeParams.locale}/transactions`}
-            size="xs"
-            fw={600}
-            c="dimmed"
-          >
-            {t("go_transactions")}
-          </Anchor>
-        </Group>
-        <SimpleGrid cols={3} spacing="sm">
-          <Stack gap={2}>
-            <Text size="xs" c="dimmed" fw={500}>
-              {t("income")}
-            </Text>
-            <Text
-              className="stat-amount"
-              fw={700}
-              c="info.5"
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              {money(income)}
-            </Text>
-          </Stack>
-          <Stack gap={2}>
-            <Text size="xs" c="dimmed" fw={500}>
-              {t("expense")}
-            </Text>
-            <Text
-              className="stat-amount"
-              fw={700}
-              c="danger.5"
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              {money(expense)}
-            </Text>
-          </Stack>
-          <Stack gap={2}>
-            <Text size="xs" c="dimmed" fw={500}>
-              {t("saving_rate")}
-            </Text>
-            <Text
-              className="stat-amount"
-              fw={700}
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              {savingRate.toFixed(0)}%
-            </Text>
-          </Stack>
-        </SimpleGrid>
-      </Card>
-
-      {/* [4] 최근 거래 */}
-      <Stack gap="xs">
-        <Group justify="space-between" align="center" px={4}>
-          <Text size="sm" fw={700}>
-            {t("recent_transactions")}
-          </Text>
-          <Anchor
-            component={Link}
-            href={`/${routeParams.locale}/transactions`}
-            size="xs"
-            fw={600}
-            c="dimmed"
-          >
-            {t("go_all")}
-          </Anchor>
-        </Group>
-        <Card p="xs">
-          {txns.length === 0 ? (
-            <Center py="lg">
-              <Text c="dimmed" size="sm">
-                {t("no_transactions")}
-              </Text>
-            </Center>
-          ) : (
-            <Stack gap={0}>
-              {txns.slice(0, 5).map((tx) => (
-                <TxRow key={tx.transactionId} item={tx} />
-              ))}
-            </Stack>
-          )}
-        </Card>
+    <div className="moeum-main-rail">
+      <Stack gap={0}>
+        <TotalAssetHero />
+        {whySection}
+        {allocationSection}
+        {recentSection}
       </Stack>
-    </Stack>
+      <Box visibleFrom="lg">
+        <Stack gap={0}>{rail}</Stack>
+      </Box>
+    </div>
   );
 }
