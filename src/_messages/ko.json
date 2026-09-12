@@ -265,8 +265,6 @@
     "form_create_title": "고정지출 추가",
     "form_update_title": "고정지출 수정",
     "add": "추가",
-    "search_term": "검색어",
-    "search_term_placeholder": "이름 검색",
     "name": "이름",
     "name_placeholder": "예) 월세",
     "name_required_message": "이름을 입력해주세요.",

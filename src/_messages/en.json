@@ -267,8 +267,6 @@
     "form_create_title": "New Fixed",
     "form_update_title": "Edit Fixed",
     "add": "Add",
-    "search_term": "Search",
-    "search_term_placeholder": "Search by name",
     "name": "Name",
     "name_placeholder": "e.g. Rent",
     "name_required_message": "Please enter name.",
