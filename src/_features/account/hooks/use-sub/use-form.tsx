@@ -99,7 +99,7 @@ export function useAccountForm({ accountId, onDone }: UseAccountFormOptions) {
         });
       }
       if (onDone) onDone();
-      else router.replace(`/${routeParams.locale}/account`);
+      else router.replace(`/${routeParams.locale}/wealth`);
     } catch (error) {
       notifications.show({
         title: tg("notificationstitle"),
@@ -125,7 +125,7 @@ export function useAccountForm({ accountId, onDone }: UseAccountFormOptions) {
             color: "green",
           });
           if (onDone) onDone();
-          else router.replace(`/${routeParams.locale}/account`);
+          else router.replace(`/${routeParams.locale}/wealth`);
         } catch (error) {
           notifications.show({
             title: tg("notificationstitle"),

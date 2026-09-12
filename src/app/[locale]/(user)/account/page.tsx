@@ -1,14 +1,10 @@
-import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import { PageLoader } from "_features/common/components/page-loader";
-import AccountSection from "_sections/account/account-section";
-
-export const dynamic = "force-dynamic";
-
-export default function AccountPage() {
-  return (
-    <Suspense fallback={<PageLoader />}>
-      <AccountSection />
-    </Suspense>
-  );
+// 통장 목록은 자산 화면의 "통장" 섹션과 같아 따로 두지 않는다 (배치3 S3 결정 — 들어오는 링크 0)
+export default function AccountPage({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  redirect(`/${params.locale}/wealth`);
 }
