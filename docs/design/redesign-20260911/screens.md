@@ -14,10 +14,10 @@
 | account/[accountId] | /account/[accountId] | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | 58:383 | 67340e3 | account-detail.jpg·account-detail-desktop.jpg |
 | account/[accountId]/edit | /account/[accountId]/edit | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | 60:249 | e06f89f | account-edit.jpg(시트 · 삭제 좌측) |
 | account/new | /account/new | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | 60:77 | e06f89f | account-new-desktop.jpg(페이지 모드 560) |
-| category | /category | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1013 | | |
-| category/[categoryId] | /category/[categoryId] | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1172 | | |
-| category/new | /category/new | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1061 | | |
-| fixed | /fixed | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1285 | | |
+| category | /category | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1013 | 1d41c0e·07c7332 | category.jpg·category-desktop.jpg |
+| category/[categoryId] | /category/[categoryId] | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1172 | 07c7332·fe62426 | category-sheet.jpg |
+| category/new | /category/new | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1061 | fe62426·07c7332 | category-new-desktop.jpg |
+| fixed | /fixed | P2 | 4 | 로그인·uitest 데이터 · 390/1440 | 67:1285 | a0b6f03 | fixed.jpg·fixed-desktop.jpg |
 | fixed/[fixedId] | /fixed/[fixedId] | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | | | |
 | fixed/new | /fixed/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | | | |
 | household | /household | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | | | |
