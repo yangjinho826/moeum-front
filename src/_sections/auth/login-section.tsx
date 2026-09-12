@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Button,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { Button, PasswordInput, Stack, Text, TextInput } from "@mantine/core";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useParams, useRouter } from "next/navigation";
@@ -14,8 +8,11 @@ import { useTranslations } from "next-intl";
 
 import BrandLogo from "_features/auth/components/brand-logo";
 import { useAuthMutations } from "_features/auth/queries/use-mutations";
-import { TOKEN } from "_styles/design-tokens";
 
+/**
+ * 로그인 (plan/6.md, Figma 77:147) — 한 칼럼 명세서: 로고 → 워드마크 → 태그라인 → 필드 → 버튼.
+ * 카드·그림자·그라데이션 없음. 회원가입 링크는 베타 차단(37348a0) — 가입은 URL 직접 진입만.
+ */
 export default function LoginSection() {
   const t = useTranslations("auth");
   const tg = useTranslations("general.common");
@@ -55,63 +52,42 @@ export default function LoginSection() {
   });
 
   return (
-    <form
-      onSubmit={onSubmit}
-      style={{ display: "flex", flexDirection: "column", flex: 1 }}
-    >
-      {/* hero — 상단 그라데이션 위 브랜드 블록(좌정렬). 세리프 워드마크 1회만(DESIGN.md). */}
-      <Stack gap={18} align="flex-start" style={{ padding: "64px 28px 32px" }}>
-        <BrandLogo size={64} />
-        <Stack gap={10}>
-          <Text
-            component="h1"
-            className="brand-wordmark"
-            style={{ fontSize: 40, fontWeight: 700, lineHeight: 1.1 }}
-          >
-            {t("brand_name")}
-          </Text>
-          <Text size="md" c="dimmed" style={{ lineHeight: 1.5, wordBreak: "keep-all" }}>
-            {t("brand_tagline")}
-          </Text>
-        </Stack>
+    <form onSubmit={onSubmit} noValidate>
+      <Stack gap={12} align="flex-start">
+        <BrandLogo size={40} />
+        {/* 워드마크 = accent 800(DESIGN §5 셸) — Mantine Text 기본 굵기·색이 클래스보다 우선이라 props 로 */}
+        <Text
+          component="h1"
+          fw={800}
+          c="var(--moeum-accent)"
+          style={{ fontSize: 28, lineHeight: "36px", letterSpacing: "-0.03em", margin: 0 }}
+        >
+          {t("brand_name")}
+        </Text>
+        <Text c="dimmed" style={{ fontSize: 15, lineHeight: "23px", wordBreak: "keep-all" }}>
+          {t("brand_tagline")}
+        </Text>
       </Stack>
 
-      {/* 카드 시트 — 하단에 붙는 폼 카드(상단 라운드 + 위로 떨어지는 그림자). */}
-      <div
-        style={{
-          marginTop: "auto",
-          background: TOKEN.card,
-          borderRadius: "28px 28px 0 0",
-          boxShadow: "0 -8px 30px rgba(120, 100, 70, 0.1)",
-          padding: "30px 26px 40px",
-        }}
-      >
-        <Stack gap="sm">
-          <TextInput
-            {...form.getInputProps("email")}
-            label={t("email")}
-            placeholder={t("email_placeholder")}
-            size="md"
-          />
-          <PasswordInput
-            {...form.getInputProps("password")}
-            label={t("password")}
-            placeholder={t("password_placeholder")}
-            size="md"
-          />
-        </Stack>
-        <Button
-          type="submit"
-          fullWidth
-          size="lg"
-          radius="xl"
-          fw={700}
-          mt="lg"
-          loading={loginMutation.isPending}
-        >
-          {t("login_submit")}
-        </Button>
-      </div>
+      {/* 간격 14 — 폼 공통 리듬 (DESIGN §5) */}
+      <Stack gap={14} mt={32}>
+        <TextInput
+          {...form.getInputProps("email")}
+          label={t("email")}
+          placeholder={t("email_placeholder")}
+          type="email"
+          autoComplete="email"
+        />
+        <PasswordInput
+          {...form.getInputProps("password")}
+          label={t("password")}
+          placeholder={t("password_placeholder")}
+          autoComplete="current-password"
+        />
+      </Stack>
+      <Button type="submit" fullWidth size="lg" mt={24} loading={loginMutation.isPending}>
+        {t("login_submit")}
+      </Button>
     </form>
   );
 }

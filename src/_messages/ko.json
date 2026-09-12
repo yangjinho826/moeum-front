@@ -121,7 +121,9 @@
     "welcome_register_title": "함께 시작해요",
     "welcome_register_subtitle": "이메일과 비밀번호만 있으면 돼요",
     "login_prompt": "이미 계정이 있으신가요?",
-    "register_prompt": "처음 오셨어요?"
+    "register_prompt": "처음 오셨어요?",
+    "password_rule": "8자 이상 · 영문과 숫자를 섞어 주세요",
+    "password_rule_message": "비밀번호는 8자 이상, 영문과 숫자를 함께 넣어 주세요."
   },
   "general": {
     "picker": {

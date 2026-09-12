@@ -121,7 +121,9 @@
     "welcome_register_title": "Let's get started",
     "welcome_register_subtitle": "All you need is an email and password",
     "login_prompt": "Already have an account?",
-    "register_prompt": "New here?"
+    "register_prompt": "New here?",
+    "password_rule": "8+ characters with letters and numbers",
+    "password_rule_message": "Use at least 8 characters with both letters and numbers."
   },
   "general": {
     "picker": {
