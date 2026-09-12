@@ -2,7 +2,6 @@
 
 import {
   Button,
-  Card,
   Group,
   NumberInput,
   Select,
@@ -10,7 +9,7 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { Fragment, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
 import FormActions from "_features/common/components/form-actions";
@@ -23,8 +22,8 @@ interface PortfolioFormProps {
   portfolioId?: string;
   /** 시트에서 사용 시 — 성공·취소 후 호출(시트 close) */
   onDone?: () => void;
-  /** 시트 안에서는 Card 래퍼 없이(이미 패딩 있음) */
-  hideCard?: boolean;
+  /** 시트(FormSheet) 안에서 쓸 때 — 푸터 sticky. 페이지 모드 폭(560)은 폼 섹션이 잡는다 */
+  inSheet?: boolean;
   /** 계좌 상세에서 추가 시 — 그 계좌로 프리필(create 전용) */
   defaultAccountId?: string;
 }
@@ -32,7 +31,7 @@ interface PortfolioFormProps {
 export default function PortfolioForm({
   portfolioId,
   onDone,
-  hideCard = false,
+  inSheet = false,
   defaultAccountId,
 }: PortfolioFormProps) {
   const t = useTranslations("portfolio");
@@ -50,8 +49,6 @@ export default function PortfolioForm({
     handleRemove,
     handleCancel,
   } = usePortfolioForm({ portfolioId, onDone });
-
-  const Wrapper = hideCard ? Fragment : Card;
 
   const tMarket = useTranslations("enum.market");
   const { data: marketData } = useEnumOptions("market");
@@ -97,76 +94,74 @@ export default function PortfolioForm({
   }, [investAccountOptions, isUpdate, defaultAccountId]);
 
   return (
-    <Wrapper>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Stack gap="sm">
-          <Select
-            {...form.getInputProps("accountId")}
-            label={t("account")}
-            placeholder={t("account_placeholder")}
-            data={investAccountOptions}
-            disabled={isUpdate}
-            searchable
-          />
-          <Select
-            {...form.getInputProps("market")}
-            label={t("market")}
-            description={t("market_help")}
-            data={marketOptions}
-            allowDeselect={false}
-          />
-          {!isOther && (
-            <Group align="end" gap="xs" wrap="nowrap">
-              <TextInput
-                {...form.getInputProps("code")}
-                label={t("code")}
-                placeholder={codePlaceholder}
-                style={{ flex: 1 }}
-              />
-              <Button
-                type="button"
-                variant="light"
-                onClick={handleLookup}
-                loading={isLookupPending}
-                disabled={!form.values.code.trim()}
-              >
-                {t("lookup")}
-              </Button>
-            </Group>
-          )}
-          <TextInput
-            {...form.getInputProps("name")}
-            label={t("name")}
-            placeholder={t("name_placeholder")}
-            description={isUpdate ? undefined : t("name_help")}
-            disabled={isUpdate}
-          />
-          <NumberInput
-            {...form.getInputProps("currentPrice")}
-            label={t("current_price")}
-            placeholder={t("current_price_placeholder")}
-            thousandSeparator=","
-            min={0}
-            rightSection={
-              <Text size="xs" c="dimmed" pr={8}>
-                {tGeneral("won")}
-              </Text>
-            }
-            description={isUpdate ? undefined : t("current_price_help")}
-          />
-          <FormActions
-            submitLabel={isUpdate ? tg("update") : tg("create")}
-            isPending={isPending}
-            onCancel={handleCancel}
-            cancelLabel={tg("cancel")}
-            onRemove={isUpdate ? handleRemove : undefined}
-            removeLabel={tg("delete")}
-            removeDisabled={quantity > 0}
-            removeHint={quantity > 0 ? t("delete_blocked_holdings") : undefined}
-            sticky={hideCard}
-          />
-        </Stack>
-      </form>
-    </Wrapper>
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <Stack gap="sm">
+        <Select
+          {...form.getInputProps("accountId")}
+          label={t("account")}
+          placeholder={t("account_placeholder")}
+          data={investAccountOptions}
+          disabled={isUpdate}
+          searchable
+        />
+        <Select
+          {...form.getInputProps("market")}
+          label={t("market")}
+          description={t("market_help")}
+          data={marketOptions}
+          allowDeselect={false}
+        />
+        {!isOther && (
+          <Group align="end" gap="xs" wrap="nowrap">
+            <TextInput
+              {...form.getInputProps("code")}
+              label={t("code")}
+              placeholder={codePlaceholder}
+              style={{ flex: 1 }}
+            />
+            <Button
+              type="button"
+              variant="light"
+              onClick={handleLookup}
+              loading={isLookupPending}
+              disabled={!form.values.code.trim()}
+            >
+              {t("lookup")}
+            </Button>
+          </Group>
+        )}
+        <TextInput
+          {...form.getInputProps("name")}
+          label={t("name")}
+          placeholder={t("name_placeholder")}
+          description={isUpdate ? undefined : t("name_help")}
+          disabled={isUpdate}
+        />
+        <NumberInput
+          {...form.getInputProps("currentPrice")}
+          label={t("current_price")}
+          placeholder={t("current_price_placeholder")}
+          thousandSeparator=","
+          min={0}
+          rightSection={
+            <Text size="xs" c="dimmed" pr={8}>
+              {tGeneral("won")}
+            </Text>
+          }
+          description={isUpdate ? undefined : t("current_price_help")}
+        />
+        <FormActions
+          submitLabel={isUpdate ? tg("update") : tg("create")}
+          isPending={isPending}
+          onCancel={handleCancel}
+          cancelLabel={tg("cancel")}
+          onRemove={isUpdate ? handleRemove : undefined}
+          removeLabel={tg("delete")}
+          removeDisabled={quantity > 0}
+          removeHint={quantity > 0 ? t("delete_blocked_holdings") : undefined}
+          sticky={inSheet}
+        />
+      </Stack>
+    </form>
   );
 }

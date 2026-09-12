@@ -27,7 +27,7 @@ export default function PortfolioSheet() {
         portfolioId={editId ?? undefined}
         defaultAccountId={defaultAccountId ?? undefined}
         onDone={close}
-        hideCard
+        inSheet
       />
     </FormSheet>
   );

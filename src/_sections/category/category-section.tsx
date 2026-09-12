@@ -84,7 +84,7 @@ export default function CategorySection() {
         <CategoryForm
           categoryId={editId}
           onDone={() => setOpened(false)}
-          hideCard
+          inSheet
         />
       </FormSheet>
     </Stack>

@@ -125,3 +125,22 @@ export const SURFACE: Record<"light" | "dark", SchemeSurface> = {
     chartMuted: darkScale[3],
   },
 };
+
+/**
+ * 사용자가 고르는 통장·카테고리·고정비 색 — DB 에 hex 로 저장되는 **데이터**(테마 토큰 아님, 스킴 무관).
+ * 이미 저장된 값과 `===` 로 선택 표시를 비교하므로 값을 바꾸지 않는다 (ColorPicker).
+ */
+export const USER_COLOR_PALETTE = [
+  "#3B82F6",
+  "#2F855A",
+  "#EF4444",
+  "#8B5CF6",
+  "#FCD34D",
+  "#D97706",
+  "#FF6B6B",
+  "#4ECDC4",
+  "#FFE66D",
+  "#95E1D3",
+  "#0046FF",
+  "#8B95A1",
+] as const;

@@ -99,7 +99,7 @@ export default function FixedSection() {
         onClose={() => setOpened(false)}
         title={editId ? t("form_update_title") : t("form_create_title")}
       >
-        <FixedForm fixedId={editId} onDone={() => setOpened(false)} hideCard />
+        <FixedForm fixedId={editId} onDone={() => setOpened(false)} inSheet />
       </FormSheet>
     </Stack>
   );

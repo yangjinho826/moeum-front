@@ -18,7 +18,7 @@ interface FormActionsProps {
 }
 
 /**
- * 폼 하단 액션 공통 블록 — 취소(outline = hair 테두리)/저장(filled accent) + 선택적 삭제 (DESIGN.md §5 버튼).
+ * 폼 하단 액션 공통 블록 — 삭제(subtle danger, 좌측) · 취소(outline = hair 테두리) · 저장(filled accent) 한 줄 (DESIGN.md §5 버튼, 배치3).
  *
  * sticky 모드는 시트 스크롤 컨테이너 하단에 붙는다. FormSheet body 의
  * paddingBottom(--safe-bottom + 16px)을 음수 마진으로 파고들고, sticky bottom 을
@@ -37,15 +37,32 @@ export default function FormActions({
   removeHint,
   sticky = false,
 }: FormActionsProps) {
+  // 한 줄: [삭제 subtle danger · 좌측 auto 폭] [취소 outline] [저장 filled] (Figma 60:249 FormActions)
+  // 삭제는 글자 왼쪽 끝이 필드 왼쪽 선에 맞게 음수 마진으로 패딩을 먹는다
   const buttons = (
-    <Stack gap="sm">
-      <Group grow>
+    <Stack gap={4}>
+      <Group gap="sm" wrap="nowrap">
+        {onRemove && (
+          <Button
+            type="button"
+            variant="subtle"
+            color="danger"
+            onClick={onRemove}
+            disabled={isPending || removeDisabled}
+            px={12}
+            ml={-12}
+            style={{ flexShrink: 0 }}
+          >
+            {removeLabel}
+          </Button>
+        )}
         {onCancel && (
           <Button
             type="button"
             variant="default"
             onClick={onCancel}
             disabled={isPending}
+            flex={1}
           >
             {cancelLabel}
           </Button>
@@ -55,29 +72,15 @@ export default function FormActions({
           loading={isPending}
           disabled={submitDisabled}
           color={submitColor}
+          flex={1}
         >
           {submitLabel}
         </Button>
       </Group>
-      {onRemove && (
-        <Stack gap={4}>
-          <Button
-            type="button"
-            // 파괴적 보조 액션 = subtle danger(팔레트 안 의미색). 위치(푸터 좌측)는 8개 폼 공통이라 배치3
-            variant="subtle"
-            color="danger"
-            onClick={onRemove}
-            disabled={isPending || removeDisabled}
-            fullWidth
-          >
-            {removeLabel}
-          </Button>
-          {removeHint && (
-            <Text size="xs" c="dimmed" ta="center">
-              {removeHint}
-            </Text>
-          )}
-        </Stack>
+      {onRemove && removeHint && (
+        <Text size="xs" c="dimmed">
+          {removeHint}
+        </Text>
       )}
     </Stack>
   );

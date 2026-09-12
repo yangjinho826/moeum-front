@@ -1,23 +1,8 @@
 "use client";
 
-import { Group, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Input, SimpleGrid, UnstyledButton } from "@mantine/core";
 
-import { TOKEN } from "_styles/design-tokens";
-
-const COLORS = [
-  TOKEN.blue, // 블루
-  TOKEN.positive, // 세이지 그린 (양수/적립)
-  TOKEN.red, // 레드
-  TOKEN.purple, // 퍼플
-  TOKEN.yellow, // 옐로우
-  TOKEN.orange, // 오렌지
-  "#FF6B6B", // 레드 라이트
-  "#4ECDC4", // 민트
-  "#FFE66D", // 옐로우 라이트
-  "#95E1D3", // 그린 라이트
-  "#0046FF", // 신한 블루
-  "#8B95A1", // 그레이
-];
+import { USER_COLOR_PALETTE } from "_styles/palette";
 
 interface ColorPickerProps {
   value?: string | null;
@@ -25,41 +10,44 @@ interface ColorPickerProps {
   label?: string;
 }
 
+/**
+ * 색 선택 — 12색 원 28 · 6열 2줄 (Figma 60:77 Field/색).
+ * 팔레트는 저장되는 사용자 데이터라 hex 그대로, 선택 표시만 토큰(본문색 2px 링 · 간격 2).
+ */
 export default function ColorPicker({
   value,
   onChange,
   label,
 }: ColorPickerProps) {
   return (
-    <Stack gap={6}>
-      {label && (
-        <Text size="sm" fw={500}>
-          {label}
-        </Text>
-      )}
-      <Group gap={8}>
-        {COLORS.map((c) => {
+    <Input.Wrapper label={label}>
+      <SimpleGrid
+        cols={6}
+        spacing={16}
+        verticalSpacing={12}
+        w="fit-content"
+        p={2}
+      >
+        {USER_COLOR_PALETTE.map((c) => {
           const selected = value === c;
           return (
             <UnstyledButton
               key={c}
               onClick={() => onChange?.(c)}
               aria-label={c}
+              aria-pressed={selected}
+              w={28}
+              h={28}
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
+                borderRadius: "50%",
                 background: c,
-                border: selected
-                  ? "2px solid var(--mantine-color-gray-9)"
-                  : "2px solid transparent",
-                outline: selected ? "2px solid white" : "none",
-                outlineOffset: -4,
+                outline: selected ? "2px solid var(--moeum-text)" : "none",
+                outlineOffset: 2,
               }}
             />
           );
         })}
-      </Group>
-    </Stack>
+      </SimpleGrid>
+    </Input.Wrapper>
   );
 }

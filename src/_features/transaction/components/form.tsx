@@ -2,7 +2,6 @@
 
 import {
   Box,
-  Card,
   NumberInput,
   SegmentedControl,
   Select,
@@ -33,15 +32,15 @@ interface TransactionFormProps {
   copyFromId?: string;
   /** 성공/취소 후 호출. 시트 모드용. 없으면 라우트 이동 (기존 동작). */
   onDone?: () => void;
-  /** true 면 외곽 Card 제거 — Drawer/시트 안에서 사용할 때 padding 이중 방지 */
-  hideCard?: boolean;
+  /** 시트(FormSheet) 안에서 쓸 때 — 푸터 sticky. 페이지 모드 폭(560)은 폼 섹션이 잡는다 */
+  inSheet?: boolean;
 }
 
 export default function TransactionForm({
   transactionId,
   copyFromId,
   onDone,
-  hideCard = false,
+  inSheet = false,
 }: TransactionFormProps) {
   const t = useTranslations("transaction");
   const tTxType = useTranslations("enum.tx-type");
@@ -146,15 +145,17 @@ export default function TransactionForm({
     );
   };
 
-  // 평가조정 생성 힌트 — 현재 잔액 + (새 평가액 입력 시) 증감 표시. 증감은 자산 방향색(up/down).
+  // 평가조정 생성 힌트 — 현재 잔액 + (새 평가액을 입력한 뒤에만) 증감 표시. 증감은 자산 방향색(up/down).
   const renderValuationHint = () => {
     if (isUpdate || !selectedAccount) return null;
-    const diff = (Number(form.values.valuation) || 0) - selectedAccount.balance;
+    const valuation = Number(form.values.valuation) || 0;
+    const diff = valuation - selectedAccount.balance;
     return (
       <Text className="moeum-mono moeum-label" fw={600} c="dimmed" mt={-8}>
         {t("balance_current")} {fmt(selectedAccount.balance)}
         {t("won")}
-        {diff !== 0 && (
+        {/* 입력 전(0)엔 현재 잔액만 — 빈 칸에서 "감소 <잔액 전부>" 가 뜨지 않게 */}
+        {valuation > 0 && diff !== 0 && (
           <>
             {" · "}
             <Text span inherit style={{ color: semanticColor(signColor(diff, "asset")) }}>
@@ -340,7 +341,7 @@ export default function TransactionForm({
           cancelLabel={tg("cancel")}
           onRemove={isUpdate ? handleRemove : undefined}
           removeLabel={tg("delete")}
-          sticky={hideCard}
+          sticky={inSheet}
         />
       </Stack>
     </form>
@@ -360,8 +361,8 @@ export default function TransactionForm({
         }}
       />
     );
-    return hideCard ? empty : <Card>{empty}</Card>;
+    return empty;
   }
 
-  return hideCard ? formContent : <Card>{formContent}</Card>;
+  return formContent;
 }
