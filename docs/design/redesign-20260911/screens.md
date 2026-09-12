@@ -6,10 +6,10 @@
 | invest | /invest | P1 | 1 | 로그인·uitest 데이터 · 390/1440 | 25:179 | 45d29ab | invest.jpg·invest-desktop.jpg |
 | settings | /settings | P1 | 1 | 로그인·uitest 데이터 · 390/1440 | 27:257 | a45b06b | settings.jpg·settings-desktop.jpg |
 | transactions | /transactions | P1 | 1 | 로그인·uitest 데이터 · 390/1440 | 22:90 | 53b0cfe | transactions.jpg·transactions-desktop.jpg·transactions-calendar.jpg |
-| invest/account/[accountId] | /invest/account/[accountId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | | | |
-| invest/portfolio/[portfolioId] | /invest/portfolio/[portfolioId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | | | |
-| transactions/new | /transactions/new | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | | | |
-| wealth | /wealth | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | | | |
+| invest/account/[accountId] | /invest/account/[accountId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 41:365 | | |
+| invest/portfolio/[portfolioId] | /invest/portfolio/[portfolioId] | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 45:130 | | |
+| transactions/new | /transactions/new | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:451 | | |
+| wealth | /wealth | P1 | 2 | 로그인·uitest 데이터 · 390/1440 | 46:195 | | |
 | account | /account | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
 | account/[accountId] | /account/[accountId] | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |
 | account/[accountId]/edit | /account/[accountId]/edit | P2 | 3 | 로그인·uitest 데이터 · 390/1440 | | | |

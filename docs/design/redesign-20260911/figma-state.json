@@ -1,8 +1,8 @@
 {
   "runId": "ds-moeum-redesign-20260911",
   "fileKey": "j1xaab6icKdvERz6SbU6E0",
-  "phase": "S5 batch1 code done · Figma invest 25:179 갱신(CompositionBar B)",
-  "step": "next: S5",
+  "phase": "S4 batch2 Figma 4/4 done",
+  "step": "next: S5 batch2",
   "decisions": {
     "fontSans": "Noto Sans KR (Pretendard 대역)",
     "fontMono": "Geist Mono",
@@ -20,7 +20,8 @@
     },
     "pages": {
       "Page 1": "0:1",
-      "배치1 · 390": "10:2"
+      "배치1 · 390": "10:2",
+      "배치2 · 390": "41:364"
     },
     "styles": {
       "Shadow/Modal": "S:bc7a6b3b4e1a4c2a109bfee86b9af6b170d4f316,",
@@ -45,7 +46,11 @@
       "home": "10:3",
       "transactions": "22:90",
       "invest": "25:179",
-      "settings": "27:257"
+      "settings": "27:257",
+      "invest/account": "41:365",
+      "invest/portfolio": "45:130",
+      "transactions/new": "46:451",
+      "wealth": "46:195"
     }
   },
   "completedSteps": [
@@ -59,7 +64,8 @@
     "P1.g",
     "P1.h",
     "S2-c smoke",
-    "S4 batch1"
+    "S4 batch1",
+    "S4 batch2"
   ],
   "notes": [
     "FAB 높이: DESIGN 40 vs size/button-sm 36 → S3 결정",
