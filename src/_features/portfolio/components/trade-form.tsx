@@ -112,7 +112,7 @@ export default function TradeForm({
         notifications.show({
           title: t("edit_done_title"),
           message: t("edit_done_msg"),
-          color: editingTx.ptType === "BUY" ? "red" : "blue",
+          color: "positive",
         });
       } else if (values.tradeType === "BUY") {
         await buyMutation.mutateAsync({
@@ -126,7 +126,7 @@ export default function TradeForm({
         notifications.show({
           title: t("buy_done_title"),
           message: t("buy_done_msg"),
-          color: "red",
+          color: "positive",
         });
       } else {
         // 전량 매도 시 백엔드가 종목을 soft delete 하고 data=null 반환 → soldOut 신호
@@ -144,7 +144,7 @@ export default function TradeForm({
           message: soldOut
             ? t("sell_done_soldout_msg")
             : t("sell_done_msg"),
-          color: "blue",
+          color: "positive",
         });
       }
       onSuccess?.(soldOut);
@@ -152,7 +152,7 @@ export default function TradeForm({
       notifications.show({
         title: isEdit ? t("edit_fail_title") : t("record_fail_title"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     } finally {
       setSubmitting(false);
@@ -165,7 +165,7 @@ export default function TradeForm({
       centered: true,
       title: t("delete_title"),
       labels: { confirm: tg("common.delete"), cancel: tg("common.cancel") },
-      confirmProps: { color: "red" },
+      confirmProps: { color: "danger" },
       children: (
         <span>
           {t("delete_confirm_msg")}
@@ -180,14 +180,14 @@ export default function TradeForm({
           notifications.show({
             title: t("delete_done_title"),
             message: t("delete_done_msg"),
-            color: "green",
+            color: "positive",
           });
           onSuccess?.();
         } catch (error) {
           notifications.show({
             title: t("delete_fail_title"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         } finally {
           setSubmitting(false);

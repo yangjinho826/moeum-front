@@ -55,7 +55,7 @@ export default function RegisterSection() {
       notifications.show({
         title: tg("notificationstitle"),
         message: error.errorMessage ?? t("register_failed"),
-        color: "red",
+        color: "danger",
       });
     },
   });
@@ -66,7 +66,7 @@ export default function RegisterSection() {
       notifications.show({
         title: tg("notificationstitle"),
         message: t("register_success"),
-        color: "green",
+        color: "positive",
       });
       router.push(`/${params.locale}/login`);
     } catch {

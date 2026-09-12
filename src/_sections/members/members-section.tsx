@@ -83,7 +83,7 @@ export default function MembersSection({
           name: user.name,
           email: user.email,
         }),
-        color: "green",
+        color: "positive",
       });
       setEmail("");
     } catch (error) {
@@ -95,7 +95,7 @@ export default function MembersSection({
       notifications.show({
         title: t("invite_failed_title"),
         message,
-        color: "red",
+        color: "danger",
       });
     } finally {
       setSearching(false);
@@ -107,7 +107,7 @@ export default function MembersSection({
       centered: true,
       title: t("remove_confirm_title"),
       labels: { confirm: tg("delete"), cancel: tg("cancel") },
-      confirmProps: { color: "red" },
+      confirmProps: { color: "danger" },
       children: <span>{t("remove_confirm", { name: memberName })}</span>,
       onConfirm: async () => {
         try {
@@ -115,13 +115,13 @@ export default function MembersSection({
           notifications.show({
             title: t("remove_success_title"),
             message: t("remove_success_message", { name: memberName }),
-            color: "green",
+            color: "positive",
           });
         } catch (error) {
           notifications.show({
             title: t("remove_failed_title"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

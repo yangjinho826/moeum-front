@@ -82,14 +82,14 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         await createMutation.mutateAsync({ ...form.values });
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       if (onDone) onDone();
@@ -98,7 +98,7 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -116,7 +116,7 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) onDone();
           else router.replace(`/${routeParams.locale}/fixed`);
@@ -124,7 +124,7 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

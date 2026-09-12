@@ -111,13 +111,13 @@ export function usePortfolioForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: `${d.name} · ${d.yahooSymbol}`,
-        color: "green",
+        color: "positive",
       });
     } catch (error) {
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -137,7 +137,7 @@ export function usePortfolioForm({
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         // 종목 메타 등록 (qty=0 시작) — 매수는 디테일에서 별도
@@ -151,7 +151,7 @@ export function usePortfolioForm({
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       if (onDone) onDone();
@@ -160,7 +160,7 @@ export function usePortfolioForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -178,7 +178,7 @@ export function usePortfolioForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) onDone();
           else router.replace(`/${routeParams.locale}/invest`);
@@ -186,7 +186,7 @@ export function usePortfolioForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

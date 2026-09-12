@@ -205,7 +205,7 @@ export function useTransactionForm({
         message: isUpdate
           ? tg("update_has_been_completed")
           : tg("register_has_been_completed"),
-        color: "green",
+        color: "positive",
       });
       if (onDone) {
         onDone();
@@ -216,7 +216,7 @@ export function useTransactionForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -234,7 +234,7 @@ export function useTransactionForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) {
             onDone();
@@ -245,7 +245,7 @@ export function useTransactionForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

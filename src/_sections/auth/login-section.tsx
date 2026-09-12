@@ -27,7 +27,7 @@ export default function LoginSection() {
       notifications.show({
         title: tg("notificationstitle"),
         message: error.errorMessage ?? t("login_failed"),
-        color: "red",
+        color: "danger",
       });
     },
   });
@@ -46,7 +46,7 @@ export default function LoginSection() {
       notifications.show({
         title: tg("notificationstitle"),
         message: t("login_success"),
-        color: "green",
+        color: "positive",
       });
       router.push(`/${params.locale}`);
     } catch {

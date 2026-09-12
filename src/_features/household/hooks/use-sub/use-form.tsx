@@ -86,14 +86,14 @@ export function useHouseholdForm({
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         await createMutation.mutateAsync({ ...form.values });
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       if (onDone) onDone();
@@ -102,7 +102,7 @@ export function useHouseholdForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -114,7 +114,7 @@ export function useHouseholdForm({
       centered: true,
       title: t("delete_confirm_title"),
       labels: { confirm: tg("delete"), cancel: tg("cancel") },
-      confirmProps: { color: "red" },
+      confirmProps: { color: "danger" },
       children: <span>{t("delete_confirm_message")}</span>,
       onConfirm: async () => {
         try {
@@ -122,7 +122,7 @@ export function useHouseholdForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) onDone();
           else router.replace(`/${routeParams.locale}/household`);
@@ -130,7 +130,7 @@ export function useHouseholdForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

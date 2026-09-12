@@ -27,7 +27,7 @@ function showApiErrorToast(error: unknown) {
 
   notifications.show({
     message,
-    color: "red",
+    color: "danger",
   });
 }
 

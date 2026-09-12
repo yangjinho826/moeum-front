@@ -51,14 +51,14 @@ export default function HouseholdOnboardingSection() {
       notifications.show({
         title: tg("notificationstitle"),
         message: t("created_message"),
-        color: "green",
+        color: "positive",
       });
       router.replace(`/${params.locale}`);
     } catch (error) {
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
