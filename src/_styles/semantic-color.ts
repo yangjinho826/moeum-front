@@ -54,3 +54,7 @@ export const chartColor = (index: number): SemanticColor =>
   (["chart1", "chart2", "chart3", "chart4", "chart5"] as const)[
     Math.min(index, 4)
   ] ?? "chart5";
+
+/** 방향이 정해진 금액(이번 달 수입·지출·고정지출)의 색. 0 은 방향이 없어 dim (배치3 H-306) */
+export const amountColor = (value: number, color: SemanticColor): SemanticColor =>
+  value === 0 ? "dim" : color;

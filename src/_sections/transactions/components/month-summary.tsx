@@ -10,6 +10,7 @@ import ListRow from "_features/common/components/list-row";
 import StatGrid from "_features/common/components/stat-grid";
 import { topExpenseCategories } from "_features/stats/utils";
 import { queryKeys } from "_constants/queries";
+import { amountColor } from "_styles/semantic-color";
 import { fmt } from "_utilities/fmt";
 
 const TOP_CATEGORY_COUNT = 5;
@@ -42,8 +43,8 @@ export default function MonthSummary({ year, month, showTop = true }: MonthSumma
     <Stack gap={0}>
       <StatGrid
         items={[
-          { label: t("summary_income"), value: fmt(income), color: "income" },
-          { label: t("summary_expense"), value: fmt(expense), color: "expense" },
+          { label: t("summary_income"), value: fmt(income), color: amountColor(income, "income") },
+          { label: t("summary_expense"), value: fmt(expense), color: amountColor(expense, "expense") },
           { label: t("summary_saving_rate"), value: `${savingRate.toFixed(1)}%` },
         ]}
       />

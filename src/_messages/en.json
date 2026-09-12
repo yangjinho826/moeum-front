@@ -215,6 +215,7 @@
     "same_as_last_month": "Same as last month",
     "vs_last_month": "vs last month",
     "this_month_income": "Income this month",
+    "general_expense": "Variable",
     "fixed_expense": "Fixed",
     "ledger": "Transactions",
     "asset": {

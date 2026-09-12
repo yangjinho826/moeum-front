@@ -213,6 +213,7 @@
     "same_as_last_month": "지난달과 같아요",
     "vs_last_month": "지난달보다",
     "this_month_income": "이번 달 수입",
+    "general_expense": "일반 지출",
     "fixed_expense": "고정지출",
     "ledger": "거래 내역",
     "asset": {

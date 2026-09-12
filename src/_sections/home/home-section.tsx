@@ -14,7 +14,7 @@ import { topExpenseCategories } from "_features/stats/utils";
 import { useQuickAddStore } from "_features/transaction/store";
 import TxRow from "_features/transaction/components/tx-row";
 import { queryKeys } from "_constants/queries";
-import { signColor } from "_styles/semantic-color";
+import { amountColor, signColor } from "_styles/semantic-color";
 import { fmt, fmtSigned, fmtSignedPct } from "_utilities/fmt";
 
 import TotalAssetHero from "./components/total-asset-hero";
@@ -148,8 +148,8 @@ export default function HomeSection() {
         hairline={false}
         link={{ label: t("go_transactions_all"), href: `/${locale}/transactions` }}
       >
-        <ListRow title={t("income")} value={fmt(income)} valueColor="income" href={`/${locale}/transactions?filter=INCOME`} />
-        <ListRow title={t("expense")} value={fmt(expense)} valueColor="expense" href={`/${locale}/transactions?filter=EXPENSE`} />
+        <ListRow title={t("income")} value={fmt(income)} valueColor={amountColor(income, "income")} href={`/${locale}/transactions?filter=INCOME`} />
+        <ListRow title={t("expense")} value={fmt(expense)} valueColor={amountColor(expense, "expense")} href={`/${locale}/transactions?filter=EXPENSE`} />
         <ListRow title={t("saving_rate")} value={pct(savingRate)} last href={`/${locale}/transactions`} />
       </Section>
       {expenseTop.length > 0 && (

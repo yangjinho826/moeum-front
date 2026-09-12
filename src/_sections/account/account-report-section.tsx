@@ -17,6 +17,7 @@ import StatGrid from "_features/common/components/stat-grid";
 import SubHeader from "_features/layout/components/sub-header";
 import AccountLedgerView from "_features/transaction/components/account-ledger-view";
 import AccountBalanceTrend from "_sections/wealth/components/account-balance-trend";
+import { amountColor } from "_styles/semantic-color";
 import { fmt } from "_utilities/fmt";
 
 interface Props {
@@ -79,9 +80,9 @@ export default function AccountReportSection({ accountId }: Props) {
         <Box hiddenFrom="lg">
           <StatGrid
             items={[
-              { label: t("this_month_income"), value: fmt(income), color: "income" },
-              { label: tTx("summary_expense"), value: fmt(expense), color: "expense" },
-              { label: t("fixed_expense"), value: fmt(fixedExpense), color: "expense" },
+              { label: t("this_month_income"), value: fmt(income), color: amountColor(income, "income") },
+              { label: t("general_expense"), value: fmt(expense), color: amountColor(expense, "expense") },
+              { label: t("fixed_expense"), value: fmt(fixedExpense), color: amountColor(fixedExpense, "expense") },
             ]}
           />
         </Box>
@@ -101,9 +102,9 @@ export default function AccountReportSection({ accountId }: Props) {
 
       <Box visibleFrom="lg" pt={48}>
         <Section title={tHome("this_month")}>
-          <ListRow title={tTx("summary_income")} value={fmt(income)} valueColor="income" />
-          <ListRow title={tTx("summary_expense")} value={fmt(expense)} valueColor="expense" />
-          <ListRow title={t("fixed_expense")} value={fmt(fixedExpense)} valueColor="expense" last />
+          <ListRow title={tTx("summary_income")} value={fmt(income)} valueColor={amountColor(income, "income")} />
+          <ListRow title={t("general_expense")} value={fmt(expense)} valueColor={amountColor(expense, "expense")} />
+          <ListRow title={t("fixed_expense")} value={fmt(fixedExpense)} valueColor={amountColor(fixedExpense, "expense")} last />
         </Section>
       </Box>
     </div>

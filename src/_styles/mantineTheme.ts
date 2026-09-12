@@ -314,11 +314,17 @@ export const mantineTheme = createTheme({
       defaultProps: {
         radius: "md",
       },
+      // 기본(size 미지정) = 높이 44 — 트랙 패딩 4 + 라벨 8·20·8 + 4. Mantine sm 은 ~34 라 터치 타깃 미달(배치3 H-301).
+      // size 를 직접 준 곳(거래 화면 헤더 보기 전환 xs)은 Mantine 기본 그대로
+      vars: (_theme, props) => ({
+        root: props.size === undefined ? { "--sc-padding": `${rem(8)} ${rem(14)}` } : {},
+      }),
       // 다크 기본(track dark-8 / indicator dark-5)이 surface-2 근처로 겹쳐 인디케이터가 안 보임
-      styles: {
+      styles: (_theme, props) => ({
         root: { background: "var(--moeum-surface-2)" },
         indicator: { background: "var(--moeum-surface)" },
-      },
+        label: props.size === undefined ? { lineHeight: rem(20) } : {},
+      }),
     }),
     Notification: Notification.extend({
       defaultProps: {
