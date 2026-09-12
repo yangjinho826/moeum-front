@@ -22,7 +22,7 @@ export const ACCOUNT_TYPE_MANTINE_COLOR: Record<AccountType, string> = {
   OTHER: "gray",
 };
 
-/** AccountType → hex (IconBox 등 직접 색이 필요한 곳) */
+/** AccountType → hex (직접 색이 필요한 곳) */
 export const ACCOUNT_TYPE_HEX: Record<AccountType, string> = {
   LIVING: TOKEN.blue,
   SAVINGS: TOKEN.positive,
