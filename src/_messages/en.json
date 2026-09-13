@@ -504,7 +504,7 @@
     "name_required_message": "Please enter a name.",
     "submit": "Next",
     "created_message": "Household created.",
-    "hint": "Currency defaults to KRW, start date defaults to today"
+    "hint": "Currency is KRW and the start date is today"
   },
   "household": {
     "list_title": "Households",

@@ -502,7 +502,7 @@
     "name_required_message": "이름을 입력해주세요.",
     "submit": "다음",
     "created_message": "가계부가 만들어졌어요.",
-    "hint": "통화는 KRW (원), 시작일은 오늘로 자동 설정돼요"
+    "hint": "통화는 KRW(원), 시작일은 오늘로 정해져요"
   },
   "household": {
     "list_title": "가계부",
