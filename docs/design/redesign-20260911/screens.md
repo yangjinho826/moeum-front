@@ -22,10 +22,10 @@
 | fixed/new | /fixed/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:297 | cca6ce4·4f5e693 | fixed-sheet.jpg·fixed-new-desktop.jpg |
 | household | /household | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:517 | f864585·4f5e693 | household.jpg·household-desktop.jpg |
 | household/new | /household/new | P2 | 5 | 로그인·uitest 데이터 · 390/1440 | 73:541 | 1690b7f | household-sheet.jpg·household-new-desktop.jpg |
-| household/[householdId] | /household/[householdId] | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | | | |
-| household/[householdId]/members | /household/[householdId]/members | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | | | |
-| login | /login | P2 | 6 | 비로그인 · 390/1440 | | | |
-| register | /register | P2 | 6 | 비로그인 · 390/1440 | | | |
+| household/[householdId] | /household/[householdId] | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | 73:541(같은 폼) | 1690b7f·fc4238e | household-edit-desktop.jpg |
+| household/[householdId]/members | /household/[householdId]/members | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | 76:111 | 56a66f7·e14f503 | members-sheet.jpg·members-desktop.jpg |
+| login | /login | P2 | 6 | 비로그인 · 390/1440 | 77:147 | 49ed452·e14f503 | login.jpg·login-desktop.jpg |
+| register | /register | P2 | 6 | 비로그인 · 베타 차단(→ /login 리다이렉트) | 77:170 | 49ed452·e14f503 | ⏭(라우트 차단) |
 | invest/[portfolioId] | /invest/[portfolioId] | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | | | |
 | invest/new | /invest/new | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | | | |
 | onboarding/household | /onboarding/household | P2 | 7 | 로그인·가계부 0개 · 390 | | | |

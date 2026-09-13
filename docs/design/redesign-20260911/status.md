@@ -1,5 +1,5 @@
 # design-flow status — redesign-20260911
-재개: 배치6 S5 — ListRow action → 멤버 → 전환기 → 게스트(로그인·가입)
+재개: 배치7 S5 — 종목 폼 · 거래 수정 페이지 · 온보딩
 look=교체(Warm Ledger→Statement·Warm)  figma=full  fileKey=j1xaab6icKdvERz6SbU6E0 (https://www.figma.com/design/j1xaab6icKdvERz6SbU6E0)  lib=같은 파일 로컬(혼자·게시 불필요)  baseline=token-baseline.txt
 
 | 단계 | 상태 | 산출물·식별자 | 날짜 |
@@ -28,8 +28,8 @@ look=교체(Warm Ledger→Statement·Warm)  figma=full  fileKey=j1xaab6icKdvERz6
 | 배치5 S6 | ✅ | qa/5.md · 감사 @2c691ba · 픽스 4f5e693 · DESIGN(이 커밋) — 토큰 신규 0 · typecheck·lint 0 · 콘솔 0 · /design-review 감사만 + Codex(6) · 서브에이전트(10) · blocking 0 · 수정 14(수정 모드 Select 다시 누르면 비워짐 → allowDeselect · 옵션 비-Suspense · Switch 44·행 레이아웃 테마 · 선택기 설명 연결·간격 · 빈/로딩/실패 안내는 설명 줄 · 색 점 · 숨은 통화 검증 제거 · 멤버 행 모바일 안내 · "사용 중" ListRow valueText · 보관 글리프 dim · en 용어) · 기각 1(hero 아래 구분선 — 계좌 화면 관례) · 보류 8(H-501 수정 비우기 = 백엔드, 하지 않기로 · H-502 보관 실데이터 확인 ✅ · H-508 삭제 ✅ 60fcc39) · shots 5장 재촬영 · Figma 동기화 4 · 사용자 ✅ 2026-09-13("전체 총괄" 위임 — 남은 배치·마감·배포까지 맡김) | 2026-09-13 |
 | 배치6 S3 | ✅ | 계획표 plan/6.md(household/[householdId] · members · login · register + 셸 가계부 전환기) · 감사 = 코드 + 백엔드 대조(멤버 Card·아바타·hex · memberCount 유령 · 로그인 그라데이션·그림자 카드 · 가입 비밀번호 규칙 미표시 · 가입 링크 베타 차단 유지) · 가설 = 배치1 pick A+C 확장 · 캔버스 ⏭(사용자 "전체 총괄" 위임 — Figma 가 시안) · pick = 추천안 A·A·A + 셸 A(사용자 "A로가") | 2026-09-13 |
 | 배치6 S4 | ✅ | node-id 4 (페이지 "배치6 · 390" 76:110 — members(시트) 76:111 · 전환기(셸 시트) 76:141 · login 77:147 · register 77:170) · 배치5 부품 복제(가계부 시트 73:541 · 목록 행 73:526~528 · Field/이름 73:560 · Button 73:649) · get_design_context OK(76:111 — var(--moeum-*) · 컴포넌트 설명) · 미바인딩 solid 0/4(BrandLogo 는 `(brand)` 예외 — brand-logo.tsx 와 같은 SVG) · household/[householdId] = 가계부 폼 페이지 모드(73:541 과 같은 폼, 배치5) · 멤버 라우트 = 시트 정본 fallback | 2026-09-13 |
-| 배치6 S5 | ⬜ | | |
-| 배치6 S6 | ⬜ | | |
+| 배치6 S5 | ✅ | 코드 · 커밋 공통 fc4238e · 멤버 56a66f7 · 전환기 0947549 · 게스트 49ed452 — 공통: FormSheet 본문 좌우 20(Figma 시트 패딩, Mantine 기본 12 에서) + FormActions sticky 가 `--mb-padding` 을 따름 · ListRow `action` 슬롯 · 헤더·사이드바 워드마크가 Mantine Text 기본값에 밀려 400·본문색이던 것 accent 800 / 멤버: Card·아바타·왕관·hex 제거 → "{가계부} 멤버 N" ListRow(역할 · 이메일) + 소유자만 추가 섹션(필드 + 버튼 한 줄) · 내보내기 행 끝 글자 · 멤버 시점 안내 · 페이지 레일 / 전환기: FormSheet + 목록과 같은 행 · "사용 중" · 새 가계부·가계부 관리 링크 · memberCount 유령 필드 제거(타입·내정보) / 게스트: 그라데이션·그림자 카드 제거 · 한 칼럼 · 가입 비밀번호 규칙 설명 + 사전 검사 — 검증: typecheck 0 · lint 0 · 토큰 신규 0 · 콘솔 0 · shots(qa/6 대조표) | 2026-09-13 |
+| 배치6 S6 | ✅ | qa/6.md · 감사 @49ed452 · 픽스 e14f503 — 토큰 신규 0 · typecheck·lint 0 · 콘솔 0 · /design-review 감사만 + Codex(4) · 서브에이전트(10+5) 같은 커밋 기준 · blocking 0 · 수정 13(시트 닫기 · 로딩 스켈레톤 · 윗 여백 · "초대"→"추가" · 이메일 검사 통일 · 오류 alert · 워드마크 컴포넌트 · 히트 44 · aria-current 등) 전부 실측 · 기각 1(내보내기 danger = §5 삭제 규칙) · 보류 H-601~605 · 사용자 "전체 총괄" 위임 | 2026-09-13 |
 | 배치7 S3 | ✅ | 계획표 plan/7.md(invest/[portfolioId] · invest/new · onboarding/household · transactions/[transactionId]) · 감사 = 코드 + 백엔드 대조(종목 폼 간격 8·조회 light 틴트·설명 위 · 종목 삭제 = 보관(보유 0) · 거래·종목 페이지 레일 비어 있음 · 온보딩 Card·가운데 힌트) · 가설 = 배치1 pick A+C 확장 · 캔버스 ⏭(위임) · pick = 추천안 A·A·A | 2026-09-13 |
 | 배치7 S4 | ✅ | node-id (페이지 "배치7 · 390" 78:2 — invest/new(시트) 78:4 · invest/[portfolioId] = 78:4 같은 폼(수정 = 삭제 좌측, 배치3 60:249 문법) · onboarding/household 78:79 · transactions/[transactionId] = 46:451 같은 폼) · 배치5·6 부품 복제(시트 73:541 · Field/시작 잔액 60:161 단위 · Button Outline 73:648 · 로그인 77:147) · get_design_context OK(78:79) · 미바인딩 solid 0/2 | 2026-09-13 |
 | 배치7 S5 | ⬜ | | |
