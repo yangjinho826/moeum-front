@@ -1,6 +1,6 @@
 "use client";
 
-import { Input, SimpleGrid, UnstyledButton } from "@mantine/core";
+import { Box, Input, UnstyledButton } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
 
@@ -19,7 +19,8 @@ interface IconPickerProps {
 }
 
 /**
- * 아이콘 선택 — 8열 · 44 박스(히트 44, 배치3 S6 F-302 — Figma 60:77 는 36 에서 갱신).
+ * 아이콘 선택 — 최대 8열 · 칸 44×44 이상(히트 44, 배치3 S6 F-302 — Figma 60:77 는 36 에서 갱신).
+ * 8열이 44 폭을 못 지키는 좁은 시트(390 본문 350 → 칸 38.5)에선 열을 줄인다(H-601) — 뷰포트가 아니라 칸 폭 기준.
  * 기본 surface-2 + dim 아이콘, 선택 accent-soft + accent 2px 안쪽 테두리 + accent 아이콘 (DESIGN §2-3 행동·활성 = accent).
  */
 export default function IconPicker({
@@ -43,13 +44,16 @@ export default function IconPicker({
       descriptionProps={{ id: descId, mt: 6 }}
       inputWrapperOrder={["label", "input", "description"]}
     >
-      <SimpleGrid
-        cols={8}
-        spacing={6}
-        verticalSpacing={6}
+      <Box
         role="group"
         aria-labelledby={label ? labelId : undefined}
         aria-describedby={description ? descId : undefined}
+        style={{
+          display: "grid",
+          // 칸 = max(44, 8열 폭) — 넓으면 8열 그대로, 좁으면 auto-fill 이 들어가는 만큼(390 = 7열)
+          gridTemplateColumns: "repeat(auto-fill, minmax(max(44px, calc((100% - 42px) / 8)), 1fr))",
+          gap: 6,
+        }}
       >
         {ICON_KEYS.map((key) => {
           const selected = value === key;
@@ -85,7 +89,7 @@ export default function IconPicker({
             </UnstyledButton>
           );
         })}
-      </SimpleGrid>
+      </Box>
     </Input.Wrapper>
   );
 }
