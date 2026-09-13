@@ -148,10 +148,8 @@ export default function PortfolioForm({
           disabled={isUpdate}
         />
         <NumberInput
+          // 빈 칸 = "" 그대로(placeholder "0") — 수정에서 0 은 값, 비운 칸은 검증에서 막는다
           {...form.getInputProps("currentPrice")}
-          // 0 이면 빈 칸 + placeholder "0"(DESIGN §5 폼 필드 — 통장 시작 잔액과 같게)
-          value={form.values.currentPrice || ""}
-          onChange={(v) => form.getInputProps("currentPrice").onChange(v === "" ? 0 : v)}
           label={t("current_price")}
           placeholder={t("current_price_placeholder")}
           thousandSeparator=","

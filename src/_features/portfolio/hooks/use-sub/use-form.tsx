@@ -23,7 +23,8 @@ interface FormValues {
   market: Market;
   code: string;
   name: string;
-  currentPrice: number;
+  /** 빈 칸 = "" — 0 과 구분해야 수정에서 0 은 받고 비운 칸은 막는다 */
+  currentPrice: number | "";
   isArchived: boolean;
 }
 
@@ -50,7 +51,7 @@ export function usePortfolioForm({
       market: "KRX_KOSPI",
       code: "",
       name: "",
-      currentPrice: 0,
+      currentPrice: "",
       isArchived: false,
     },
     validateInputOnBlur: true,
@@ -61,7 +62,11 @@ export function usePortfolioForm({
           market: z.enum(["KRX_KOSPI", "KRX_KOSDAQ", "NASDAQ", "NYSE", "OTHER"]),
           code: z.string(),
           name: z.string().min(1, t("name_required_message")),
-          currentPrice: z.number().positive(t("current_price_required_message")),
+          // 백엔드와 같게: 추가 = 양수 · 수정 = 0 이상(portfolio/schema.py) · 빈 칸은 둘 다 막음.
+          // 필드 refine 이라 이름 등 다른 오류와 같이 뜬다(객체 superRefine 은 필드가 다 통과해야 돈다)
+          currentPrice: z
+            .union([z.number(), z.literal("")])
+            .refine((v) => v !== "" && (isUpdate ? v >= 0 : v > 0), t("current_price_required_message")),
         })
         .superRefine((val, ctx) => {
           // OTHER (야후 미지원) 면 code 빈문자열 OK, 그 외엔 필수
@@ -126,7 +131,7 @@ export function usePortfolioForm({
         if (!portfolioId) throw new Error("No portfolioId for update");
         await updateMutation.mutateAsync({
           portfolioId,
-          currentPrice: form.values.currentPrice,
+          currentPrice: Number(form.values.currentPrice),
           name: form.values.name,
           code: form.values.code,
           market: form.values.market,
@@ -143,7 +148,7 @@ export function usePortfolioForm({
           name: form.values.name,
           code: form.values.code,
           market: form.values.market,
-          currentPrice: form.values.currentPrice,
+          currentPrice: Number(form.values.currentPrice),
           accountId: form.values.accountId,
         });
         notifications.show({
