@@ -95,7 +95,8 @@ export default function PortfolioForm({
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Stack gap="sm">
+      {/* 간격 14 — 폼 공통 리듬 (DESIGN §5) */}
+      <Stack gap={14}>
         <Select
           {...form.getInputProps("accountId")}
           label={t("account")}
@@ -108,6 +109,7 @@ export default function PortfolioForm({
           {...form.getInputProps("market")}
           label={t("market")}
           description={t("market_help")}
+          inputWrapperOrder={["label", "input", "description", "error"]}
           data={marketOptions}
           allowDeselect={false}
         />
@@ -119,9 +121,10 @@ export default function PortfolioForm({
               placeholder={codePlaceholder}
               style={{ flex: 1 }}
             />
+            {/* 보조 행동 = outline(DESIGN §5 버튼), 필드와 같은 높이 44 */}
             <Button
               type="button"
-              variant="light"
+              variant="default"
               onClick={handleLookup}
               loading={isLookupPending}
               disabled={!form.values.code.trim()}
@@ -135,10 +138,14 @@ export default function PortfolioForm({
           label={t("name")}
           placeholder={t("name_placeholder")}
           description={isUpdate ? undefined : t("name_help")}
+          inputWrapperOrder={["label", "input", "description", "error"]}
           disabled={isUpdate}
         />
         <NumberInput
           {...form.getInputProps("currentPrice")}
+          // 0 이면 빈 칸 + placeholder "0"(DESIGN §5 폼 필드 — 통장 시작 잔액과 같게)
+          value={form.values.currentPrice || ""}
+          onChange={(v) => form.getInputProps("currentPrice").onChange(v === "" ? 0 : v)}
           label={t("current_price")}
           placeholder={t("current_price_placeholder")}
           thousandSeparator=","
@@ -146,6 +153,7 @@ export default function PortfolioForm({
           rightSection={<InputUnit>{tGeneral("won")}</InputUnit>}
           rightSectionPointerEvents="none"
           description={isUpdate ? undefined : t("current_price_help")}
+          inputWrapperOrder={["label", "input", "description", "error"]}
         />
         <FormActions
           submitLabel={isUpdate ? tg("update") : tg("create")}

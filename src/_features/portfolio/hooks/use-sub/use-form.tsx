@@ -170,8 +170,10 @@ export function usePortfolioForm({
     modals.openConfirmModal({
       centered: true,
       title: tg("confirmtitle"),
-      labels: { confirm: tg("confirm"), cancel: tg("cancel") },
-      children: <span>{tg("want_to_delete")}</span>,
+      // 파괴적 확인 = danger (DESIGN §2-3). 백엔드는 보관(is_archived) — 지난 매매 기록은 남는다
+      labels: { confirm: tg("delete"), cancel: tg("cancel") },
+      confirmProps: { color: "danger" },
+      children: <span>{t("delete_confirm_body")}</span>,
       onConfirm: async () => {
         try {
           await updateMutation.mutateAsync({ portfolioId, isArchived: true });

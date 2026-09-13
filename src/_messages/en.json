@@ -338,14 +338,14 @@
     "account_placeholder": "Select account",
     "account_required_message": "Please select an account.",
     "market": "Market",
-    "market_help": "Markets auto-refreshed via Yahoo. Pick 'Other' for unsupported assets like commodities.",
+    "market_help": "KOSPI, KOSDAQ, NASDAQ and NYSE prices update automatically. Use Other for gold or commodities",
     "code": "Stock Code",
     "code_placeholder": "e.g. 005930",
     "code_required_message": "Please enter stock code.",
     "name": "Stock Name",
     "name_placeholder": "e.g. Samsung Electronics",
     "name_required_message": "Please enter stock name.",
-    "name_help": "Press Lookup to auto-fill from Yahoo Finance.",
+    "name_help": "Look up to fill in the name and current price",
     "lookup": "Lookup",
     "lookup_failed": "Failed to look up stock.",
     "quantity": "Quantity",
@@ -354,7 +354,7 @@
     "avg_price": "Avg Price",
     "current_value": "Current Value",
     "current_price": "Current Price",
-    "current_price_help": "Per-share current price. Quantity and buy price are added later via Buy.",
+    "current_price_help": "Price per share. Quantity builds up from buys after you add it.",
     "current_price_placeholder": "0",
     "current_price_required_message": "Please enter current price.",
     "account_total": "Account total",
@@ -417,7 +417,15 @@
     "mom": "MoM {pct}",
     "first_trade_empty": "No trades yet",
     "buy_cost_label": "Cost basis",
-    "trade_history": "Trades"
+    "trade_history": "Trades",
+    "delete_confirm_body": "This removes the holding from the list. Past trades stay as they are.",
+    "guide": {
+      "market_body": "KOSPI, KOSDAQ, NASDAQ and NYSE prices update automatically. For items that cannot be looked up, such as gold, choose Other and enter the price yourself.",
+      "quantity_title": "Quantity",
+      "quantity_body": "After adding the holding, record buys to build up quantity and average price.",
+      "delete_title": "Delete",
+      "delete_body": "You can delete it only when quantity is 0. Past trades stay as they are."
+    }
   },
   "transaction": {
     "list_title": "Transactions",

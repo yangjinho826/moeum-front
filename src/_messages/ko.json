@@ -336,14 +336,14 @@
     "account_placeholder": "계좌 선택",
     "account_required_message": "계좌를 선택해주세요.",
     "market": "시장",
-    "market_help": "야후 파이낸스에서 자동 시세 갱신되는 시장이에요. 금/원자재 등 미지원 종목은 '기타' 선택",
+    "market_help": "코스피·코스닥·나스닥·NYSE 는 시세가 자동으로 갱신돼요. 금·원자재는 기타",
     "code": "종목코드",
     "code_placeholder": "예) 005930",
     "code_required_message": "종목코드를 입력해주세요.",
     "name": "종목명",
     "name_placeholder": "예) 삼성전자",
     "name_required_message": "종목명을 입력해주세요.",
-    "name_help": "조회 버튼을 누르면 야후 파이낸스에서 자동으로 채워집니다.",
+    "name_help": "조회를 누르면 종목명과 현재가가 채워져요",
     "lookup": "조회",
     "lookup_failed": "종목 조회에 실패했습니다",
     "quantity": "수량",
@@ -352,7 +352,7 @@
     "avg_price": "평균 매입가",
     "current_value": "현재 평가금액",
     "current_price": "현재가",
-    "current_price_help": "1주당 현재 시세입니다. 수량과 매수가는 등록 후 매수에서 추가됩니다.",
+    "current_price_help": "1주 가격이에요. 수량은 추가한 뒤 매수로 쌓여요.",
     "current_price_placeholder": "0",
     "current_price_required_message": "현재가를 입력해주세요.",
     "account_total": "계좌 총액",
@@ -415,7 +415,15 @@
     "mom": "전월 {pct}",
     "first_trade_empty": "아직 매매 기록이 없어요",
     "buy_cost_label": "매입금액",
-    "trade_history": "매매 내역"
+    "trade_history": "매매 내역",
+    "delete_confirm_body": "이 종목을 목록에서 지워요. 지난 매매 기록은 그대로 남아요.",
+    "guide": {
+      "market_body": "코스피·코스닥·나스닥·NYSE 종목은 시세가 자동으로 갱신돼요. 금·원자재처럼 조회되지 않는 종목은 기타로 두고 현재가를 직접 넣어요.",
+      "quantity_title": "수량",
+      "quantity_body": "종목을 추가한 뒤 매수를 기록하면 수량과 평균가가 쌓여요.",
+      "delete_title": "삭제",
+      "delete_body": "보유 수량이 0 일 때만 지울 수 있어요. 지난 매매 기록은 그대로 남아요."
+    }
   },
   "transaction": {
     "list_title": "거래",
