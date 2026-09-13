@@ -1,65 +1,85 @@
 "use client";
 
-import { Group, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Box, Input, SimpleGrid, UnstyledButton } from "@mantine/core";
+import { useTranslations } from "next-intl";
+import { useId } from "react";
 
-import { TOKEN } from "_styles/design-tokens";
-
-const COLORS = [
-  TOKEN.blue, // 블루
-  TOKEN.positive, // 세이지 그린 (양수/적립)
-  TOKEN.red, // 레드
-  TOKEN.purple, // 퍼플
-  TOKEN.yellow, // 옐로우
-  TOKEN.orange, // 오렌지
-  "#FF6B6B", // 레드 라이트
-  "#4ECDC4", // 민트
-  "#FFE66D", // 옐로우 라이트
-  "#95E1D3", // 그린 라이트
-  "#0046FF", // 신한 블루
-  "#8B95A1", // 그레이
-];
+import { USER_COLOR_PALETTE } from "_styles/palette";
 
 interface ColorPickerProps {
   value?: string | null;
   onChange?: (color: string) => void;
+  /** 있으면 고른 색을 다시 눌러 비운다(비움 = 다른 값을 따른다 — 고정지출은 카테고리 색) */
+  onClear?: () => void;
   label?: string;
+  description?: string;
 }
 
+/**
+ * 색 선택 — 12색 원 28 · 6열 2줄 (Figma 60:77 Field/색).
+ * 팔레트는 저장되는 사용자 데이터라 hex 그대로. 히트는 44(원은 가운데 28), 선택은 box-shadow 링 —
+ * outline 은 키보드 focus-visible 링 몫으로 남긴다 (배치3 S6 F-301·302).
+ */
 export default function ColorPicker({
   value,
   onChange,
+  onClear,
   label,
+  description,
 }: ColorPickerProps) {
+  const t = useTranslations("general.picker");
+  const labelId = useId();
+  const descId = useId();
+
   return (
-    <Stack gap={6}>
-      {label && (
-        <Text size="sm" fw={500}>
-          {label}
-        </Text>
-      )}
-      <Group gap={8}>
-        {COLORS.map((c) => {
+    <Input.Wrapper
+      label={label}
+      labelElement="div"
+      labelProps={{ id: labelId }}
+      description={description}
+      // 그리드 음수 마진(히트 44 안의 원) 만큼 설명을 띄운다
+      descriptionProps={{ id: descId, mt: 6 }}
+      inputWrapperOrder={["label", "input", "description"]}
+    >
+      {/* 44 히트 안의 28 원 — 음수 마진으로 첫 원을 라벨 선에 맞춘다 */}
+      <SimpleGrid
+        cols={6}
+        spacing={0}
+        verticalSpacing={0}
+        w="fit-content"
+        mx={-8}
+        my={-6}
+        role="group"
+        aria-labelledby={label ? labelId : undefined}
+        aria-describedby={description ? descId : undefined}
+      >
+        {USER_COLOR_PALETTE.map((c, i) => {
           const selected = value === c;
           return (
             <UnstyledButton
               key={c}
-              onClick={() => onChange?.(c)}
-              aria-label={c}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                background: c,
-                border: selected
-                  ? "2px solid var(--mantine-color-gray-9)"
-                  : "2px solid transparent",
-                outline: selected ? "2px solid white" : "none",
-                outlineOffset: -4,
-              }}
-            />
+              onClick={() => (selected && onClear ? onClear() : onChange?.(c))}
+              aria-label={t("color_option", { n: i + 1 })}
+              aria-pressed={selected}
+              w={44}
+              h={44}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%" }}
+            >
+              <Box
+                w={28}
+                h={28}
+                style={{
+                  borderRadius: "50%",
+                  background: c,
+                  boxShadow: selected
+                    ? "0 0 0 2px var(--moeum-surface), 0 0 0 4px var(--moeum-text)"
+                    : "none",
+                }}
+              />
+            </UnstyledButton>
           );
         })}
-      </Group>
-    </Stack>
+      </SimpleGrid>
+    </Input.Wrapper>
   );
 }

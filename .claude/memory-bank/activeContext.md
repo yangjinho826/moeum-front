@@ -10,6 +10,12 @@
 
 ## Status
 
+### 리디자인 Quiet Dark — 배치1~7 + 마감 완료 (2026-09-13, feat/redesign-quiet-dark)
+design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 사용자 "전체 총괄" 위임으로 배치5 S6 승인 → 배치6(멤버·전환기·로그인·가입) → 배치7(종목 폼·거래 수정·온보딩) → 마감(qa/final.md) → main 머지·v0.13.0 태그 배포.
+- 공통 변경: FormSheet 본문 좌우 20 · 폼 아닌 시트 닫기 X · ListRow `action`/`current` · `BrandWordmark` · `isValidEmail`(백엔드 규칙) · outline 비활성 투명 · 삭제 확인 danger 통일 · FAB 목록 루트만.
+- 보류 정리: H-501 닫음(백엔드 안 함) · H-601 칸 44(22142d6) · H-701 수정 0 허용(6e16c34). 팀에 확인: 가입 재오픈 시 로그인 링크·온보딩 셸.
+- 주의: i18n JSON 수정은 turbopack dev 에 안 먹을 때 있음 → 재시작. 390 shot 은 Chrome zoom 저장(sips cropOffset 은 가운데 자름). 공개 레포라 shot 이메일은 가림.
+
 ### 프로젝트 이름 정리 — `household` → `moeum` (2026-08-22, B·C 레이어만)
 브랜드는 이미 "모음"인데 레포·디렉토리·문서에 옛 이름이 남아 거슬린다는 요청. 범위를 4레이어로 쪼개 **B(문서·주석)·C(디렉토리·레포명)만 실행**, D(인프라 식별자)·E(도메인 모델)는 보류.
 - **C**: GitHub 레포 `household-front` → `moeum-front` + 로컬 디렉토리 rename. `deploy.yml`/`rollback.yml` 이 레포명이 아니라 GHCR 이미지명·서버 경로를 하드코딩하고 있어 배포 무영향(착수 전 실측).
@@ -31,7 +37,7 @@
 ### 투자 새로고침 + 종목 시트통일 + 전도메인 삭제가드 + 멤버 시트화 (2026-06-03, 미커밋, front+back)
 - **P1 투자 시세 수동 새로고침**: 백엔드 `market_price.refresh(session, markets, household_id?)` 에 household 스코프 추가(repo `find_active_distinct_code_market_by_household_and_markets`), `POST /portfolio/refresh-prices`(CurrentHousehold, 4시장, 가격은 시장공통이라 bulk update 는 전 가계부 적용·fetch 만 보유종목 한정). 프론트 투자메인 헤더 IconRefresh 버튼 → `refreshMutation`(invalidateAll).
 - **P2 종목 추가/수정 시트 통일**: `usePortfolioSheetStore(open(editId?,accountId?))` + `PortfolioSheet`(UserShell). PortfolioForm `defaultAccountId` prefill. 트리거 교체: 투자메인(+버튼), 계좌상세 account-portfolio-section:224(그 계좌 프리필), 종목매매 portfolio-trade-section handleEditPortfolio(수정). 페이지 라우트는 fallback 유지.
-- **P3 삭제 가드(도메인별 혼합)**: ErrorCode PT002/AC001/CT001 신설. **종목**=quantity>0 차단(`delete_portfolio` + archive 경로 `update_portfolio` isArchived; 프론트 삭제버튼 disable+힌트). **통장**=거래(from/to 양방향)·종목 있으면 차단(`TransactionRepository.exists_active_by_account_id`, `PortfolioItemRepository.count_active_by_account_id`). **카테고리**=거래·고정비 있으면 차단(각 repo exists). **고정비**=DB FK SET NULL 로 안전, 가드 없음. **가계부**=cascade soft-delete 전 자식(`_cascade_soft_delete_children`: household_id 보유 9개 모델 bulk UPDATE + account_snapshots 는 account_id 서브쿼리) + 프론트 강한 확인모달(red).
+- **P3 삭제 가드(도메인별 혼합)**: ErrorCode PT002/AC001/CT001 신설. **종목**=quantity>0 차단(`delete_portfolio` + archive 경로 `update_portfolio` isArchived; 프론트 삭제버튼 disable+힌트). **통장**=거래(from/to 양방향)·종목 있으면 차단(`TransactionRepository.exists_active_by_account_id`, `PortfolioItemRepository.count_active_by_account_id`). **카테고리**=거래·고정비 있으면 차단(각 repo exists) — ⚠ 이후 back 8dd4d12 "삭제 정책 cascade 개편"으로 바뀜: 카테고리는 막지 않고 이름 유지, 통장은 보유 종목만 차단·거래 cascade(2026-09-12 코드 확인). **고정비**=DB FK SET NULL 로 안전, 가드 없음. **가계부**=cascade soft-delete 전 자식(`_cascade_soft_delete_children`: household_id 보유 9개 모델 bulk UPDATE + account_snapshots 는 account_id 서브쿼리) + 프론트 강한 확인모달(red).
 - **P4 멤버 관리 시트화**: `useMembersSheetStore` + `MembersSheet`(UserShell). 설정 진입점 navTo→openMembers. MembersSection `inSheet` prop(SubHeader 숨김), 멤버삭제 JS confirm()→Mantine modals.openConfirmModal.
 - **검증**: 프론트 typecheck+lint 통과. 백엔드 app import OK(75 routes, refresh-prices 등록). ruff venv 미설치로 스킵. 브라우저/curl E2E 미실시.
 - **알려진 엣지**: 종목 매매 상세에서 시트로 archive 시 상세에 잔류(통장 리포트와 동일 류, 드묾).

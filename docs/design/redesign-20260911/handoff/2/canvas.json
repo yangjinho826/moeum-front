@@ -1,0 +1,104 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "invest/account · 390"
+    },
+    {
+      "file": "Stock.dc.html",
+      "x": 500,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "invest/portfolio · 390"
+    },
+    {
+      "file": "RecordSheet.dc.html",
+      "x": 1000,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "transactions/new · 지출"
+    },
+    {
+      "file": "RecordSheetTransfer.dc.html",
+      "x": 1500,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "transactions/new · 이체"
+    },
+    {
+      "file": "RecordSheetValuation.dc.html",
+      "x": 2000,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "transactions/new · 평가조정"
+    },
+    {
+      "file": "Wealth.dc.html",
+      "x": 2500,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "wealth · 390"
+    },
+    {
+      "file": "States.dc.html",
+      "x": 3000,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "상태 3종"
+    },
+    {
+      "file": "AccountDesktop.dc.html",
+      "x": 0,
+      "y": 1004,
+      "w": 1440,
+      "h": 900,
+      "title": "AccountDesktop · 1440"
+    },
+    {
+      "file": "StockDesktop.dc.html",
+      "x": 1550,
+      "y": 1004,
+      "w": 1440,
+      "h": 900,
+      "title": "StockDesktop · 1440"
+    },
+    {
+      "file": "RecordModalDesktop.dc.html",
+      "x": 0,
+      "y": 2064,
+      "w": 1440,
+      "h": 900,
+      "title": "RecordModalDesktop · 1440"
+    },
+    {
+      "file": "WealthDesktop.dc.html",
+      "x": 1550,
+      "y": 2064,
+      "w": 1440,
+      "h": 900,
+      "title": "WealthDesktop · 1440"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "pick2",
+      "x": 0,
+      "y": -200,
+      "w": 560,
+      "text": "배치2 handoff — 가설 A+C 확장. 계좌 상세·종목 상세는 28px compact hero + StatGrid + 추이 + 행. 거래 기록은 시트(모바일)/모달 560(데스크톱) 하나로 지출·수입·이체·평가조정 분기. 자산은 구성 막대 + 적층 배분 추이 + 자산/통장 행."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

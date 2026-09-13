@@ -69,3 +69,8 @@ pnpm dlx shadcn@latest add <component>
 - 인증: 3-쿠키 (ACCESS/REFRESH/SESSION) + Server Component 가드
 - 표준 참조 모듈: src/features/admin/
 -->
+
+## Design System
+UI·시각 결정 전에 항상 `DESIGN.md` 를 먼저 읽는다.
+폰트·색·간격·라운드·미학 방향은 전부 거기에 정의돼 있다. 사용자 승인 없이 벗어나지 않는다.
+QA 모드에서는 DESIGN.md 와 다른 코드를 지적한다.

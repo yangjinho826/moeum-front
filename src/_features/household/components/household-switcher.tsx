@@ -1,38 +1,63 @@
 "use client";
 
-import {
-  Drawer,
-  Group,
-  Stack,
-  Text,
-  UnstyledButton,
-} from "@mantine/core";
-import { IconCheck, IconCrown, IconPlus, IconUsers } from "@tabler/icons-react";
+import { Group } from "@mantine/core";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { queryKeys } from "_constants/queries";
+import AccentLink from "_features/common/components/accent-link";
+import FormSheet from "_features/common/components/form-sheet";
+import SectionSkeleton from "_features/common/components/section-skeleton";
+import Hairline from "_features/common/components/hairline";
+import ListRow from "_features/common/components/list-row";
 
-import { useHouseholdStore, useHouseholdSheetStore } from "../store";
+import { useHouseholdSheetStore, useHouseholdStore } from "../store";
 
 interface HouseholdSwitcherProps {
   opened: boolean;
   onClose: () => void;
 }
 
+/**
+ * 가계부 전환기 (셸, plan/6.md · Figma 76:141) — 헤더 pill · 사이드바 · 내정보에서 연다.
+ * 행은 가계부 목록(73:517)과 같은 ListRow: 이름 / 역할 · 시작일, 지금 쓰는 가계부 = "사용 중".
+ * 아래 "새 가계부 만들기"(가계부 시트) · "가계부 관리"(목록 화면).
+ */
 export function HouseholdSwitcher({ opened, onClose }: HouseholdSwitcherProps) {
-  const queryClient = useQueryClient();
   const t = useTranslations("household");
+  return (
+    <FormSheet
+      opened={opened}
+      onClose={onClose}
+      title={t("switcher_title")}
+      withClose
+      fallback={<SectionSkeleton rows={2} />}
+    >
+      <SwitcherBody onClose={onClose} />
+    </FormSheet>
+  );
+}
 
-  const { data: hData } = useSuspenseQuery(queryKeys.household.list());
-  const households = hData.body.data.items;
+function SwitcherBody({ onClose }: { onClose: () => void }) {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { locale } = useParams<{ locale: string }>();
+  const t = useTranslations("household");
+  const tSettings = useTranslations("settings");
+
+  const { data } = useSuspenseQuery(queryKeys.household.list());
+  const items = data.body.data.items;
 
   const currentId = useHouseholdStore((s) => s.currentHouseholdId);
   const setCurrentId = useHouseholdStore((s) => s.setCurrentHouseholdId);
   const openSheet = useHouseholdSheetStore((s) => s.open);
+  // 저장된 선택이 없으면 첫 가계부를 쓴다(가계부 목록 · 내정보와 같은 규칙)
+  const inUseId = items.some((h) => h.householdId === currentId) ? currentId : items[0]?.householdId;
 
   const onSelect = (id: string) => {
-    if (id === currentId) {
+    // "사용 중" 표시와 같은 기준 — 저장값이 비었을 때 첫 가계부를 눌러도 캐시를 비우지 않게
+    if (id === inUseId) {
       onClose();
       return;
     }
@@ -44,165 +69,49 @@ export function HouseholdSwitcher({ opened, onClose }: HouseholdSwitcherProps) {
     queryClient.clear();
   };
 
-  const onCreateNew = () => {
-    onClose();
-    openSheet();
-  };
-
   return (
-    <Drawer
-      opened={opened}
-      onClose={onClose}
-      position="bottom"
-      size="auto"
-      withCloseButton={false}
-      styles={{
-        content: {
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          maxWidth: 448,
-          margin: "0 auto",
-          // BottomTab + 홈 인디케이터 영역까지 합산해서 가림 방지
-          maxHeight:
-            "min(80dvh, calc(100dvh - var(--bottom-tab-h) - var(--safe-bottom)))",
-        },
-        body: {
-          paddingBottom:
-            "calc(var(--bottom-tab-h) + var(--safe-bottom) + 8px)",
-        },
-      }}
-    >
-      {/* 핸들바 */}
-      <Group justify="center" pt={4} pb={8}>
-        <div
-          style={{
-            width: 40,
-            height: 4,
-            borderRadius: 2,
-            background: "var(--mantine-color-gray-3)",
-          }}
+    <>
+      {items.map((h, i) => (
+        <ListRow
+          key={h.householdId}
+          tall
+          title={h.name}
+          meta={t("row_meta", {
+            role: h.role === "OWNER" ? t("member.role_owner") : t("member.role_member"),
+            date: h.startedAt.replaceAll("-", "."),
+          })}
+          value={h.householdId === inUseId ? t("in_use") : undefined}
+          current={h.householdId === inUseId}
+          valueColor="dim"
+          valueText
+          last={i === items.length - 1}
+          onClick={() => onSelect(h.householdId)}
         />
-      </Group>
-
-      <Stack gap={4} px="md" pb="xs">
-        <Text size="md" fw={800}>
-          {t("switcher_title")}
-        </Text>
-        <Text size="xs" fw={500} c="dimmed">
-          {t("switcher_count", { count: households.length })}
-        </Text>
-      </Stack>
-
-      <Stack gap={0} px="xs" pb="xs" mah={400} style={{ overflowY: "auto" }}>
-        {households.map((h) => {
-          const isOwner = h.role === "OWNER";
-          const isSelected = h.householdId === currentId;
-          return (
-            <UnstyledButton
-              key={h.householdId}
-              onClick={() => onSelect(h.householdId)}
-              style={{ padding: 12, borderRadius: 16 }}
-            >
-              <Group gap={12} wrap="nowrap">
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 12,
-                    background: isOwner
-                      ? "var(--mantine-color-sage-0)"
-                      : "var(--mantine-color-terracotta-0)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconUsers
-                    size={20}
-                    color={
-                      isOwner
-                        ? "var(--mantine-color-sage-6)"
-                        : "var(--mantine-color-terracotta-6)"
-                    }
-                  />
-                </div>
-                <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                  <Group gap={6} wrap="nowrap">
-                    <Text size="sm" fw={700} truncate>
-                      {h.name}
-                    </Text>
-                    {isOwner && (
-                      <IconCrown
-                        size={12}
-                        color="var(--mantine-color-warning-5)"
-                        fill="var(--mantine-color-warning-5)"
-                        style={{ flexShrink: 0 }}
-                      />
-                    )}
-                  </Group>
-                  <Text size="xs" fw={500} c="dimmed">
-                    {isOwner
-                      ? t("member.role_owner")
-                      : t("member.role_member")}
-                    {typeof h.memberCount === "number"
-                      ? ` · ${t("member_count", { count: h.memberCount })}`
-                      : ""}
-                  </Text>
-                </Stack>
-                {isSelected && (
-                  <div
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: 12,
-                      background: "var(--mantine-color-sage-6)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <IconCheck size={14} color="white" stroke={3} />
-                  </div>
-                )}
-              </Group>
-            </UnstyledButton>
-          );
-        })}
-      </Stack>
-
-      {/* 새 모음 만들기 */}
-      <div
-        style={{
-          borderTop: "1px solid var(--mantine-color-gray-2)",
-          padding: "8px",
-        }}
-      >
-        <UnstyledButton
-          onClick={onCreateNew}
-          style={{ padding: 12, borderRadius: 16, width: "100%" }}
+      ))}
+      <Hairline />
+      <Group justify="space-between" wrap="nowrap">
+        {/* AccentLink 는 왼쪽 패딩 12 로 히트를 넓힌다 — 첫 링크는 본문 좌측선에 맞게 상쇄 */}
+        <div style={{ marginLeft: -12 }}>
+          <AccentLink
+            variant="header"
+            onClick={() => {
+              onClose();
+              openSheet();
+            }}
+          >
+            {t("create_new")}
+          </AccentLink>
+        </div>
+        <AccentLink
+          variant="header"
+          onClick={() => {
+            onClose();
+            router.push(`/${locale}/household`);
+          }}
         >
-          <Group gap={12}>
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                background: "var(--mantine-color-gray-1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <IconPlus size={20} color="var(--mantine-color-gray-6)" />
-            </div>
-            <Text size="sm" fw={700}>
-              {t("create_new")}
-            </Text>
-          </Group>
-        </UnstyledButton>
-      </div>
-    </Drawer>
+          {tSettings("household_manage")}
+        </AccentLink>
+      </Group>
+    </>
   );
 }

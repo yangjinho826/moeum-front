@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { useHouseholdMutations } from "_features/household/queries/use-mutations";
 import { getErrorMessage } from "_libraries/fetch/error-message";
+import { todayIsoKst } from "_utilities/datetime";
 
 import { useHouseholdDetail as useHouseholdDetailQuery } from "../../queries/use-query";
 import type {
@@ -37,7 +38,8 @@ export function useHouseholdForm({
 
   const isUpdate = Boolean(householdId);
 
-  const todayDate = new Date().toISOString().slice(0, 10);
+  // KST 오늘 — toISOString 은 UTC 라 자정~오전 9시엔 어제가 된다(온보딩과 같은 유틸)
+  const todayDate = todayIsoKst();
 
   const form = useForm<HouseholdCreateRequest>({
     initialValues: {
@@ -48,8 +50,8 @@ export function useHouseholdForm({
     },
     validate: zodResolver(
       z.object({
+        // 통화는 폼에 없다(배치5) — 상세 값을 그대로 돌려보내므로 검증하지 않는다(보이지 않는 에러로 저장이 막히지 않게)
         name: z.string().min(1, t("name_required_message")),
-        currency: z.string().min(3).max(3),
       }),
     ),
   });
@@ -86,14 +88,14 @@ export function useHouseholdForm({
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         await createMutation.mutateAsync({ ...form.values });
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       if (onDone) onDone();
@@ -102,7 +104,7 @@ export function useHouseholdForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -114,7 +116,7 @@ export function useHouseholdForm({
       centered: true,
       title: t("delete_confirm_title"),
       labels: { confirm: tg("delete"), cancel: tg("cancel") },
-      confirmProps: { color: "red" },
+      confirmProps: { color: "danger" },
       children: <span>{t("delete_confirm_message")}</span>,
       onConfirm: async () => {
         try {
@@ -122,7 +124,7 @@ export function useHouseholdForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) onDone();
           else router.replace(`/${routeParams.locale}/household`);
@@ -130,7 +132,7 @@ export function useHouseholdForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

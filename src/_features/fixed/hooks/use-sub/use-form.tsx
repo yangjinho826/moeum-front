@@ -33,7 +33,6 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
   const form = useForm<FixedBaseRequestType>({
     initialValues: {
       name: "",
-      amount: 0,
       dayOfMonth: 1,
       categoryId: null,
       color: null,
@@ -44,8 +43,7 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
     validate: zodResolver(
       z.object({
         name: z.string().min(1, t("name_required_message")),
-        amount: z.number(),
-        dayOfMonth: z.number().min(1).max(31),
+        dayOfMonth: z.number().int().min(1, t("day_range_message")).max(31, t("day_range_message")),
       }),
     ),
   });
@@ -59,7 +57,6 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
       const d = res.body.data;
       form.setValues({
         name: d.name,
-        amount: d.amount,
         dayOfMonth: d.dayOfMonth,
         categoryId: d.categoryId,
         color: d.color,
@@ -82,14 +79,14 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         await createMutation.mutateAsync({ ...form.values });
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       if (onDone) onDone();
@@ -98,7 +95,7 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -108,7 +105,9 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
     modals.openConfirmModal({
       centered: true,
       title: tg("confirmtitle"),
-      labels: { confirm: tg("confirm"), cancel: tg("cancel") },
+      // 파괴적 확인 = danger (DESIGN §2-3) — 폼 삭제 확인 공통
+      labels: { confirm: tg("delete"), cancel: tg("cancel") },
+      confirmProps: { color: "danger" },
       children: <span>{tg("want_to_delete")}</span>,
       onConfirm: async () => {
         try {
@@ -116,7 +115,7 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) onDone();
           else router.replace(`/${routeParams.locale}/fixed`);
@@ -124,7 +123,7 @@ export function useFixedForm({ fixedId, onDone }: UseFixedFormOptions) {
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

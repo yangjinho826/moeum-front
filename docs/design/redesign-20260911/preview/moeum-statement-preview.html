@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>모음 — 명세서(Statement) 룩 프리뷰</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F5F4F0; --surface:#FFFFFF; --text:#16171A; --dim:#6C6E73; --hair:#DEDCD4; --hair2:#EDEBE5;
+  --accent:#2457E6; --accent-soft:rgba(36,87,230,.10); --on-accent:#FFFFFF;
+  --up:#D93025; --down:#1A66D9; --up-soft:rgba(217,48,37,.10); --down-soft:rgba(26,102,217,.10);
+  --lime:#C8FF2E; --lime-text:#16171A;
+  --sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+  --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+[data-theme="dark"]{
+  --bg:#111210; --surface:#1A1B19; --text:#F1EFE8; --dim:#8E8F88; --hair:#2A2B28; --hair2:#202120;
+  --accent:#86A9FF; --accent-soft:rgba(134,169,255,.14); --on-accent:#111210;
+  --up:#FF6B60; --down:#5B9CFF; --up-soft:rgba(255,107,96,.14); --down-soft:rgba(91,156,255,.14);
+  --lime:#C8FF2E; --lime-text:#111210;
+}
+/* D · Warm Ledger 팔레트(기존 DESIGN.md) 를 명세서 레이아웃에 */
+.warm{
+  --bg:#FAF6EF; --surface:#FFFDF9; --text:#3C3530; --dim:#7A6F63; --hair:#DDD5C9; --hair2:#EDE8E0;
+  --accent:#647A5C; --accent-soft:rgba(124,148,115,.14); --on-accent:#FFFFFF;
+  --up:#DC2626; --down:#2563EB; --income:#2F855A; --expense:#C2674A;
+}
+[data-theme="dark"] .warm{
+  --bg:#1F1A16; --surface:#2A241F; --text:#F1EAE0; --dim:#A8998A; --hair:#3A322B; --hair2:#2F2823;
+  --accent:#93AC85; --accent-soft:rgba(147,172,133,.16); --on-accent:#1F1A16;
+  --up:#F87171; --down:#60A5FA; --income:#73B88E; --expense:#E5B197;
+}
+.warm .r .v.inc{color:var(--income)} .warm .r .v.exp{color:var(--expense)}
+.warm .ph-top b{color:var(--accent)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;padding:0 24px 80px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:0}
+h1,h2,h3{letter-spacing:-0.03em;margin:0}
+.top{display:flex;justify-content:space-between;align-items:flex-end;padding:40px 0 24px;border-bottom:1px solid var(--hair);max-width:1720px;margin:0 auto}
+.top h1{font-size:34px;font-weight:800}
+.top p{color:var(--dim);margin:6px 0 0;font-size:15px}
+.tgl{font:600 13px var(--mono);background:var(--text);color:var(--bg);border:0;border-radius:8px;padding:10px 14px;cursor:pointer}
+.wrap{max-width:1720px;margin:0 auto}
+section.blk{padding:48px 0;border-bottom:1px solid var(--hair)}
+.lbl{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+.row{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start}
+
+/* phone frame */
+.phone{width:390px;height:844px;background:var(--bg);border:1px solid var(--hair);border-radius:24px;overflow:visible;position:relative;flex:0 0 auto;display:flex;flex-direction:column}
+.phone .tab{border-radius:0 0 24px 24px}
+.phone .cap{position:absolute;top:-28px;left:0;font:600 11px var(--mono);color:var(--dim);letter-spacing:.06em}
+.phone .body{flex:1;padding:16px 20px 0;overflow:hidden}
+.ph-top{display:flex;justify-content:space-between;align-items:center;font:500 11px var(--mono);color:var(--dim);letter-spacing:.02em;height:24px}
+.ph-top b{font:800 15px var(--sans);color:var(--text);letter-spacing:-0.03em}
+.hero{padding:32px 0 12px}
+.hero .l{font-size:13px;color:var(--dim);font-weight:600}
+.hero .n{font:700 44px var(--mono);letter-spacing:-0.04em;line-height:1.05;margin-top:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hero .n small{font:500 14px var(--sans);color:var(--dim);margin-left:6px}
+.delta{margin-top:10px;font:600 20px var(--mono);color:var(--up);font-variant-numeric:tabular-nums}
+.delta span{font:500 13px var(--sans);color:var(--dim);margin-left:8px}
+.spark{height:44px;margin:14px 0 8px}
+.hr{height:1px;background:var(--hair);margin:14px 0}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 4px}
+.sec h4{margin:0;font-size:14px;font-weight:700}
+.sec a{font-size:12px;color:var(--accent);text-decoration:none;font-weight:600}
+.r{display:flex;justify-content:space-between;align-items:center;height:46px;border-bottom:1px solid var(--hair2)}
+.r:last-child{border-bottom:0}
+.r .t{font-size:14px;font-weight:600}
+.r .m{font-size:11px;color:var(--dim);margin-top:2px}
+.r .v{font:600 14px var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.r .v.dim{color:var(--dim);font-weight:500}
+.r .v.up{color:var(--up)} .r .v.down{color:var(--down)}
+.bar{height:2px;background:var(--hair2);margin-top:6px;position:relative}
+.bar i{position:absolute;left:0;top:0;height:2px;background:var(--text)}
+.fab{position:absolute;right:16px;bottom:78px;height:40px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--on-accent);font:700 13px var(--sans);display:flex;align-items:center;gap:6px}
+.fab.lime{background:var(--lime);color:var(--lime-text)}
+.tab{height:64px;border-top:1px solid var(--hair);display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg)}
+.tab div{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--dim);gap:4px;font-weight:600}
+.tab div.on{color:var(--accent)}
+.tab div.on.lime{color:var(--text);position:relative}
+.tab div.on.lime::before{content:"";position:absolute;left:18px;right:18px;top:12px;bottom:10px;background:var(--lime);z-index:-1;border-radius:4px}
+.tab div.on.lime{z-index:0}
+.tab svg{width:20px;height:20px}
+.hl{background:var(--lime);color:var(--lime-text);padding:0 4px}
+
+/* desktop frame */
+.desk{width:100%;max-width:1200px;height:760px;background:var(--bg);border:1px solid var(--hair);border-radius:12px;display:grid;grid-template-columns:220px 1fr;overflow:hidden}
+.side{border-right:1px solid var(--hair);padding:24px 16px;display:flex;flex-direction:column}
+.side .brand{font-weight:800;font-size:18px;letter-spacing:-0.03em;padding:0 8px 24px}
+.side .nav{display:flex;flex-direction:column;gap:2px}
+.side .nav div{padding:10px 12px;border-radius:8px;font-size:14px;font-weight:600;color:var(--dim)}
+.side .nav div.on{background:var(--accent-soft);color:var(--accent)}
+.side .btn{margin-top:auto;background:var(--accent);color:var(--on-accent);border-radius:8px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.main{padding:32px 40px;display:grid;grid-template-columns:minmax(0,720px) 320px;gap:48px;align-content:start}
+.main .hero .n{font-size:60px}
+.stat{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:8px}
+.stat .l{font-size:12px;color:var(--dim);font-weight:600}
+.stat .v{font:600 18px var(--mono);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);text-align:left;padding:8px 0;border-bottom:1px solid var(--hair)}
+th.n,td.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+td{padding:11px 0;border-bottom:1px solid var(--hair2)}
+td.dim{color:var(--dim)}
+
+/* specimen */
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px}
+.spec .card{border-top:1px solid var(--hair);padding-top:16px}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.sw div{height:88px;border-radius:8px;border:1px solid var(--hair);padding:10px;display:flex;flex-direction:column;justify-content:flex-end;font:600 11px var(--mono)}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.b{height:44px;padding:0 20px;border-radius:8px;display:inline-flex;align-items:center;font-weight:700;font-size:15px;border:1px solid transparent}
+.b.p{background:var(--accent);color:var(--on-accent)} .b.s{border-color:var(--hair);color:var(--text)} .b.g{color:var(--accent)}
+.inp{height:44px;border:1px solid var(--hair);border-radius:8px;background:var(--surface);padding:0 14px;display:flex;align-items:center;color:var(--dim);font-size:15px;margin-top:12px;max-width:360px}
+.note{color:var(--dim);font-size:14px;line-height:1.6;max-width:720px}
+@media (max-width:900px){.main{grid-template-columns:1fr}.desk{height:auto}.aside{display:none}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div><h1>모음 — 명세서(Statement) 룩</h1><p>카드 0장 · 헤어라인 · 숫자가 주인공. Pretendard + Geist Mono. 색은 자산 방향에만.</p></div>
+  <button class="tgl" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">LIGHT / DARK</button>
+</div>
+
+<div class="wrap">
+<section class="blk">
+  <div class="lbl">01 · 홈 목업 3변형 — 위 토글로 다크 확인</div>
+  <div class="row" style="padding-top:28px">
+
+    <!-- A: 코발트 -->
+    <div class="phone"><span class="cap">A · 코발트 한 점 (추천)</span>
+      <div class="body">
+        <div class="ph-top"><b>모음</b><span>2026.09.11 기준</span></div>
+        <div class="hero"><div class="l">총자산</div><div class="n">128,450,000<small>원</small></div>
+          <div class="delta">▲ 3,240,000 <span>+2.6% · 지난달보다</span></div></div>
+        <svg class="spark" viewBox="0 0 350 44" preserveAspectRatio="none"><polyline fill="none" stroke="var(--text)" stroke-width="1.5" points="0,36 58,30 116,32 174,22 232,24 290,14 350,6"/><circle cx="350" cy="6" r="3" fill="var(--up)"/></svg>
+        <div class="hr"></div>
+        <div class="sec"><h4>이번 달 늘어난 이유</h4><a>자세히</a></div>
+        <div class="r"><div><div class="t">순저축</div><div class="m">수입 4,800,000 − 지출 3,000,000</div></div><div><div class="v">+1,800,000</div><div class="bar" style="width:120px"><i style="width:56%"></i></div></div></div>
+        <div class="r"><div><div class="t">투자손익</div><div class="m">평가 +1,120,000 · 실현 +320,000</div></div><div><div class="v up">+1,440,000</div><div class="bar" style="width:120px"><i style="width:44%;background:var(--up)"></i></div></div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>자산 구성</h4><a>전체</a></div>
+        <div class="r"><div class="t">주식·ETF</div><div class="v">100,000,000</div></div>
+        <div class="r"><div class="t">현금·예금</div><div class="v">28,450,000</div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>최근 기록</h4><a>전체</a></div>
+        <div class="r"><div><div class="t">스타벅스</div><div class="m">카페 · 9.11 · 신한 체크</div></div><div class="v dim">−5,600</div></div>
+        <div class="r"><div><div class="t">급여</div><div class="m">수입 · 9.10 · 국민 급여통장</div></div><div class="v">+4,800,000</div></div>
+        <div class="r"><div><div class="t">이마트</div><div class="m">식료품 · 9.9 · 신한 체크</div></div><div class="v dim">−86,400</div></div>
+      </div>
+      <div class="fab">＋ 기록</div>
+      <div class="tab"><div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div>
+    </div>
+
+    <!-- B: 라임 하이라이트 -->
+    <div class="phone"><span class="cap">B · 라임 하이라이트 (과감)</span>
+      <div class="body">
+        <div class="ph-top"><b>모음</b><span>2026.09.11 기준</span></div>
+        <div class="hero"><div class="l">총자산</div><div class="n">128,450,000<small>원</small></div>
+          <div class="delta">▲ 3,240,000 <span>+2.6% · 지난달보다</span></div></div>
+        <svg class="spark" viewBox="0 0 350 44" preserveAspectRatio="none"><polyline fill="none" stroke="var(--text)" stroke-width="1.5" points="0,36 58,30 116,32 174,22 232,24 290,14 350,6"/><circle cx="350" cy="6" r="3" fill="var(--up)"/></svg>
+        <div class="hr"></div>
+        <div class="sec"><h4>이번 달 늘어난 이유</h4><a style="color:var(--text)"><span class="hl">자세히</span></a></div>
+        <div class="r"><div><div class="t">순저축</div><div class="m">수입 4,800,000 − 지출 3,000,000</div></div><div><div class="v">+1,800,000</div><div class="bar" style="width:120px"><i style="width:56%"></i></div></div></div>
+        <div class="r"><div><div class="t">투자손익</div><div class="m">평가 +1,120,000 · 실현 +320,000</div></div><div><div class="v up">+1,440,000</div><div class="bar" style="width:120px"><i style="width:44%;background:var(--up)"></i></div></div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>자산 구성</h4><a style="color:var(--text)"><span class="hl">전체</span></a></div>
+        <div class="r"><div class="t">주식·ETF</div><div class="v">100,000,000</div></div>
+        <div class="r"><div class="t">현금·예금</div><div class="v">28,450,000</div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>최근 기록</h4><a style="color:var(--text)"><span class="hl">전체</span></a></div>
+        <div class="r"><div><div class="t">스타벅스</div><div class="m">카페 · 9.11 · 신한 체크</div></div><div class="v dim">−5,600</div></div>
+        <div class="r"><div><div class="t">급여</div><div class="m">수입 · 9.10 · 국민 급여통장</div></div><div class="v">+4,800,000</div></div>
+        <div class="r"><div><div class="t">이마트</div><div class="m">식료품 · 9.9 · 신한 체크</div></div><div class="v dim">−86,400</div></div>
+      </div>
+      <div class="fab lime">＋ 기록</div>
+      <div class="tab"><div class="on lime"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div>
+    </div>
+
+    <!-- C: 가계부에도 색 (위험 1 뺀 버전) -->
+    <div class="phone"><span class="cap">C · 가계부에도 색 (위험 1 제외)</span>
+      <div class="body">
+        <div class="ph-top"><b>모음</b><span>2026.09.11 기준</span></div>
+        <div class="hero"><div class="l">총자산</div><div class="n">128,450,000<small>원</small></div>
+          <div class="delta">▲ 3,240,000 <span>+2.6% · 지난달보다</span></div></div>
+        <svg class="spark" viewBox="0 0 350 44" preserveAspectRatio="none"><polyline fill="none" stroke="var(--text)" stroke-width="1.5" points="0,36 58,30 116,32 174,22 232,24 290,14 350,6"/><circle cx="350" cy="6" r="3" fill="var(--up)"/></svg>
+        <div class="hr"></div>
+        <div class="sec"><h4>이번 달 늘어난 이유</h4><a>자세히</a></div>
+        <div class="r"><div><div class="t">순저축</div><div class="m"><span style="color:var(--down)">수입 4,800,000</span> − <span style="color:var(--up)">지출 3,000,000</span></div></div><div><div class="v">+1,800,000</div><div class="bar" style="width:120px"><i style="width:56%"></i></div></div></div>
+        <div class="r"><div><div class="t">투자손익</div><div class="m">평가 +1,120,000 · 실현 +320,000</div></div><div><div class="v up">+1,440,000</div><div class="bar" style="width:120px"><i style="width:44%;background:var(--up)"></i></div></div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>자산 구성</h4><a>전체</a></div>
+        <div class="r"><div class="t">주식·ETF</div><div class="v">100,000,000</div></div>
+        <div class="r"><div class="t">현금·예금</div><div class="v">28,450,000</div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>최근 기록</h4><a>전체</a></div>
+        <div class="r"><div><div class="t">스타벅스</div><div class="m">카페 · 9.11 · 신한 체크</div></div><div class="v up">−5,600</div></div>
+        <div class="r"><div><div class="t">급여</div><div class="m">수입 · 9.10 · 국민 급여통장</div></div><div class="v down">+4,800,000</div></div>
+        <div class="r"><div><div class="t">이마트</div><div class="m">식료품 · 9.9 · 신한 체크</div></div><div class="v up">−86,400</div></div>
+      </div>
+      <div class="fab">＋ 기록</div>
+      <div class="tab"><div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div>
+    </div>
+    <!-- D: Warm Ledger 팔레트 -->
+    <div class="phone warm"><span class="cap">D · Warm Ledger 팔레트 (기존 DESIGN.md 색) · 명세서 레이아웃</span>
+      <div class="body">
+        <div class="ph-top"><b>모음</b><span>2026.09.11 기준</span></div>
+        <div class="hero"><div class="l">총자산</div><div class="n">128,450,000<small>원</small></div>
+          <div class="delta">▲ 3,240,000 <span>+2.6% · 지난달보다</span></div></div>
+        <svg class="spark" viewBox="0 0 350 44" preserveAspectRatio="none"><polyline fill="none" stroke="var(--accent)" stroke-width="1.5" points="0,36 58,30 116,32 174,22 232,24 290,14 350,6"/><circle cx="350" cy="6" r="3" fill="var(--up)"/></svg>
+        <div class="hr"></div>
+        <div class="sec"><h4>이번 달 늘어난 이유</h4><a>자세히</a></div>
+        <div class="r"><div><div class="t">순저축</div><div class="m"><span style="color:var(--income)">수입 4,800,000</span> − <span style="color:var(--expense)">지출 3,000,000</span></div></div><div><div class="v">+1,800,000</div><div class="bar" style="width:120px"><i style="width:56%;background:var(--accent)"></i></div></div></div>
+        <div class="r"><div><div class="t">투자손익</div><div class="m">평가 +1,120,000 · 실현 +320,000</div></div><div><div class="v up">+1,440,000</div><div class="bar" style="width:120px"><i style="width:44%;background:var(--up)"></i></div></div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>자산 구성</h4><a>전체</a></div>
+        <div class="r"><div class="t">주식·ETF</div><div class="v">100,000,000</div></div>
+        <div class="r"><div class="t">현금·예금</div><div class="v">28,450,000</div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>최근 기록</h4><a>전체</a></div>
+        <div class="r"><div><div class="t">스타벅스</div><div class="m">카페 · 9.11 · 신한 체크</div></div><div class="v exp">−5,600</div></div>
+        <div class="r"><div><div class="t">급여</div><div class="m">수입 · 9.10 · 국민 급여통장</div></div><div class="v inc">+4,800,000</div></div>
+        <div class="r"><div><div class="t">이마트</div><div class="m">식료품 · 9.9 · 신한 체크</div></div><div class="v exp">−86,400</div></div>
+      </div>
+      <div class="fab">＋ 기록</div>
+      <div class="tab"><div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div>
+    </div>
+  </div>
+  <p class="note" style="margin-top:28px"><b>D</b> = 기존 DESIGN.md(Warm Ledger) 색을 명세서 레이아웃에 입힌 것 — 크림 배경 · 세이지(행동·탭·추이선) · 수입 초록 `positive` · 지출 테라코타 · 투자 상승 빨강 / 하락 파랑. 4색이 전부 다른 계열이라 충돌 없음. 다크는 딥브라운 + 크림(기존 문서의 "따뜻한 다크" 메모).<br>A·B·C 는 레이아웃이 같고 <b>강조색(코발트 vs 라임)</b> 과 <b>가계부 색 유무</b> 만 다르다. C 에서 지출이 빨강이 되면 투자 상승 빨강과 같은 색이라 "빨강 = 자산 소식" 규칙이 깨진다 — 그게 위험 1 을 제안한 이유.</p>
+</section>
+
+<section class="blk">
+  <div class="lbl">02 · 데스크톱 홈 — 720 판면 + 320 보조 레일</div>
+  <div class="desk">
+    <div class="side"><div class="brand">모음</div><div class="nav"><div class="on">홈</div><div>거래</div><div>투자</div><div>내정보</div></div><div class="btn">＋ 기록하기</div></div>
+    <div class="main">
+      <div>
+        <div class="ph-top" style="height:auto"><span>2026.09.11 기준 · 우리집</span></div>
+        <div class="hero"><div class="l">총자산</div><div class="n">128,450,000<small>원</small></div><div class="delta">▲ 3,240,000 <span>+2.6% · 지난달보다</span></div></div>
+        <svg class="spark" style="height:72px" viewBox="0 0 720 72" preserveAspectRatio="none"><polyline fill="none" stroke="var(--text)" stroke-width="1.5" points="0,60 60,52 120,55 180,44 240,46 300,38 360,40 420,30 480,32 540,22 600,24 660,14 720,8"/></svg>
+        <div class="hr"></div>
+        <div class="sec"><h4>이번 달 늘어난 이유</h4></div>
+        <div class="stat"><div><div class="l">순저축</div><div class="v">+1,800,000</div></div><div><div class="l">투자손익</div><div class="v" style="color:var(--up)">+1,440,000</div></div><div><div class="l">저축률</div><div class="v">38%</div></div></div>
+        <div class="hr" style="margin-top:24px"></div>
+        <div class="sec"><h4>최근 기록</h4><a>전체</a></div>
+        <table><tr><th>날짜</th><th>내용</th><th>카테고리</th><th>통장</th><th class="n">금액</th></tr>
+          <tr><td class="n dim" style="text-align:left">9.11</td><td>스타벅스</td><td class="dim">카페</td><td class="dim">신한 체크</td><td class="n dim">−5,600</td></tr>
+          <tr><td class="n dim" style="text-align:left">9.10</td><td>급여</td><td class="dim">수입</td><td class="dim">국민 급여통장</td><td class="n">+4,800,000</td></tr>
+          <tr><td class="n dim" style="text-align:left">9.9</td><td>이마트</td><td class="dim">식료품</td><td class="dim">신한 체크</td><td class="n dim">−86,400</td></tr>
+          <tr><td class="n dim" style="text-align:left">9.8</td><td>월세</td><td class="dim">주거</td><td class="dim">국민 급여통장</td><td class="n dim">−650,000</td></tr>
+        </table>
+      </div>
+      <div class="aside">
+        <div class="sec"><h4>자산 구성</h4><a>전체</a></div>
+        <div class="r"><div class="t">주식·ETF</div><div class="v">100,000,000</div></div>
+        <div class="r"><div class="t">현금·예금</div><div class="v">28,450,000</div></div>
+        <div class="hr"></div>
+        <div class="sec"><h4>투자 계좌</h4><a>투자</a></div>
+        <div class="r"><div class="t">키움 종합</div><div><div class="v">71,200,000</div><div class="v up" style="font-size:11px">+6.2%</div></div></div>
+        <div class="r"><div class="t">토스 증권</div><div><div class="v">28,800,000</div><div class="v down" style="font-size:11px">−0.4%</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="lbl">03 · 타이포 시편</div>
+  <div class="spec">
+    <div class="card"><div class="lbl">Pretendard Variable · UI/본문</div><div style="font-size:28px;font-weight:800;letter-spacing:-0.03em">자산이 지난달보다 늘었어요</div><p style="font-size:15px;line-height:1.55;margin:10px 0 0">가계부는 수단, 자산 증식이 목적. 화면 위계는 결과 → 이유 → 도구. 본문 15 / 보조 13 / 캡션 11.</p></div>
+    <div class="card"><div class="lbl">Geist Mono · 금액 · 날짜 · 라벨</div><div class="mono" style="font-size:40px;font-weight:700;letter-spacing:-0.03em">128,450,000</div><div class="mono" style="font-size:14px;margin-top:8px">2026.09.11 · +2.6% · −86,400</div><div class="mono" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:10px">TOTAL ASSETS · 총자산</div></div>
+    <div class="card"><div class="lbl">스케일</div><div class="mono" style="font-size:13px;line-height:2">hero 40–64 / 700<br>delta 20 / 600<br>title 22 / 800<br>body 15 / 500<br>sub 13 / 500<br>label 11 mono / 600 · .06em</div></div>
+  </div>
+</section>
+
+<section class="blk">
+  <div class="lbl">04 · 컬러 — 토글로 두 벌 확인</div>
+  <div class="sw">
+    <div style="background:var(--bg)">bg</div><div style="background:var(--surface)">surface</div><div style="background:var(--text);color:var(--bg)">text</div><div style="background:var(--dim);color:var(--bg)">dim</div><div style="background:var(--hair)">hairline</div>
+    <div style="background:var(--accent);color:var(--on-accent)">accent 코발트</div><div style="background:var(--lime);color:#16171A">lime (B안)</div><div style="background:var(--up);color:#fff">up 상승</div><div style="background:var(--down);color:#fff">down 하락</div>
+  </div>
+  <div class="btns"><span class="b p">기록하기</span><span class="b s">취소</span><span class="b g">전체 보기</span></div>
+  <div class="inp">금액을 입력하세요</div>
+  <p class="note" style="margin-top:20px">색 규칙: <b>코발트</b> = 행동·활성(탭·버튼·링크) · <b>빨강/파랑</b> = 자산 방향(총자산 증감·투자 손익·매수/매도) · <b>가계부는 무채색</b>(수입 + 본문색 / 지출 − 보조색) · 에러·삭제만 별도 danger.</p>
+</section>
+</div>
+</body>
+</html>

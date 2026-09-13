@@ -5,12 +5,15 @@ import {
   Card,
   Container,
   createTheme,
-  type MantineColorsTuple,
+  Drawer,
+  InputWrapper,
+  Switch,
   Modal,
   Notification,
   NumberInput,
   PasswordInput,
   rem,
+  SegmentedControl,
   Select,
   Text,
   Textarea,
@@ -19,134 +22,57 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 
+import {
+  danger,
+  darkScale,
+  grayScale,
+  info,
+  positive,
+  purple,
+  sage,
+  SURFACE,
+  terracotta,
+  warning,
+} from "./palette";
+
 // ============================================================
-// 색상 시스템 — Warm Ledger (DESIGN.md)
-// 브랜드 = sage. 의미색 = info(수입)/danger(지출)/positive(양수·수익)/warning(주의)/purple(투자).
+// 색상 시스템 — Statement · Warm (DESIGN.md §2)
+// 행동 = sage. 가계부 = positive(수입)/terracotta(지출).
+// 자산 방향(한국식) = up(상승·매수·증가 = danger 튜플 별칭) / down(하락·매도·감소 = info 별칭).
+// 에러·삭제 = danger, 주의 = warning, 이체 = purple.
+// 셰이드는 항상 명시(`positive.5`) — 라이트 base 와 다크 base 가 다르므로
+// 스킴별 값이 필요한 곳은 `var(--moeum-income)` 같은 CSS 변수를 우선 쓴다.
 // ============================================================
 
-// sage — Warm Ledger 브랜드 (primary)
-const sage: MantineColorsTuple = [
-  "#F4F7F2",
-  "#E6EDE2",
-  "#CDDBC6",
-  "#AFC4A4",
-  "#93AC85",
-  "#7C9473",
-  "#647A5C",
-  "#4F6149",
-  "#3D4B39",
-  "#2C3629",
-];
+const INPUT_HEIGHT = rem(44);
 
-// terracotta — Warm Ledger accent
-const terracotta: MantineColorsTuple = [
-  "#FCF4EF",
-  "#F7E3D9",
-  "#EFCBB8",
-  "#E7B097",
-  "#E5B197",
-  "#D98E73",
-  "#C2674A",
-  "#A4543B",
-  "#83432F",
-  "#5F3122",
-];
+/** filled + 기본색(sage) 일 때만 accent 위 텍스트색을 강제 — 다크 sage.4 위 흰 글자는 대비 미달 */
+function isAccentFilled(variant: string | undefined, color: unknown): boolean {
+  return (variant ?? "filled") === "filled" && (color === undefined || color === "sage");
+}
 
-// positive — 양수/수익/상승/적립 (구 linerGreen #22C55E 대체)
-const positive: MantineColorsTuple = [
-  "#E7F3EC",
-  "#C6E3D2",
-  "#9FCFB2",
-  "#73B88E",
-  "#4E9F70",
-  "#2F855A",
-  "#266E4A",
-  "#1F5A3D",
-  "#184430",
-  "#102E20",
-];
-
-// danger — Tailwind red (지출/위험)
-const danger: MantineColorsTuple = [
-  "#FEF2F2",
-  "#FEE2E2",
-  "#FECACA",
-  "#FCA5A5",
-  "#F87171",
-  "#EF4444",
-  "#DC2626",
-  "#B91C1C",
-  "#991B1B",
-  "#7F1D1D",
-];
-
-// warning — Tailwind amber (주의/임박)
-const warning: MantineColorsTuple = [
-  "#FFFBEB",
-  "#FEF3C7",
-  "#FDE68A",
-  "#FCD34D",
-  "#FBBF24",
-  "#F59E0B",
-  "#D97706",
-  "#B45309",
-  "#92400E",
-  "#78350F",
-];
-
-// info — Tailwind blue (수입/안내)
-const info: MantineColorsTuple = [
-  "#EFF6FF",
-  "#DBEAFE",
-  "#BFDBFE",
-  "#93C5FD",
-  "#60A5FA",
-  "#3B82F6",
-  "#2563EB",
-  "#1D4ED8",
-  "#1E40AF",
-  "#1E3A8A",
-];
-
-// purple — Tailwind violet (보조 강조 / 포트폴리오)
-const purple: MantineColorsTuple = [
-  "#F5F3FF",
-  "#EDE9FE",
-  "#DDD6FE",
-  "#C4B5FD",
-  "#A78BFA",
-  "#8B5CF6",
-  "#7C3AED",
-  "#6D28D9",
-  "#5B21B6",
-  "#4C1D95",
-];
-
-// 회색 9단계 — 웜그레이 (베이지끼, Warm Ledger)
-const grayScale: MantineColorsTuple = [
-  "#F7F4EF",
-  "#EDE8E0",
-  "#DDD5C9",
-  "#C3B9A9",
-  "#A99C8D",
-  "#9C8F82",
-  "#7A6F63",
-  "#5A5149",
-  "#423B34",
-  "#3C3530",
-];
+const inputVars = () => ({
+  wrapper: {
+    "--input-height": INPUT_HEIGHT,
+    "--input-bg": "var(--moeum-surface-2)",
+  },
+});
 
 export const mantineTheme = createTheme({
-  // primary = sage (브랜드). 수입 등 의미색은 c="info" 명시로 분리 (브랜드색 ≠ 의미색).
   primaryColor: "sage",
-  primaryShade: { light: 6, dark: 4 },
+  // 라이트 7 = --moeum-accent(sage.7) 와 같게 — filled 버튼과 링크가 같은 색 (H-1, 흰 글자 대비 6.69)
+  primaryShade: { light: 7, dark: 4 },
   autoContrast: true,
 
+  white: SURFACE.light.surface,
+  black: SURFACE.light.text,
+
   fontFamily:
-    "Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
+    '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif',
+  // 금액·날짜·라벨 = Geist Mono (base-layout 에서 로드)
   fontFamilyMonospace:
-    '"SF Mono", Pretendard, ui-monospace, Menlo, monospace',
-  defaultRadius: "xl",
+    '"Geist Mono", ui-monospace, "SF Mono", Menlo, monospace',
+  defaultRadius: "md",
 
   colors: {
     sage,
@@ -156,7 +82,10 @@ export const mantineTheme = createTheme({
     warning,
     info,
     purple,
+    up: danger,
+    down: info,
     gray: grayScale,
+    dark: darkScale,
   },
 
   spacing: {
@@ -181,19 +110,19 @@ export const mantineTheme = createTheme({
     full: rem(9999),
   },
 
-  // 갈색 톤 그림자 — 종이 질감 (Warm Ledger)
+  // 명세서 무드 — 카드·그림자 없음. Modal/Drawer 만 무채색 그림자
   shadows: {
-    xs: "0 1px 2px rgba(120, 100, 70, 0.04)",
-    sm: "0 2px 6px rgba(120, 100, 70, 0.06)",
-    md: "0 6px 16px rgba(120, 100, 70, 0.08)",
-    lg: "0 12px 28px rgba(120, 100, 70, 0.10)",
-    xl: "0 20px 40px rgba(120, 100, 70, 0.12)",
+    xs: "0 1px 2px rgba(0, 0, 0, 0.06)",
+    sm: "0 2px 6px rgba(0, 0, 0, 0.08)",
+    md: "0 6px 16px rgba(0, 0, 0, 0.12)",
+    lg: "0 12px 28px rgba(0, 0, 0, 0.18)",
+    xl: "0 20px 40px rgba(0, 0, 0, 0.24)",
   },
 
   fontSizes: {
     xs: rem(12),
     sm: rem(13),
-    md: rem(16),
+    md: rem(15),
     lg: rem(20),
     xl: rem(28),
   },
@@ -207,28 +136,28 @@ export const mantineTheme = createTheme({
   },
 
   headings: {
-    fontFamily: "Pretendard, sans-serif",
-    fontWeight: "700",
+    fontFamily: '"Pretendard Variable", Pretendard, sans-serif',
+    fontWeight: "800",
     sizes: {
-      h1: { fontSize: rem(40), lineHeight: "1.2", fontWeight: "700" },
-      h2: { fontSize: rem(32), lineHeight: "1.3", fontWeight: "700" },
-      h3: { fontSize: rem(24), lineHeight: "1.35", fontWeight: "600" },
-      h4: { fontSize: rem(20), lineHeight: "1.4", fontWeight: "600" },
+      h1: { fontSize: rem(28), lineHeight: "1.2", fontWeight: "800" },
+      h2: { fontSize: rem(22), lineHeight: "1.3", fontWeight: "800" },
+      h3: { fontSize: rem(18), lineHeight: "1.35", fontWeight: "700" },
+      h4: { fontSize: rem(14), lineHeight: "1.4", fontWeight: "700" },
     },
   },
 
   components: {
     Button: Button.extend({
       defaultProps: {
-        radius: "full",
+        radius: "md",
         size: "md",
       },
-      // Mantine v8 vars 콜백 — size별 정확한 픽셀 강제 (36/44/52)
+      // size별 정확한 픽셀 강제 (36/44/52)
       vars: (_theme, props) => {
         const sizes = {
           sm: { h: rem(36), px: rem(16), fz: rem(13) },
-          md: { h: rem(44), px: rem(20), fz: rem(16) },
-          lg: { h: rem(52), px: rem(24), fz: rem(16) },
+          md: { h: rem(44), px: rem(20), fz: rem(15) },
+          lg: { h: rem(52), px: rem(24), fz: rem(15) },
         } as const;
         const sizeKey =
           typeof props.size === "string" && props.size in sizes
@@ -240,31 +169,40 @@ export const mantineTheme = createTheme({
             "--button-height": config.h,
             "--button-padding-x": config.px,
             "--button-fz": config.fz,
+            ...(isAccentFilled(props.variant, props.color)
+              ? { "--button-color": "var(--moeum-on-accent)" }
+              : {}),
+            // outline(보조) = 투명 + hair 테두리 + 본문색 (DESIGN.md §5 버튼, Figma Button Outline 20:112)
+            ...(props.variant === "default"
+              ? {
+                  "--button-bg": "transparent",
+                  "--button-hover": "var(--moeum-surface-2)",
+                  "--button-bd": "1px solid var(--moeum-hair)",
+                  "--button-color": "var(--moeum-text)",
+                }
+              : {}),
           },
         };
       },
       styles: {
         root: {
           letterSpacing: "-0.02em",
-          fontWeight: 600,
+          fontWeight: 700,
         },
       },
     }),
     Card: Card.extend({
-      // sub 카드 기본값 — Warm Ledger 큰 라운드(3xl=24).
-      // hero 카드 (페이지 주인공) 는 사용처에서 p="xl" shadow="md" 명시로 위계 분리.
+      // 명세서 룩은 Card 를 쓰지 않는다(Section 컴포넌트). 이관 전 화면이 깨지지 않게 표면만 맞춘다.
       defaultProps: {
-        radius: "3xl",
+        radius: "md",
         padding: "lg",
-        shadow: "xs",
         withBorder: true,
       },
       styles: {
         root: {
           letterSpacing: "-0.02em",
-          // 크림 배경(#faf6ef)과 카드(#fffdf9) 명도차가 작아 경계가 흐림 →
-          // 웜톤 옅은 테두리로 네모 박스 구분 (배경색은 유지)
-          borderColor: "var(--mantine-color-gray-2)",
+          background: "var(--moeum-surface)",
+          borderColor: "var(--moeum-hair)",
         },
       },
     }),
@@ -274,12 +212,9 @@ export const mantineTheme = createTheme({
       },
     }),
     Title: Title.extend({
-      defaultProps: {
-        fw: 800,
-      },
       styles: {
         root: {
-          letterSpacing: "-0.02em",
+          letterSpacing: "-0.03em",
         },
       },
     }),
@@ -289,131 +224,145 @@ export const mantineTheme = createTheme({
       },
       styles: {
         root: {
-          letterSpacing: "-0.02em",
+          letterSpacing: "-0.01em",
         },
+      },
+    }),
+    // 폼 필드 라벨 = 보조 13/500 dim, 필드와 6 간격. 설명(description)은 12 로 라벨보다 작게.
+    // (배치2 S5 에서 11 로 했다가 "라벨이 설명보다 작아 안 보임" 피드백으로 13 — 모든 인풋 공통)
+    InputWrapper: InputWrapper.extend({
+      styles: {
+        label: {
+          fontSize: rem(13),
+          lineHeight: rem(19),
+          fontWeight: 500,
+          color: "var(--moeum-text-dim)",
+          marginBottom: rem(6),
+        },
+        description: {
+          fontSize: rem(12),
+          lineHeight: rem(17),
+          marginBottom: rem(6),
+        },
+      },
+    }),
+    // 스위치 라벨도 폼 필드 라벨과 같은 13/500 dim, 설명 12 (배치5 고정지출 "보관" — 앱의 첫 Switch)
+    // 설정 행 모양 — 라벨·설명 좌, 스위치 우 끝 (배치5 S6: 호출부마다 달라지지 않게 테마에서)
+    Switch: Switch.extend({
+      defaultProps: { labelPosition: "left" },
+      styles: {
+        // 라벨·설명까지 누를 수 있는 영역 44 이상(DESIGN §4 터치 타깃)
+        body: { minHeight: rem(44), alignItems: "center", justifyContent: "space-between", gap: rem(12) },
+        labelWrapper: { flex: 1 },
+        label: { fontSize: rem(13), lineHeight: rem(19), fontWeight: 500, color: "var(--moeum-text-dim)" },
+        description: { fontSize: rem(12), lineHeight: rem(17) },
       },
     }),
     TextInput: TextInput.extend({
-      defaultProps: {
-        variant: "filled",
-        size: "md",
-        radius: "lg",
-      },
-      vars: () => ({
-        wrapper: {
-          "--input-height": rem(44),
-        },
-      }),
-      styles: {
-        input: {
-          letterSpacing: "-0.02em",
-        },
-      },
+      defaultProps: { variant: "filled", size: "md", radius: "md" },
+      vars: inputVars,
+      styles: { input: { letterSpacing: "-0.01em" } },
     }),
     PasswordInput: PasswordInput.extend({
-      defaultProps: {
-        variant: "filled",
-        size: "md",
-        radius: "lg",
-      },
-      vars: () => ({
-        wrapper: {
-          "--input-height": rem(44),
-        },
-        root: {},
-      }),
-      styles: {
-        input: {
-          letterSpacing: "-0.02em",
-        },
-      },
+      defaultProps: { variant: "filled", size: "md", radius: "md" },
+      vars: () => ({ ...inputVars(), root: {} }),
+      styles: { input: { letterSpacing: "-0.01em" } },
     }),
     NumberInput: NumberInput.extend({
       defaultProps: {
         variant: "filled",
         size: "md",
-        radius: "lg",
+        radius: "md",
         hideControls: true,
         thousandSeparator: ",",
       },
-      vars: () => ({
-        wrapper: {
-          "--input-height": rem(44),
-        },
-        controls: {},
-      }),
+      vars: () => ({ ...inputVars(), controls: {} }),
       styles: {
         input: {
+          fontFamily: "var(--mantine-font-family-monospace)",
           fontVariantNumeric: "tabular-nums",
-          letterSpacing: "-0.02em",
         },
       },
     }),
     Select: Select.extend({
-      defaultProps: {
-        variant: "filled",
-        size: "md",
-        radius: "lg",
-      },
-      vars: () => ({
-        wrapper: {
-          "--input-height": rem(44),
-        },
-      }),
-      styles: {
-        input: {
-          letterSpacing: "-0.02em",
-        },
-      },
+      defaultProps: { variant: "filled", size: "md", radius: "md" },
+      vars: inputVars,
+      styles: { input: { letterSpacing: "-0.01em" } },
     }),
     Textarea: Textarea.extend({
-      defaultProps: {
-        variant: "filled",
-        size: "md",
-        radius: "lg",
-      },
-      styles: {
-        input: {
-          letterSpacing: "-0.02em",
-        },
-      },
+      defaultProps: { variant: "filled", size: "md", radius: "md" },
+      vars: () => ({ wrapper: { "--input-bg": "var(--moeum-surface-2)" } }),
+      styles: { input: { letterSpacing: "-0.01em" } },
     }),
     DateInput: DateInput.extend({
       defaultProps: {
         variant: "filled",
         size: "md",
-        radius: "lg",
+        radius: "md",
         // 바텀시트(Drawer) 안에서 달력 popover 가 컨테이너에 잘리던 문제 →
         // 포털로 body 직속 렌더 + Drawer(zIndex 200) 위로 올림 (거래 추가/매매 폼 공통)
         popoverProps: { withinPortal: true, zIndex: 1100 },
       },
+      vars: inputVars,
     }),
     Modal: Modal.extend({
       defaultProps: {
         centered: true,
-        radius: "xl",
+        radius: "lg",
         padding: "lg",
       },
+      // content/header 기본이 body 색이라 페이지와 같아짐 → 표면색으로
+      styles: {
+        content: { background: "var(--moeum-surface)" },
+        header: { background: "var(--moeum-surface)" },
+      },
+    }),
+    Drawer: Drawer.extend({
+      styles: {
+        content: { background: "var(--moeum-surface)" },
+        header: { background: "var(--moeum-surface)" },
+      },
+    }),
+    SegmentedControl: SegmentedControl.extend({
+      defaultProps: {
+        radius: "md",
+      },
+      // 기본(size 미지정) = 높이 44 — 트랙 패딩 4 + 라벨 8·20·8 + 4. Mantine sm 은 ~34 라 터치 타깃 미달(배치3 H-301).
+      // size 를 직접 준 곳(거래 화면 헤더 보기 전환 xs)은 Mantine 기본 그대로
+      vars: (_theme, props) => ({
+        root: props.size === undefined ? { "--sc-padding": `${rem(8)} ${rem(14)}` } : {},
+      }),
+      // 다크 기본(track dark-8 / indicator dark-5)이 surface-2 근처로 겹쳐 인디케이터가 안 보임
+      styles: (_theme, props) => ({
+        root: { background: "var(--moeum-surface-2)" },
+        indicator: { background: "var(--moeum-surface)" },
+        label: props.size === undefined ? { lineHeight: rem(20) } : {},
+      }),
     }),
     Notification: Notification.extend({
       defaultProps: {
-        radius: "lg",
+        radius: "md",
         withBorder: false,
       },
     }),
     ActionIcon: ActionIcon.extend({
       defaultProps: {
-        radius: "full",
+        radius: "md",
         variant: "subtle",
       },
+      vars: (_theme, props) => ({
+        root: isAccentFilled(props.variant ?? "subtle", props.color)
+          ? { "--ai-color": "var(--moeum-on-accent)" }
+          : {},
+      }),
     }),
     Badge: Badge.extend({
       defaultProps: {
-        radius: "full",
+        radius: "sm",
       },
       styles: {
         root: {
-          letterSpacing: "-0.01em",
+          letterSpacing: "0",
           fontWeight: 600,
         },
       },

@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Button, Group, Stack, Text } from "@mantine/core";
+import { useId } from "react";
 
 interface FormActionsProps {
   submitLabel: string;
@@ -18,12 +19,11 @@ interface FormActionsProps {
 }
 
 /**
- * 폼 하단 액션 공통 블록 — 취소/저장(+선택적 삭제).
+ * 폼 하단 액션 공통 블록 — 삭제(subtle danger, 좌측) · 취소(outline = hair 테두리) · 저장(filled accent) 한 줄 (DESIGN.md §5 버튼, 배치3).
  *
  * sticky 모드는 시트 스크롤 컨테이너 하단에 붙는다. FormSheet body 의
- * paddingBottom(--bottom-tab-h + --safe-bottom + 16px)을 음수 마진으로 파고들고,
- * sticky bottom 오프셋을 같은 변수로 잡아 BottomTab(z 500) 바로 위에 정확히 얹힌다 —
- * 데스크탑(--bottom-tab-h: 0)에서도 같은 식이 그대로 성립한다.
+ * paddingBottom(--safe-bottom + 16px)을 음수 마진으로 파고들고, sticky bottom 을
+ * --safe-bottom 으로 잡아 홈 인디케이터 바로 위에 얹힌다(시트가 탭바를 덮으므로 탭바 보정 없음).
  */
 export default function FormActions({
   submitLabel,
@@ -38,15 +38,36 @@ export default function FormActions({
   removeHint,
   sticky = false,
 }: FormActionsProps) {
+  const removeHintId = useId();
+  // 한 줄: [삭제 subtle danger · 좌측 auto 폭] [취소 outline] [저장 filled] (Figma 60:249 FormActions)
+  // 삭제는 글자 왼쪽 끝이 필드 왼쪽 선에 맞게 음수 마진으로 패딩을 먹는다
   const buttons = (
-    <Stack gap="sm">
-      <Group grow>
+    <Stack gap={4}>
+      <Group gap="sm" wrap="nowrap">
+        {onRemove && (
+          <Button
+            type="button"
+            variant="subtle"
+            color="danger"
+            // 글자색·비활성 배경은 globals .moeum-remove-action (다크 대비 · 음수 마진 블록)
+            className="moeum-remove-action"
+            onClick={onRemove}
+            disabled={isPending || removeDisabled}
+            aria-describedby={removeHint ? removeHintId : undefined}
+            px={12}
+            ml={-12}
+            style={{ flexShrink: 0 }}
+          >
+            {removeLabel}
+          </Button>
+        )}
         {onCancel && (
           <Button
             type="button"
-            variant="light"
+            variant="default"
             onClick={onCancel}
             disabled={isPending}
+            flex={1}
           >
             {cancelLabel}
           </Button>
@@ -56,28 +77,15 @@ export default function FormActions({
           loading={isPending}
           disabled={submitDisabled}
           color={submitColor}
+          flex={1}
         >
           {submitLabel}
         </Button>
       </Group>
-      {onRemove && (
-        <Stack gap={4}>
-          <Button
-            type="button"
-            variant="light"
-            color="red"
-            onClick={onRemove}
-            disabled={isPending || removeDisabled}
-            fullWidth
-          >
-            {removeLabel}
-          </Button>
-          {removeHint && (
-            <Text size="xs" c="dimmed" ta="center">
-              {removeHint}
-            </Text>
-          )}
-        </Stack>
+      {onRemove && removeHint && (
+        <Text id={removeHintId} size="xs" c="dimmed">
+          {removeHint}
+        </Text>
       )}
     </Stack>
   );
@@ -91,13 +99,15 @@ export default function FormActions({
       mt="md"
       style={{
         position: "sticky",
-        bottom: "calc(var(--bottom-tab-h) + var(--safe-bottom))",
+        bottom: "var(--safe-bottom)",
         zIndex: 1,
-        background: "var(--mantine-color-body)",
-        marginInline: "calc(var(--mantine-spacing-md) * -1)",
+        // 시트·모달 표면(surface)과 같은 색 — 스크롤되는 필드가 버튼 뒤로 비치지 않게
+        background: "var(--moeum-surface)",
+        // 좌우는 시트 본문 패딩(--mb-padding = FormSheet padding 20)만큼 파고들어 표면 끝까지 덮는다
+        marginInline: "calc(var(--mb-padding, var(--mantine-spacing-md)) * -1)",
         marginBottom: "calc(var(--mantine-spacing-md) * -1)",
         padding:
-          "var(--mantine-spacing-sm) var(--mantine-spacing-md) var(--mantine-spacing-md)",
+          "var(--mantine-spacing-sm) var(--mb-padding, var(--mantine-spacing-md)) var(--mantine-spacing-md)",
       }}
     >
       {buttons}

@@ -74,7 +74,7 @@ export function useAssetForm({ account, onClose }: UseAssetFormOptions) {
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         // 신규 자산 = 통장 생성. 초기금이 곧 start_balance.
@@ -90,7 +90,7 @@ export function useAssetForm({ account, onClose }: UseAssetFormOptions) {
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       onClose?.();
@@ -98,7 +98,7 @@ export function useAssetForm({ account, onClose }: UseAssetFormOptions) {
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -108,7 +108,9 @@ export function useAssetForm({ account, onClose }: UseAssetFormOptions) {
     modals.openConfirmModal({
       centered: true,
       title: tg("confirmtitle"),
-      labels: { confirm: tg("confirm"), cancel: tg("cancel") },
+      // 파괴적 확인 = danger (DESIGN §2-3) — 폼 삭제 확인 공통
+      labels: { confirm: tg("delete"), cancel: tg("cancel") },
+      confirmProps: { color: "danger" },
       children: <span>{tg("want_to_delete")}</span>,
       onConfirm: async () => {
         try {
@@ -116,14 +118,14 @@ export function useAssetForm({ account, onClose }: UseAssetFormOptions) {
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           onClose?.();
         } catch (error) {
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

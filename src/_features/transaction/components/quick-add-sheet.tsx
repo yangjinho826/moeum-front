@@ -69,7 +69,7 @@ export default function QuickAddSheet() {
         transactionId={editId ?? undefined}
         copyFromId={copyFromId ?? undefined}
         onDone={handleDone}
-        hideCard
+        inSheet
       />
     </FormSheet>
   );

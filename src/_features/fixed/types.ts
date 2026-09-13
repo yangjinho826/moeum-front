@@ -3,9 +3,9 @@ export interface FixedSearchRequestType {
   isArchived?: boolean;
 }
 
+/** 백엔드 FixedCreate/UpdateRequest 와 1:1 — 금액 필드는 백엔드에 없다(배치5 plan/5.md) */
 export interface FixedBaseRequestType {
   name: string;
-  amount: number;
   dayOfMonth: number;
   categoryId?: string | null;
   color?: string | null;
@@ -24,7 +24,6 @@ export interface FixedListItemType {
   fixedId: string;
   householdId: string;
   name: string;
-  amount: number;
   dayOfMonth: number;
   categoryId: string | null;
   categoryName?: string | null;
@@ -40,7 +39,6 @@ export interface FixedDetailItemType {
   fixedId: string;
   householdId: string;
   name: string;
-  amount: number;
   dayOfMonth: number;
   categoryId: string | null;
   categoryName?: string | null;

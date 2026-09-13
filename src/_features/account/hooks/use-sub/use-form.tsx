@@ -88,23 +88,28 @@ export function useAccountForm({ accountId, onDone }: UseAccountFormOptions) {
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         await createMutation.mutateAsync({ ...form.values });
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       if (onDone) onDone();
-      else router.replace(`/${routeParams.locale}/account`);
+      else router.replace(
+        // 수정은 그 통장 상세로, 생성은 목록(자산 화면)으로 (배치3 S6 F-310)
+        isUpdate && accountId
+          ? `/${routeParams.locale}/account/${accountId}`
+          : `/${routeParams.locale}/wealth`,
+      );
     } catch (error) {
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -114,7 +119,9 @@ export function useAccountForm({ accountId, onDone }: UseAccountFormOptions) {
     modals.openConfirmModal({
       centered: true,
       title: tg("confirmtitle"),
-      labels: { confirm: tg("confirm"), cancel: tg("cancel") },
+      // 파괴적 확인 = danger (DESIGN §2-3) — 폼 삭제 확인 공통
+      labels: { confirm: tg("delete"), cancel: tg("cancel") },
+      confirmProps: { color: "danger" },
       children: <span>{tg("want_to_delete")}</span>,
       onConfirm: async () => {
         try {
@@ -122,15 +129,15 @@ export function useAccountForm({ accountId, onDone }: UseAccountFormOptions) {
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) onDone();
-          else router.replace(`/${routeParams.locale}/account`);
+          else router.replace(`/${routeParams.locale}/wealth`);
         } catch (error) {
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

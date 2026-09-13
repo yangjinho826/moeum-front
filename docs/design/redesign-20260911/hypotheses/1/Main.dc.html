@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700;800&family=Geist+Mono:wght@500;600;700&display=swap">
+  <style>
+:root{--bg:#FAF6EF;--surface:#FFFDF9;--surface2:#F3EEE4;--text:#3C3530;--dim:#7A6F63;--hair:#DDD5C9;--hair2:#EDE8E0;
+--accent:#647A5C;--accent-soft:rgba(124,148,115,.14);--on-accent:#FFFFFF;--up:#DC2626;--down:#2563EB;--income:#2F855A;--expense:#C2674A;
+--chart2:#C2674A;--chart3:#3C3530;--chart4:#A99C8D;--purple:#8B5CF6;
+--sans:"Noto Sans KR",Pretendard,-apple-system,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg)}
+a{color:var(--accent);text-decoration:none}a:hover{color:#4F6348}
+.phone{width:390px;height:844px;background:var(--bg);color:var(--text);font-family:var(--sans);letter-spacing:-0.01em;position:relative;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased}
+.body{flex-grow:1;padding:16px 20px 0;overflow:hidden;display:flex;flex-direction:column}
+.hdr{display:flex;justify-content:space-between;align-items:center;height:48px;flex-shrink:0}
+.brand{font-size:15px;font-weight:800;color:var(--accent);letter-spacing:-0.03em}
+.pill{display:flex;align-items:center;gap:4px;height:28px;padding:0 10px;border:1px solid var(--hair);border-radius:8px;font-size:12px;font-weight:600;color:var(--text)}
+.title{font-size:22px;font-weight:800;letter-spacing:-0.03em}
+.hdr-acts{display:flex;align-items:center;gap:14px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:0}
+.cap{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--dim);letter-spacing:.02em}
+.lbl{font-size:13px;font-weight:600;color:var(--dim)}
+.hero{display:flex;flex-direction:column;gap:6px;padding:24px 0 10px}
+.hero.compact{padding:24px 0 8px}
+.n44{font-family:var(--mono);font-size:44px;font-weight:700;letter-spacing:-0.04em;line-height:1.05;white-space:nowrap;display:flex;align-items:baseline;gap:6px}
+.n28{font-family:var(--mono);font-size:28px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;white-space:nowrap;display:flex;align-items:baseline;gap:6px}
+.won{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--dim);letter-spacing:-0.01em}
+.delta{display:flex;align-items:baseline;gap:8px;padding-top:4px}
+.delta .d{font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta .c{font-size:13px;font-weight:500;color:var(--dim)}
+.up{color:var(--up)}.down{color:var(--down)}.inc{color:var(--income)}.exp{color:var(--expense)}.dim{color:var(--dim)}.acc{color:var(--accent)}
+.spark{display:block;width:100%;height:44px;margin:10px 0 4px}
+.hr{height:1px;background:var(--hair);margin:12px 0;flex-shrink:0}
+.sec{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0 2px}
+.sec h4{margin:0;font-size:14px;font-weight:700;letter-spacing:-0.03em}
+.sec a{font-size:12px;font-weight:600}
+.r{display:flex;justify-content:space-between;align-items:center;height:46px;border-bottom:1px solid var(--hair2);flex-shrink:0}
+.r.tall{height:52px}.r.big{height:56px}
+.r:last-child{border-bottom:0}
+.r .l{display:flex;flex-direction:column;gap:2px}
+.r .t{font-size:14px;font-weight:600}
+.r .m{font-size:11px;color:var(--dim);display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;border-radius:3px;display:inline-block}
+.r .rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.r .v{font-family:var(--mono);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.r .v.v18{font-size:18px}
+.r .sub{font-family:var(--mono);font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+.bar{width:120px;height:2px;background:var(--hair2);display:flex}
+.bar i{height:2px;display:block}
+.subbar{display:flex;align-items:center;gap:8px}.subbar .bar{width:80px}
+.stat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:6px 0 8px}
+.stat .l{font-size:12px;font-weight:600;color:var(--dim)}
+.stat .v{font-family:var(--mono);font-size:18px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chips{display:flex;gap:16px;height:32px;align-items:flex-end;margin-top:10px}
+.chips span{font-size:13px;font-weight:600;color:var(--dim);padding-bottom:6px;border-bottom:2px solid transparent}
+.chips span.on{color:var(--accent);border-bottom-color:var(--accent)}
+.chart{display:block;width:100%;height:140px;margin-top:12px}
+.axis{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));font-family:var(--mono);font-size:10px;color:var(--dim);text-align:center;margin-top:6px}
+.fab{position:absolute;right:16px;bottom:78px;height:40px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.tab{height:64px;border-top:1px solid var(--hair);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--bg);flex-shrink:0}
+.tab div{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--dim);gap:4px;font-weight:600}
+.tab div.on{color:var(--accent)}
+.tab svg{width:20px;height:20px}
+.ico{width:20px;height:20px;color:var(--dim)}
+.empty{font-size:13px;color:var(--dim);padding:12px 0}
+</style>
+</helmet>
+<div class="phone">
+  <div class="body">
+<div class="hdr"><span class="brand">모음</span><span class="pill">우리집 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></div>
+<div class="hero"><span class="cap">2026.09.11 기준</span><span class="lbl">총자산</span><div class="n44">128,450,000<span class="won">원</span></div><div class="delta"><span class="d up">▲ 3,240,000</span><span class="c">+2.6% · 지난달보다</span></div></div>
+<svg class="spark" viewBox="0 0 350 44" preserveAspectRatio="none"><polyline fill="none" stroke="#647A5C" stroke-width="1.5" points="0,36 58,30 116,32 174,22 232,24 290,14 350,6"/><circle cx="350" cy="6" r="3" fill="#DC2626"/></svg>
+<div class="hr"></div>
+<div class="sec"><h4>이번 달 늘어난 이유</h4><a>자세히</a></div>
+<div class="r "><div class="l"><div class="t">순저축</div><div class="m"><span class="inc">수입 4,800,000</span>&nbsp;−&nbsp;<span class="exp">지출 3,000,000</span></div></div><div class="rt"><div class="v ">+1,800,000</div><div class="bar"><i style="width:56%;background:#647A5C"></i></div></div></div>
+<div class="r "><div class="l"><div class="t">투자손익</div><div class="m">평가 +1,120,000 · 실현 +320,000</div></div><div class="rt"><div class="v up">+1,440,000</div><div class="bar"><i style="width:44%;background:#DC2626"></i></div></div></div>
+<div class="hr"></div>
+<div class="sec"><h4>자산 구성</h4><a>전체</a></div>
+<div class="r "><div class="l"><div class="t">주식·ETF</div></div><div class="rt"><div class="v ">100,000,000</div><div class="bar"><i style="width:78%;background:#647A5C"></i></div></div></div>
+<div class="r "><div class="l"><div class="t">현금·예금</div></div><div class="rt"><div class="v ">28,450,000</div><div class="bar"><i style="width:22%;background:#C2674A"></i></div></div></div>
+<div class="hr"></div>
+<div class="sec"><h4>최근 기록</h4><a>전체</a></div>
+<div class="r "><div class="l"><div class="t">스타벅스</div><div class="m"><span class="dot" style="background:#C2674A"></span>카페 · 9.11 · 신한 체크</div></div><div class="rt"><div class="v exp">−5,600</div></div></div><div class="r "><div class="l"><div class="t">급여</div><div class="m"><span class="dot" style="background:#2F855A"></span>수입 · 9.10 · 국민 급여통장</div></div><div class="rt"><div class="v inc">+4,800,000</div></div></div>
+  </div>
+  <div class="fab">＋ 기록</div>
+  <div class="tab"><div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div>
+</div>
+</x-dc>
+</body>
+</html>

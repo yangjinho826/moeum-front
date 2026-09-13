@@ -3,50 +3,49 @@
 import {
   Box,
   Button,
-  Card,
   Group,
-  SimpleGrid,
+  SegmentedControl,
   Stack,
   Text,
-  Title,
-  UnstyledButton,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronRight, IconLogout, IconUsers } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { useAuthContext } from "_features/auth/context";
+import Hairline from "_features/common/components/hairline";
+import ListRow from "_features/common/components/list-row";
+import PageTitle from "_features/common/components/page-title";
+import Section from "_features/common/components/section";
+import StatGrid from "_features/common/components/stat-grid";
 import { HouseholdSwitcher } from "_features/household/components/household-switcher";
-import {
-  useHouseholdStore,
-  useMembersSheetStore,
-} from "_features/household/store";
+import { useHouseholdStore, useMembersSheetStore } from "_features/household/store";
 import { queryKeys } from "_constants/queries";
 
+/**
+ * 내정보 — 프로필 + 3열 → 가계부 3행 → 화면 모드 세그(신규) → 관리 3행 → 로그아웃 outline
+ * (plan/1.md, Figma settings 27:257). 데스크톱은 화면 모드·로그아웃이 우측 레일.
+ */
 export default function SettingsSection() {
-  const router = useRouter();
-  const routeParams = useParams<{ locale: string }>();
+  const { locale } = useParams<{ locale: string }>();
   const { user, actions, state } = useAuthContext();
   const [switcherOpened, switcher] = useDisclosure(false);
   const currentId = useHouseholdStore((s) => s.currentHouseholdId);
+  const openMembers = useMembersSheetStore((s) => s.open);
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
   const t = useTranslations("settings");
   const th = useTranslations("household");
 
   // 의식적 예외 — "한 페이지=한 endpoint" 원칙의 예외 1건.
-  // household.list 는 가계부 전환 (HouseholdSwitcher) 용 전체 목록이라
-  // settings overview (카운트 통계) 와 의미·캐시 수명이 다름. 묶지 않음.
+  // household.list 는 가계부 전환용 전체 목록이라 settings overview(카운트)와 캐시 수명이 다름.
   const { data: hData } = useSuspenseQuery(queryKeys.household.list());
-  const { data: overviewRes } = useSuspenseQuery(
-    queryKeys.settings.overview(),
-  );
+  const { data: overviewRes } = useSuspenseQuery(queryKeys.settings.overview());
 
   const households = hData.body.data.items;
   const counts = overviewRes.body.data;
-  const currentHousehold =
-    households.find((h) => h.householdId === currentId) ?? households[0];
-  const openMembers = useMembersSheetStore((s) => s.open);
+  const currentHousehold = households.find((h) => h.householdId === currentId) ?? households[0];
 
   const onLogout = async () => {
     try {
@@ -55,217 +54,143 @@ export default function SettingsSection() {
       // 백엔드 호출 실패해도 mutationFn finally 에서 clearSession 실행됨 — 무시
     }
     // 풀 리로드 — (guest) layout 의 SSR 가드가 새 쿠키 상태로 평가되도록
-    window.location.replace(`/${routeParams.locale}/login`);
+    window.location.replace(`/${locale}/login`);
   };
 
-  const navTo = (path: string) =>
-    router.push(`/${routeParams.locale}${path}`);
+  const appearance = (
+    <Section title={t("appearance")}>
+      <SegmentedControl
+        fullWidth
+        value={colorScheme}
+        onChange={(v) => setColorScheme(v as "light" | "dark" | "auto")}
+        data={[
+          { value: "light", label: t("scheme_light") },
+          { value: "dark", label: t("scheme_dark") },
+          { value: "auto", label: t("scheme_auto") },
+        ]}
+      />
+    </Section>
+  );
+
+  const logout = (
+    <>
+      <Hairline />
+      <Button
+        variant="outline"
+        color="gray"
+        fullWidth
+        size="md"
+        loading={state.isLoggingOut}
+        disabled={state.isLoggingOut}
+        onClick={onLogout}
+        styles={{ root: { borderColor: "var(--moeum-hair)", color: "var(--moeum-text)" } }}
+      >
+        {t("logout")}
+      </Button>
+    </>
+  );
 
   return (
-    <Stack gap="md">
-      <Title order={3}>{t("title")}</Title>
+    <div className="moeum-main-rail">
+      <Stack gap={0}>
+        <PageTitle title={t("title")} />
 
-      {/* 프로필 Hero — 통계 흡수 */}
-      {user && (
-        <Card
-          p="xl"
-          shadow="md"
-          style={{
-            background:
-              "linear-gradient(160deg, var(--mantine-color-sage-0) 0%, var(--mantine-color-gray-0) 62%)",
-          }}
-        >
-          <Group gap="md" wrap="nowrap">
+        {/* 프로필 */}
+        {user && (
+          <Group gap={14} wrap="nowrap" pt={16} pb={4}>
             <Box
+              w={44}
+              h={44}
               style={{
-                width: 60,
-                height: 60,
-                borderRadius: "50%",
-                background: "var(--mantine-color-sage-6)",
+                borderRadius: "var(--mantine-radius-md)",
+                background: "var(--moeum-surface-2)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
               }}
             >
-              <Text size="xl" fw={800} c="white">
+              <Text fw={700} c="var(--moeum-accent)" style={{ fontSize: 16, lineHeight: "20px" }}>
                 {user.name?.[0] ?? "U"}
               </Text>
             </Box>
-            <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-              <Text size="lg" fw={800} truncate>
+            <Stack gap={2} style={{ minWidth: 0 }}>
+              <Text fw={700} c="var(--moeum-text)" truncate style={{ fontSize: 22, lineHeight: "30px", letterSpacing: "-0.03em" }}>
                 {user.name}
               </Text>
-              <Text size="xs" c="dimmed" truncate>
+              <Text c="dimmed" truncate style={{ fontSize: 13, lineHeight: "19px" }}>
                 {user.email}
               </Text>
             </Stack>
           </Group>
+        )}
+        <StatGrid
+          items={[
+            { label: t("stat_accounts"), value: counts.accountCount },
+            { label: t("stat_transactions"), value: counts.transactionCount },
+            { label: t("stat_portfolios"), value: counts.portfolioCount },
+          ]}
+        />
 
-          <SimpleGrid
-            cols={3}
-            mt="lg"
-            pt="lg"
-            style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
-          >
-            <Stat value={counts.accountCount} label={t("stat_accounts")} />
-            <Stat
-              value={counts.transactionCount}
-              label={t("stat_transactions")}
+        {/* 가계부 */}
+        <Section title={t("household_section")}>
+          <ListRow
+            tall
+            chevron
+            title={currentHousehold?.name ?? "—"}
+            meta={`${
+              currentHousehold?.role === "OWNER" ? th("member.role_owner") : th("member.role_member")
+            } · ${t("total_count", { count: households.length })}`}
+            onClick={switcher.open}
+          />
+          <ListRow title={t("household_manage")} chevron href={`/${locale}/household`} />
+          {currentHousehold && (
+            <ListRow
+              title={t("member_manage")}
+              chevron
+              last
+              onClick={() => openMembers(currentHousehold.householdId)}
             />
-            <Stat value={counts.portfolioCount} label={t("stat_portfolios")} />
-          </SimpleGrid>
-        </Card>
-      )}
-
-      {/* 현재 가계부 */}
-      <Stack gap={4}>
-        <Text size="xs" fw={700} c="dimmed" px={8}>
-          {t("current_household")}
-        </Text>
-        <Card p="xs">
-          <Stack gap={0}>
-            <UnstyledButton
-              onClick={switcher.open}
-              style={{ padding: 12, borderRadius: 12 }}
-            >
-              <Group gap={12}>
-                <Box
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 12,
-                    background: "var(--mantine-color-sage-0)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <Text size="sm" fw={800} c="sage.6">
-                    {currentHousehold?.name?.[0] ?? "H"}
-                  </Text>
-                </Box>
-                <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                  <Text size="sm" fw={700} truncate>
-                    {currentHousehold?.name ?? "—"}
-                  </Text>
-                  <Text size="xs" c="dimmed">
-                    {currentHousehold?.role === "OWNER"
-                      ? th("member.role_owner")
-                      : th("member.role_member")}{" "}
-                    · {t("total_count", { count: households.length })}
-                  </Text>
-                </Stack>
-                <Text size="xs" fw={700} c="sage.6">
-                  {t("switch")}
-                </Text>
-              </Group>
-            </UnstyledButton>
-            <SettingsRow
-              label={t("household_manage")}
-              onClick={() => navTo("/household")}
-            />
-            {currentHousehold && (
-              <SettingsRow
-                label={t("member_manage")}
-                icon={IconUsers}
-                onClick={() => openMembers(currentHousehold.householdId)}
-              />
-            )}
-          </Stack>
-        </Card>
-      </Stack>
-
-      <HouseholdSwitcher
-        opened={switcherOpened}
-        onClose={switcher.close}
-      />
-
-      {/* 관리 */}
-      <Stack gap={4}>
-        <Text size="xs" fw={700} c="dimmed" px={8}>
-          {t("manage_section")}
-        </Text>
-        <Card p="xs">
-          <Stack gap={0}>
-            <SettingsRow
-              label={t("category_manage")}
-              value={t("count_suffix", { count: counts.categoryCount })}
-              onClick={() => navTo("/category")}
-            />
-            <SettingsRow
-              label={t("fixed_manage")}
-              value={t("count_suffix", { count: counts.fixedCount })}
-              onClick={() => navTo("/fixed")}
-            />
-            <SettingsRow
-              label={t("account_manage")}
-              value={t("count_suffix", { count: counts.accountCount })}
-              onClick={() => navTo("/wealth")}
-            />
-          </Stack>
-        </Card>
-      </Stack>
-
-      {/* 로그아웃 */}
-      <Button
-        variant="light"
-        color="gray"
-        size="md"
-        leftSection={<IconLogout size={16} />}
-        loading={state.isLoggingOut}
-        disabled={state.isLoggingOut}
-        onClick={onLogout}
-      >
-        {t("logout")}
-      </Button>
-    </Stack>
-  );
-}
-
-function Stat({ value, label }: { value: number; label: string }) {
-  return (
-    <Stack gap={2} align="center">
-      <Text size="lg" fw={800}>
-        {value}
-      </Text>
-      <Text size="xs" c="dimmed">
-        {label}
-      </Text>
-    </Stack>
-  );
-}
-
-function SettingsRow({
-  label,
-  value,
-  icon: Icon,
-  onClick,
-}: {
-  label: string;
-  value?: string;
-  icon?: React.ComponentType<{ size?: string | number; color?: string }>;
-  onClick?: () => void;
-}) {
-  return (
-    <UnstyledButton onClick={onClick} style={{ padding: 12, borderRadius: 12 }}>
-      <Group justify="space-between">
-        <Group gap={8}>
-          {Icon && <Icon size={16} color="var(--mantine-color-gray-6)" />}
-          <Text size="sm" fw={500}>
-            {label}
-          </Text>
-        </Group>
-        <Group gap={4}>
-          {value && (
-            <Text size="xs" c="dimmed">
-              {value}
-            </Text>
           )}
-          <IconChevronRight size={14} color="var(--mantine-color-gray-5)" />
-        </Group>
-      </Group>
-    </UnstyledButton>
+        </Section>
+
+        <Box hiddenFrom="lg">{appearance}</Box>
+
+        {/* 관리 */}
+        <Section title={t("manage_section")}>
+          <ListRow
+            title={t("category")}
+            value={counts.categoryCount}
+            valueColor="dim"
+            chevron
+            href={`/${locale}/category`}
+          />
+          <ListRow
+            title={t("fixed")}
+            value={counts.fixedCount}
+            valueColor="dim"
+            chevron
+            href={`/${locale}/fixed`}
+          />
+          <ListRow
+            title={t("account")}
+            value={counts.accountCount}
+            valueColor="dim"
+            chevron
+            last
+            href={`/${locale}/wealth`}
+          />
+        </Section>
+
+        <Box hiddenFrom="lg">{logout}</Box>
+      </Stack>
+
+      <Box visibleFrom="lg" pt={48}>
+        {appearance}
+        {logout}
+      </Box>
+
+      <HouseholdSwitcher opened={switcherOpened} onClose={switcher.close} />
+    </div>
   );
 }

@@ -21,7 +21,7 @@ export default function HouseholdSheet() {
       onClose={close}
       title={editId ? t("form_update_title") : t("form_create_title")}
     >
-      <HouseholdForm householdId={editId ?? undefined} onDone={close} hideCard />
+      <HouseholdForm householdId={editId ?? undefined} onDone={close} inSheet />
     </FormSheet>
   );
 }

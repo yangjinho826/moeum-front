@@ -16,18 +16,8 @@ export default async function GuestLayout({
   }
 
   return (
-    <Container
-      size={448}
-      px={0}
-      mih="100dvh"
-      style={{
-        marginInline: "auto",
-        display: "flex",
-        flexDirection: "column",
-        // 개선 B — 상단 따뜻한 그라데이션 → 본문 크림으로 페이드. hero/카드는 자체 패딩.
-        background: "linear-gradient(180deg, #F3E6DA 0%, #FAF6EF 38%)",
-      }}
-    >
+    // 게스트(로그인·가입) — 배경은 앱과 같은 bg 단색(그라데이션·카드 없음, DESIGN §1). 칼럼 448 · 좌우 20
+    <Container size={448} px={20} pt={{ base: 64, lg: 120 }} pb={40} mih="100dvh">
       {children}
     </Container>
   );

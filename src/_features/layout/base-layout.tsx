@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-head-element */
-import { ColorSchemeScript } from "@mantine/core";
+import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
@@ -7,6 +7,10 @@ import type { ReactNode } from "react";
 import { MantineProviders } from "_providers/mantine-provider";
 import { QueryProvider } from "_providers/query-provider";
 import { SearchParamsProvider } from "_providers/search-params-provider";
+import {
+  COLOR_SCHEME_STORAGE_KEY,
+  DEFAULT_COLOR_SCHEME,
+} from "_styles/color-scheme";
 
 /**
  * BaseLayout — `<html><body>` + 글로벌 Provider 통합.
@@ -14,7 +18,8 @@ import { SearchParamsProvider } from "_providers/search-params-provider";
  * Provider 순서 (bims 동일):
  * NextIntl → Mantine(+Modals+Notifications) → ReactQuery → SearchParams(nuqs)
  *
- * `data-mantine-color-scheme="light"` 로 light-only 강제.
+ * 스킴: 라이트 기본 + 다크. `ColorSchemeScript` 가 localStorage 값을 첫 페인트 전에
+ * <html data-mantine-color-scheme> 에 써서 새로고침 깜빡임이 없다 (DESIGN.md §7).
  */
 export async function BaseLayout({
   locale,
@@ -27,15 +32,21 @@ export async function BaseLayout({
   const t = await getTranslations({ locale, namespace: "app" });
 
   return (
-    <html lang={locale} data-mantine-color-scheme="light">
+    <html
+      lang={locale}
+      {...mantineHtmlProps}
+      data-mantine-color-scheme={DEFAULT_COLOR_SCHEME}
+    >
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript
+          defaultColorScheme={DEFAULT_COLOR_SCHEME}
+          localStorageKey={COLOR_SCHEME_STORAGE_KEY}
+        />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
         />
-        {/* 브랜드 워드마크 전용 세리프 (Noto Serif KR) — 로고/브랜드명에만 사용.
-            전역 1회 로드라 next/font 페이지 단위 권고는 해당 없음 → 룰 비활성화. */}
+        {/* 금액·날짜·라벨 전용 등폭 (Geist Mono) — 전역 1회 로드라 next/font 페이지 단위 권고 해당 없음 */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -45,22 +56,21 @@ export async function BaseLayout({
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap"
         />
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no, viewport-fit=cover"
         />
-        <meta name="theme-color" content="#7C9473" />
+        <meta name="theme-color" content="#FAF6EF" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content={t("meta_title")} />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      {/* 양옆 bg 는 살짝 어두운 회색 — 박스를 시각적으로 분리.
-          박스 max-width / bg / minHeight 는 각 layout (UserShell / GuestLayout) 책임. */}
-      <body style={{ background: "#e5e8eb" }}>
+      {/* body 배경(양옆 거터)은 globals.css 가 --moeum-surface-2 로. 박스 폭·bg 는 각 layout 책임. */}
+      <body>
         <NextIntlClientProvider messages={messages}>
           <MantineProviders>
             <QueryProvider>

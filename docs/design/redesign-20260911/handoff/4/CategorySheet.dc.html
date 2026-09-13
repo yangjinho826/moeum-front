@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700;800&family=Geist+Mono:wght@500;600;700&display=swap">
+  <style>
+:root{--bg:#FAF6EF;--surface:#FFFDF9;--surface2:#F3EEE4;--text:#3C3530;--dim:#7A6F63;--hair:#DDD5C9;--hair2:#EDE8E0;
+--accent:#647A5C;--accent-soft:rgba(124,148,115,.14);--on-accent:#FFFFFF;--up:#DC2626;--down:#2563EB;--income:#2F855A;--expense:#C2674A;
+--chart2:#C2674A;--chart3:#3C3530;--chart4:#A99C8D;--purple:#8B5CF6;--warning:#F59E0B;--danger:#EF4444;
+--sans:"Noto Sans KR",Pretendard,-apple-system,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg)}
+a{color:var(--accent);text-decoration:none;cursor:pointer}a:hover{color:#4F6348}
+.phone,.desk{background:var(--bg);color:var(--text);font-family:var(--sans);letter-spacing:-0.01em;position:relative;overflow:hidden;-webkit-font-smoothing:antialiased}
+.phone{width:390px;height:844px;display:flex;flex-direction:column}
+.body{flex-grow:1;padding:16px 20px 0;overflow:hidden;display:flex;flex-direction:column}
+.hdr{display:flex;justify-content:space-between;align-items:center;height:48px;flex-shrink:0}
+.brand{font-size:15px;font-weight:800;color:var(--accent);letter-spacing:-0.03em}
+.pill{display:flex;align-items:center;gap:4px;height:28px;padding:0 10px;border:1px solid var(--hair);border-radius:8px;font-size:12px;font-weight:600;color:var(--text)}
+.title{font-size:22px;font-weight:800;letter-spacing:-0.03em}
+.hdr-acts{display:flex;align-items:center;gap:14px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:0}
+.cap{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--dim);letter-spacing:.02em}
+.lbl{font-size:13px;font-weight:600;color:var(--dim)}
+.hero{display:flex;flex-direction:column;gap:6px;padding:24px 0 10px}
+.hero.compact{padding:20px 0 8px}
+.n44{font-family:var(--mono);font-size:44px;font-weight:700;letter-spacing:-0.04em;line-height:1.05;white-space:nowrap;display:flex;align-items:baseline;gap:6px}
+.n60{font-family:var(--mono);font-size:60px;font-weight:700;letter-spacing:-0.04em;line-height:1.05;white-space:nowrap;display:flex;align-items:baseline;gap:8px}
+.n28{font-family:var(--mono);font-size:28px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;white-space:nowrap;display:flex;align-items:baseline;gap:6px}
+.won{font-family:var(--sans);font-size:14px;font-weight:500;color:var(--dim);letter-spacing:-0.01em}
+.delta{display:flex;align-items:baseline;gap:8px;padding-top:4px}
+.delta .d{font-family:var(--mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.delta .c{font-size:13px;font-weight:500;color:var(--dim)}
+.up{color:var(--up)}.down{color:var(--down)}.inc{color:var(--income)}.exp{color:var(--expense)}.dim{color:var(--dim)}.acc{color:var(--accent)}.pur{color:var(--purple)}
+.spark{display:block;width:100%;height:44px;margin:10px 0 4px}
+.spark.tall{height:120px}
+.hr{height:1px;background:var(--hair);margin:12px 0;flex-shrink:0}
+.sec{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0 2px}
+.sec h4{margin:0;font-size:14px;font-weight:700;letter-spacing:-0.03em}
+.sec a{font-size:12px;font-weight:600}
+.r{display:flex;justify-content:space-between;align-items:center;height:46px;border-bottom:1px solid var(--hair2);flex-shrink:0;gap:12px}
+.r.tall{height:52px}.r.big{height:56px}
+.r:last-child{border-bottom:0}
+.r .l{display:flex;flex-direction:column;gap:2px;min-width:0}
+.r .t{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r .m{font-size:11px;color:var(--dim);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.dot{width:6px;height:6px;border-radius:3px;display:inline-block;flex-shrink:0}
+.r .rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.r .v{font-family:var(--mono);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.r .v.v18{font-size:18px}
+.r .sub{font-family:var(--mono);font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
+.r .chev{color:var(--dim);display:flex;flex-shrink:0}
+.r .rt.row{flex-direction:row;align-items:center;gap:8px}
+.bar{width:120px;height:2px;background:var(--hair2);display:flex}
+.bar i{height:2px;display:block}
+.subbar{display:flex;align-items:center;gap:8px}.subbar .bar{width:80px}
+.stat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:6px 0 8px}
+.stat .l{font-size:12px;font-weight:600;color:var(--dim)}
+.stat .v{font-family:var(--mono);font-size:18px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chips{display:flex;gap:16px;height:32px;align-items:flex-end;margin-top:10px}
+.chips span{font-size:13px;font-weight:600;color:var(--dim);padding-bottom:6px;border-bottom:2px solid transparent;white-space:nowrap}
+.chips span.on{color:var(--accent);border-bottom-color:var(--accent)}
+.chart{display:block;width:100%;height:140px;margin-top:12px}
+.chart.tall{height:200px}
+.axis{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));font-family:var(--mono);font-size:10px;color:var(--dim);text-align:center;margin-top:6px}
+.fab{position:absolute;right:16px;bottom:78px;height:40px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--on-accent);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.tab{height:64px;border-top:1px solid var(--hair);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--bg);flex-shrink:0}
+.tab div{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--dim);gap:4px;font-weight:600}
+.tab div.on{color:var(--accent)}
+.tab svg{width:20px;height:20px}
+.ico{width:20px;height:20px;color:var(--dim)}
+.empty{font-size:13px;color:var(--dim);padding:14px 0;display:flex;gap:8px;align-items:baseline}
+.seg{display:flex;background:var(--surface2);border-radius:8px;padding:3px;gap:2px}
+.seg span{flex:1 1 0;text-align:center;font-size:13px;font-weight:600;color:var(--dim);height:30px;line-height:30px;border-radius:6px}
+.seg span.on{background:var(--surface);color:var(--text)}
+.seg.sm span{font-size:12px;height:26px;line-height:26px;padding:0 10px}
+.month{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:15px;font-weight:600;padding:8px 0 4px}
+.month .arr{color:var(--dim);display:flex}
+.filters{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:6px}
+.input{height:36px;padding:0 12px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:13px;font-weight:500;color:var(--text);min-width:120px}
+.dh{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;padding:14px 0 4px;border-bottom:1px solid var(--hair)}
+.tag{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--warning);border:1px solid var(--warning);border-radius:4px;padding:0 4px;line-height:14px}
+.btn{height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;padding:0 20px}
+.btn.outline{border:1px solid var(--hair);color:var(--text)}
+.btn.filled{background:var(--accent);color:var(--on-accent)}
+.btn.sm{height:36px;font-size:13px;padding:0 16px}
+.avatar{width:44px;height:44px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--accent)}
+.skel{background:var(--surface2);border-radius:4px}
+.note{font-size:13px;color:var(--dim);line-height:1.6}
+.statebox{border:1px dashed var(--hair);border-radius:8px;padding:12px 16px;margin-top:8px}
+.statebox .h{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
+/* 데스크톱 */
+.desk{width:1440px;height:900px;display:grid;grid-template-columns:220px minmax(0,1fr)}
+.side{border-right:1px solid var(--hair);padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.side .brand{font-size:18px;padding:0 8px 20px}
+.side .hh{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--hair);border-radius:8px;margin-bottom:16px}
+.side .hh .n{font-size:14px;font-weight:700}.side .hh .c{font-size:11px;color:var(--dim)}
+.nav{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:14px;font-weight:600;color:var(--dim)}
+.nav svg{width:20px;height:20px}
+.nav.on{background:var(--accent-soft);color:var(--accent)}
+.side .btn{margin-top:auto}
+.main{padding:32px 40px;display:grid;grid-template-columns:720px 320px;gap:48px;align-content:start;overflow:hidden}
+.main .col{display:flex;flex-direction:column;min-width:0}
+.main .rail{display:flex;flex-direction:column;padding-top:8px}
+.main .hdr{height:40px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);text-align:left;padding:8px 0;border-bottom:1px solid var(--hair)}
+th.n,td.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600}
+td{padding:12px 0;border-bottom:1px solid var(--hair2);white-space:nowrap}
+td.dim{color:var(--dim);font-weight:500}
+tr:last-child td{border-bottom:0}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--hair2);border-left:1px solid var(--hair2)}
+.cal div{border-right:1px solid var(--hair2);border-bottom:1px solid var(--hair2);height:44px;padding:4px 6px;font-family:var(--mono);font-size:10px;color:var(--dim);display:flex;flex-direction:column;justify-content:space-between}
+.cal div b{font-weight:500;color:var(--text)}
+.cal div.on{background:var(--accent-soft)}
+
+.cbar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--hair2);margin:6px 0}
+.cbar i{display:block;height:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 4px}
+.two .btn.outline{font-size:15px}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.field .fl{font-size:12px;font-weight:600;color:var(--dim)}
+.field .input{min-width:0;width:100%}
+.field .input.big{height:52px;font-family:var(--mono);font-size:28px;font-weight:700;justify-content:flex-end;letter-spacing:-0.03em}
+.field .input.big .won{font-size:14px;margin-left:6px}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:16px 16px 0 0;padding:4px 20px 0;box-shadow:0 20px 40px rgba(0,0,0,.24);display:flex;flex-direction:column}
+.handle{width:40px;height:4px;border-radius:2px;background:var(--hair);margin:8px auto 10px}
+.sheet .st{font-size:16px;font-weight:800;letter-spacing:-0.03em}
+.foot{display:grid;grid-template-columns:1fr 2fr;gap:10px;padding:16px 0 calc(64px + 16px);margin-top:8px}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+.modal{width:560px;background:var(--surface);border-radius:12px;padding:20px 24px 4px;margin:80px auto 0;box-shadow:0 20px 40px rgba(0,0,0,.24)}
+.modal .foot{padding-bottom:20px}
+.hint{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.02em}
+.stack{display:flex;flex-direction:column}
+.chart,.cbar,.axis,.chips,.stat,.two,.field,.sec,.hero,.dh,.seg,.empty{flex-shrink:0}
+
+:root{--accent:#4F6149;--up:#B91C1C;--down:#2563EB;--income:#266E4A;--expense:#A4543B;--chart2:#A4543B;--danger:#B91C1C}
+a:hover{color:#3F4F3A}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field .desc{font-size:12px;color:var(--dim)}
+.field .input.num{font-family:var(--mono);font-size:15px;font-weight:600;justify-content:space-between}
+.field .input.num .won{font-size:13px}
+.field .input.lock{opacity:.55}
+.sw{display:grid;grid-template-columns:repeat(6,28px);gap:12px 16px;padding:2px}
+.sw i{width:28px;height:28px;border-radius:14px;display:block}
+.sw i.on{outline:2px solid var(--text);outline-offset:2px}
+.ig{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
+.ig span{height:36px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--dim)}
+.ig span.on{background:var(--accent-soft);color:var(--accent)}
+.ig svg{width:18px;height:18px}
+.sum{border-top:1px solid var(--hair2);margin-top:14px;padding-top:8px}
+.sum .sr{display:flex;justify-content:space-between;align-items:baseline;height:26px}
+.sum .sr .k{font-size:13px;color:var(--dim)}
+.sum .sr .v{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.sum .sr.total .k{color:var(--text);font-weight:600}
+.sum .sr.total .v{font-size:15px;font-weight:700}
+.foot3{display:flex;gap:10px;align-items:center;padding:16px 0 calc(64px + 16px);margin-top:8px}
+.foot3 .del{height:44px;padding:0 12px;margin-left:-12px;display:flex;align-items:center;font-size:15px;font-weight:700;color:var(--danger)}
+.foot3 .btn{flex:1 1 0}
+.foot3 .btn.filled{flex:2 1 0}
+.foot3 .btn.outline{flex:1 1 0}
+.foot3.page{padding-bottom:0}
+.field .input.big{justify-content:space-between}
+.fhint{padding-top:8px}
+.fhint{font-size:12px;color:var(--dim);margin-top:-10px;padding-bottom:12px}
+.seg span.up{color:var(--up)}.seg span.down{color:var(--down)}
+.seg.lock{opacity:.55}
+.pagef{max-width:560px}
+.chart,.axis,.stat,.field,.sec,.hero,.dh,.seg,.empty,.sw,.ig,.sum,.grid2,.foot3{flex-shrink:0}
+
+.field .seg span{height:38px;line-height:38px}
+.gl{width:18px;height:18px;display:flex;flex-shrink:0}
+.gl svg{width:18px;height:18px}
+.r .lg{display:flex;align-items:center;gap:12px;min-width:0}
+.hint2{font-size:13px;color:var(--dim)}
+.hint2 .mono{color:var(--text);font-weight:600}
+.guide{font-size:12px;color:var(--dim);line-height:1.6;padding:8px 0 4px}
+.chev2{color:var(--dim);display:flex}
+.r,.sec,.month,.hero,.chips,.guide{flex-shrink:0}
+.gd{padding:10px 0;border-bottom:1px solid var(--hair2)}
+.gd:last-child{border-bottom:0}
+.gd b{display:block;font-size:13px;font-weight:700;margin-bottom:4px}
+.gd span{display:block;font-size:12px;color:var(--dim);line-height:1.6}
+</style>
+</helmet>
+<div class="phone"><div class="body"><div class="hdr"><span class="brand">모음</span><span class="pill">우리집 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></div><div class="hdr"><span style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700"><span class="acc">←</span>카테고리</span><a style="font-size:13px;font-weight:700">추가</a></div><div class="r"><div class="lg"><span class="gl" style="color:#EF4444"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg></span><div class="l"><div class="t" style="display:flex;gap:6px;align-items:center">식비</div></div></div><div class="rt row" style="flex-direction:row;align-items:center;gap:8px"><span class="chev2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></span></div></div><div class="r"><div class="lg"><span class="gl" style="color:#D97706"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h2a2 2 0 0 1 0 4h-2"/></svg></span><div class="l"><div class="t" style="display:flex;gap:6px;align-items:center">카페·간식</div></div></div><div class="rt row" style="flex-direction:row;align-items:center;gap:8px"><span class="chev2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></span></div></div><div class="r"><div class="lg"><span class="gl" style="color:#FF6B6B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h2a2 2 0 0 1 0 4h-2"/></svg></span><div class="l"><div class="t" style="display:flex;gap:6px;align-items:center">외식</div></div></div><div class="rt row" style="flex-direction:row;align-items:center;gap:8px"><span class="chev2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></span></div></div><div class="r"><div class="lg"><span class="gl" style="color:#3B82F6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5z"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></svg></span><div class="l"><div class="t" style="display:flex;gap:6px;align-items:center">교통</div></div></div><div class="rt row" style="flex-direction:row;align-items:center;gap:8px"><span class="chev2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></span></div></div></div><div class="scrim"></div><div class="sheet"><div class="handle"></div><div class="st">카테고리 추가</div><div class="field"><div class="fl">분류</div><div class="seg"><span class="on">지출</span><span class="">수입</span></div></div><div class="field"><div class="fl">이름</div><div class="input"><span class="dim">예) 식비</span></div></div><div class="field"><div class="fl">색</div><div class="sw"><i class="" style="background:#3B82F6"></i><i class="" style="background:#2F855A"></i><i class="on" style="background:#EF4444"></i><i class="" style="background:#8B5CF6"></i><i class="" style="background:#FCD34D"></i><i class="" style="background:#D97706"></i><i class="" style="background:#FF6B6B"></i><i class="" style="background:#4ECDC4"></i><i class="" style="background:#FFE66D"></i><i class="" style="background:#95E1D3"></i><i class="" style="background:#0046FF"></i><i class="" style="background:#8B95A1"></i></div></div><div class="field"><div class="fl">아이콘</div><div class="ig"><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10H3z"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h2a2 2 0 0 1 0 4h-2"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5z"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="15" rx="2"/><path d="M5 11h14M8 21v-3M16 21v-3"/></svg></span><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11"/><path d="M12 9v11M4 13h16"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7"/><path d="M12 6V3"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 21h6"/></svg></span><span class=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9v6M18 9v6M3 12h18M9 7v10M15 7v10"/></svg></span></div></div><div class="field"><div class="fl">정렬</div><div class="input num"><span class="dim">0</span></div><div class="desc">작을수록 위에 보여요</div></div><div class="foot3"><div class="btn outline">취소</div><div class="btn filled">추가</div></div></div><div class="tab"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div></div>
+</x-dc>
+</body>
+</html>

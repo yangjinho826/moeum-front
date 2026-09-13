@@ -175,6 +175,11 @@ export function useTransactionForm({
         await updateMutation.mutateAsync({ transactionId, ...txValues });
       } else if (isValuation) {
         // 새 평가액 절대값 → (새값 − 현재잔액) 차액을 평가조정 거래로 생성.
+        // 빈 칸(0)으로 제출하면 잔액 전체가 감소 거래가 된다 — 입력 요구 (배치3 S6 B-4). 자산을 없애려면 자산 삭제
+        if (!(Number(valuation) > 0)) {
+          form.setFieldError("valuation", t("valuation_required_message"));
+          return;
+        }
         const diff = valuation - (selectedAccount?.balance ?? 0);
         if (diff === 0) {
           form.setFieldError("valuation", t("valuation_no_change_message"));
@@ -200,7 +205,7 @@ export function useTransactionForm({
         message: isUpdate
           ? tg("update_has_been_completed")
           : tg("register_has_been_completed"),
-        color: "green",
+        color: "positive",
       });
       if (onDone) {
         onDone();
@@ -211,7 +216,7 @@ export function useTransactionForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -221,7 +226,9 @@ export function useTransactionForm({
     modals.openConfirmModal({
       centered: true,
       title: tg("confirmtitle"),
-      labels: { confirm: tg("confirm"), cancel: tg("cancel") },
+      // 파괴적 확인 = danger (DESIGN §2-3) — 폼 삭제 확인 공통
+      labels: { confirm: tg("delete"), cancel: tg("cancel") },
+      confirmProps: { color: "danger" },
       children: <span>{tg("want_to_delete")}</span>,
       onConfirm: async () => {
         try {
@@ -229,7 +236,7 @@ export function useTransactionForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) {
             onDone();
@@ -240,7 +247,7 @@ export function useTransactionForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

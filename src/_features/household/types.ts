@@ -1,10 +1,6 @@
 export type HouseholdRole = "OWNER" | "MEMBER";
 export type MemberRole = HouseholdRole;
 
-export interface HouseholdSearchRequestType {
-  searchTerm?: string;
-}
-
 export interface HouseholdBaseRequestType {
   name: string;
   description?: string | null;
@@ -26,7 +22,6 @@ export interface HouseholdListItemType {
   currency: string;
   startedAt: string;
   role?: HouseholdRole;
-  memberCount?: number;
 }
 
 export interface HouseholdDetailItemType {
@@ -37,7 +32,6 @@ export interface HouseholdDetailItemType {
   currency: string;
   startedAt: string;
   role?: HouseholdRole;
-  memberCount?: number;
 }
 
 // Members

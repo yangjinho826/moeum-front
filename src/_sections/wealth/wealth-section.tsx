@@ -1,42 +1,43 @@
 "use client";
 
-import { Card, Group, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 import AssetForm from "_features/account/components/asset-form";
-import {
-  ACCOUNT_TYPE_HEX,
-  ACCOUNT_TYPE_MANTINE_COLOR,
-} from "_features/account/constants";
 import { useAccountSheetStore } from "_features/account/store";
 import type { AccountListItemType } from "_features/account/types";
+import AccentLink from "_features/common/components/accent-link";
+import CompositionBar from "_features/common/components/composition-bar";
+import EmptyText from "_features/common/components/empty-text";
 import FormSheet from "_features/common/components/form-sheet";
-import SubHeader from "_features/layout/components/sub-header";
-import { useMoney } from "_features/common/hooks/use-money";
+import ListRow from "_features/common/components/list-row";
+import PageTitle from "_features/common/components/page-title";
+import Section from "_features/common/components/section";
+import { ASSET_CLASS_COLOR } from "_features/portfolio/constants";
+import type { AssetClass } from "_features/portfolio/types";
 import { queryKeys } from "_constants/queries";
+import { fmt } from "_utilities/fmt";
 
 import AllocationTrendChart from "./components/allocation-trend-chart";
 
-// 시각 색상 매핑은 _features/account/constants.ts 에서 중앙 관리
-const TYPE_COLOR = ACCOUNT_TYPE_MANTINE_COLOR;
-
 /**
- * WealthSection — 자산 상세(sub-route /wealth).
- *
- * 총자산 hero·월별 추이·자산군 도넛은 홈 대시보드로 이관됨(TotalAssetHero).
- * 여기는 자산군 배분 추이 + 수동자산 + 통장 리스트만.
+ * 자산 상세(/wealth) — 명세서 배치 (plan/2.md, Figma 46:195).
+ * 모바일: 자산 PageTitle(+ 자산 추가) → 자산 구성(구성 막대 + 행) → 배분 추이(적층 영역 12개월)
+ * → 자산(수동자산: 부동산·연금·금·적금) → 통장. 데스크톱: 좌 판면(추이·통장) + 우 레일(구성·자산).
+ * 색은 자산군 고정 매핑(ASSET_CLASS_COLOR, DESIGN §2-4) 하나로 막대·행·추이를 맞춘다(홈 자산 구성과 같은 규칙).
  */
 export default function WealthSection() {
-  const router = useRouter();
-  const routeParams = useParams<{ locale: string }>();
+  const { locale } = useParams<{ locale: string }>();
   const tType = useTranslations("enum.account-type");
+  const tAssetClass = useTranslations("enum.asset-class");
   const tAsset = useTranslations("account.asset");
   const tWealth = useTranslations("wealth");
-  const tGeneral = useTranslations("general.common");
-  const money = useMoney();
+  const tHome = useTranslations("home");
+  const tPortfolio = useTranslations("portfolio");
+  const tg = useTranslations("general.common");
 
   const openAccountSheet = useAccountSheetStore((s) => s.open);
 
@@ -44,189 +45,140 @@ export default function WealthSection() {
 
   // 수동자산 폼 시트 — 트리 안에서 직접 렌더해야 useQuery/useMutation 컨텍스트가 잡힘
   const [assetFormOpen, setAssetFormOpen] = useState(false);
-  const [assetEdit, setAssetEdit] = useState<
-    AccountListItemType | undefined
-  >(undefined);
+  const [assetEdit, setAssetEdit] = useState<AccountListItemType | undefined>(undefined);
 
   const overview = overviewRes.body.data;
   const accounts: AccountListItemType[] = overview.accounts;
-  // 수동자산 전용계좌(부동산·연금·금·적금)는 별도 자산 섹션에서, 나머지는 통장 리스트에서
+  // 수동자산 전용계좌(부동산·연금·금·적금)는 자산 섹션에서, 나머지는 통장 섹션에서
   const manualAssets = accounts.filter((a) => a.isManualAsset);
   const visibleAccounts = accounts.filter((a) => !a.isManualAsset);
+
+  // 자산 구성 — 현재 비중 큰 순(막대·행 순서, 추이 적층 순서). 색은 자산군 고정
+  const allocation = overview.allocation.currentAllocation
+    .filter((s) => s.valuation > 0)
+    .sort((a, b) => b.valuation - a.valuation);
+  const order: AssetClass[] = allocation.map((s) => s.assetClass);
+  const colorOf = (c: AssetClass) => ASSET_CLASS_COLOR[c];
+  const trend = overview.allocation.allocationTrend;
 
   const openAssetForm = (asset?: AccountListItemType) => {
     setAssetEdit(asset);
     setAssetFormOpen(true);
   };
 
-  return (
-    <Stack gap="md">
-      <SubHeader title={tWealth("title")} back={`/${routeParams.locale}`} />
+  const compositionSection = allocation.length > 0 && (
+    <Section title={tHome("asset_allocation")} hairline={false}>
+      <CompositionBar
+        segments={allocation.map((s) => ({ key: s.assetClass, ratio: s.ratio / 100, color: colorOf(s.assetClass) }))}
+      />
+      {allocation.map((s, i) => (
+        <ListRow
+          key={s.assetClass}
+          titleDot={colorOf(s.assetClass)}
+          title={tAssetClass(s.assetClass)}
+          value={fmt(s.valuation)}
+          sub={`${Math.round(s.ratio)}%`}
+          last={i === allocation.length - 1}
+        />
+      ))}
+    </Section>
+  );
 
-      {overview.allocation.allocationTrend.length > 1 && (
-        // 툴팁이 96px 차트 위/아래로 이탈(allowEscapeViewBox)하므로 카드가 잘라내지 않게
-        <Card radius="lg" style={{ overflow: "visible" }}>
-          <Stack gap="sm">
-            <Text size="sm" fw={700}>
-              {tWealth("allocation_trend")}
-            </Text>
-            <AllocationTrendChart data={overview.allocation.allocationTrend} />
-          </Stack>
-        </Card>
+  const assetsSection = (
+    <Section title={tAsset("section_title")} link={{ label: `+ ${tg("create")}`, onClick: () => openAssetForm() }}>
+      {manualAssets.length === 0 ? (
+        <EmptyText message={tAsset("empty")} action={{ label: tWealth("add_asset"), onClick: () => openAssetForm() }} />
+      ) : (
+        manualAssets.map((a, i) => (
+          <ListRow
+            key={a.accountId}
+            tall
+            chevron
+            title={a.name}
+            meta={tType(a.accountType)}
+            value={fmt(a.balance)}
+            last={i === manualAssets.length - 1}
+            onClick={() => openAssetForm(a)}
+          />
+        ))
       )}
+    </Section>
+  );
 
-      <Group justify="space-between" align="center" px={4}>
-        <Text size="sm" fw={700}>
-          {tAsset("section_title")}
-        </Text>
-        <UnstyledButton onClick={() => openAssetForm()}>
-          <Text size="xs" fw={700} c="info.5">
-            + {tGeneral("create")}
-          </Text>
-        </UnstyledButton>
-      </Group>
+  return (
+    <div className="moeum-main-rail">
+      <Stack gap={0}>
+        <PageTitle title={tWealth("title")}>
+          <AccentLink variant="header" onClick={() => openAssetForm()}>
+            + {tWealth("add_asset")}
+          </AccentLink>
+        </PageTitle>
 
-      <Card radius="lg" p="xs">
-        <Stack gap={0}>
-          {manualAssets.length === 0 ? (
-            <Text size="xs" c="dimmed" ta="center" py="md">
-              {tAsset("empty")}
-            </Text>
-          ) : (
-            manualAssets.map((a) => {
-              const assetColor = a.color ?? ACCOUNT_TYPE_HEX[a.accountType];
-              return (
-                <UnstyledButton
-                  key={a.accountId}
-                  onClick={() => openAssetForm(a)}
-                  style={{ padding: 12, borderRadius: 12 }}
-                >
-                  <Group gap={12}>
-                    <div
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 12,
-                        background: `${assetColor}20`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Text size="sm" fw={700} style={{ color: assetColor }}>
-                        {a.name.slice(0, 1)}
-                      </Text>
-                    </div>
-                    <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
-                      <Text size="sm" fw={600} truncate>
-                        {a.name}
-                      </Text>
-                      <Text size="xs" c="dimmed">
-                        {tType(a.accountType)}
-                      </Text>
-                    </Stack>
-                    <Text
-                      size="sm"
-                      fw={700}
-                      style={{ fontVariantNumeric: "tabular-nums" }}
-                    >
-                      {money(a.balance)}
-                    </Text>
-                  </Group>
-                </UnstyledButton>
-              );
-            })
-          )}
-        </Stack>
-      </Card>
+        <Box hiddenFrom="lg">{compositionSection}</Box>
 
-      <Group justify="space-between" align="center" px={4}>
-        <Text size="sm" fw={700}>
-          {tWealth("accounts_count", { count: visibleAccounts.length })}
-        </Text>
-        <UnstyledButton onClick={() => openAccountSheet()}>
-          <Text size="xs" fw={700} c="info.5">
-            + {tGeneral("create")}
-          </Text>
-        </UnstyledButton>
-      </Group>
+        {trend.length > 1 && (
+          <Section
+            title={tWealth("allocation_trend")}
+            right={
+              <Text
+                className="moeum-mono moeum-label"
+                fw={600}
+                c="dimmed"
+              >
+                {tPortfolio("recent_months", { count: trend.length })}
+              </Text>
+            }
+          >
+            <AllocationTrendChart data={trend} colorOf={colorOf} order={order} />
+          </Section>
+        )}
 
-      <Card radius="lg" p="xs">
-        <Stack gap={0}>
-          {visibleAccounts.map((a) => (
-            <UnstyledButton
-              key={a.accountId}
-              onClick={() => {
+        <Box hiddenFrom="lg">{assetsSection}</Box>
+
+        <Section
+          title={tWealth("accounts")}
+          link={{ label: `+ ${tWealth("add_account")}`, onClick: () => openAccountSheet() }}
+        >
+          {visibleAccounts.map((a, i) => {
+            const isInvest = a.accountType === "INVESTMENT";
+            const meta =
+              isInvest && a.cash != null
+                ? `${tType(a.accountType)} · ${tPortfolio("cash_label")} ${fmt(a.cash)}`
+                : tType(a.accountType);
+            return (
+              <ListRow
+                key={a.accountId}
+                tall
+                chevron
+                title={a.name}
+                meta={meta}
+                value={fmt(a.balance)}
+                valueColor={a.balance < 0 ? "expense" : "text"}
+                last={i === visibleAccounts.length - 1}
                 // INVESTMENT 는 포트폴리오 디테일로, 그 외는 일반 통장 디테일로
-                const path =
-                  a.accountType === "INVESTMENT"
-                    ? `/invest/account/${a.accountId}`
-                    : `/account/${a.accountId}`;
-                router.push(`/${routeParams.locale}${path}`);
-              }}
-              style={{ padding: 12, borderRadius: 12 }}
-            >
-              <Group gap={12}>
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 12,
-                    background: a.color
-                      ? `${a.color}20`
-                      : `var(--mantine-color-${TYPE_COLOR[a.accountType]}-0)`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <Text
-                    size="sm"
-                    fw={700}
-                    style={{
-                      color:
-                        a.color ??
-                        `var(--mantine-color-${TYPE_COLOR[a.accountType]}-5)`,
-                    }}
-                  >
-                    {a.name.slice(0, 1)}
-                  </Text>
-                </div>
-                <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
-                  <Text size="sm" fw={600} truncate>
-                    {a.name}
-                  </Text>
-                </Stack>
-                <Text
-                  size="sm"
-                  fw={700}
-                  style={{ fontVariantNumeric: "tabular-nums" }}
-                  c={a.balance < 0 ? "danger.5" : undefined}
-                >
-                  {money(a.balance)}
-                </Text>
-              </Group>
-            </UnstyledButton>
-          ))}
-        </Stack>
-      </Card>
+                href={`/${locale}${isInvest ? `/invest/account/${a.accountId}` : `/account/${a.accountId}`}`}
+              />
+            );
+          })}
+        </Section>
+      </Stack>
+
+      <Box visibleFrom="lg" pt={48}>
+        {compositionSection}
+        {assetsSection}
+      </Box>
 
       <FormSheet
         opened={assetFormOpen}
         onClose={() => setAssetFormOpen(false)}
         title={
           assetEdit
-            ? `${tAsset("section_title")} ${tGeneral("update")}`
-            : `${tAsset("section_title")} ${tGeneral("create")}`
+            ? `${tAsset("section_title")} ${tg("update")}`
+            : `${tAsset("section_title")} ${tg("create")}`
         }
       >
-        <AssetForm
-          account={assetEdit}
-          onClose={() => setAssetFormOpen(false)}
-        />
+        <AssetForm account={assetEdit} onClose={() => setAssetFormOpen(false)} />
       </FormSheet>
-    </Stack>
+    </div>
   );
 }

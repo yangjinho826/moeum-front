@@ -1,116 +1,66 @@
 "use client";
 
-import { Badge, Group, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useTranslations } from "next-intl";
 
-import IconBox from "_features/common/components/icon-box";
-import { TOKEN } from "_styles/design-tokens";
+import ListRow from "_features/common/components/list-row";
 import { fmt } from "_utilities/fmt";
 
 import { useQuickAddStore } from "../store";
-import type { AccountLedgerItemType, TxType } from "../types";
+import type { AccountLedgerItemType } from "../types";
 
-// 카테고리 색 없을 때 tx_type 기준 fallback (tx-row 와 동일 팔레트)
-const TYPE_FALLBACK_HEX: Record<TxType, string> = {
-  EXPENSE: TOKEN.red,
-  FIXED_EXPENSE: TOKEN.red,
-  INCOME: TOKEN.blue,
-  TRANSFER: TOKEN.purple,
-  VALUATION: TOKEN.purple,
-};
-
-/**
- * 계좌 거래 이력 한 행 — 그 계좌 관점의 부호 금액 + 그 거래 직후 잔액(running balance).
- * 이체는 이 계좌가 입금이면 +(상대=출금처), 출금이면 −(상대=입금처).
- */
-export default function LedgerRow({
-  t,
-  accountId,
-  showBalance = true,
-}: {
+interface LedgerRowProps {
   t: AccountLedgerItemType;
   /** 지금 보고 있는 계좌 — 이체 방향 판정 기준 */
   accountId: string;
   /** running balance 표시 여부 — INVESTMENT 는 숨김 */
   showBalance?: boolean;
-}) {
+  last?: boolean;
+}
+
+/**
+ * 계좌 거래 이력 한 행 — ListRow 번역 (Figma transactions 22:90 ListRow + Sub 잔액).
+ * 그 계좌 관점의 부호 금액(입금 income · 출금 expense · 이체 purple) + 그 거래 직후 잔액.
+ * 이체는 이 계좌가 입금처면 +(상대=출금처), 출금이면 −(상대=입금처).
+ */
+export default function LedgerRow({
+  t,
+  accountId,
+  showBalance = true,
+  last = false,
+}: LedgerRowProps) {
   const tt = useTranslations("transaction");
   const tTxType = useTranslations("enum.tx-type");
   const openEdit = useQuickAddStore((s) => s.open);
 
-  const accent = t.categoryColor ?? TYPE_FALLBACK_HEX[t.txType];
   // 이체 방향은 signedAmount 부호가 아니라 계좌 매칭으로 — 0원 이체도 정확하게.
-  // (이 계좌가 입금처(toAccountId)면 입금, 아니면 출금)
-  const isPositive =
-    t.txType === "TRANSFER" ? t.toAccountId === accountId : t.signedAmount >= 0;
-  // 이체 상대 계좌 — 입금이면 출금처(accountName), 출금이면 입금처(toAccountName)
+  const isTransfer = t.txType === "TRANSFER";
+  const isPositive = isTransfer ? t.toAccountId === accountId : t.signedAmount >= 0;
   const counterparty = isPositive ? t.accountName : t.toAccountName;
 
-  const isFixedExpense = t.txType === "FIXED_EXPENSE";
-
+  const isFixed = t.txType === "FIXED_EXPENSE";
   const title =
-    t.memo ||
-    (isFixedExpense ? t.fixedExpenseName : null) ||
-    t.categoryName ||
-    tt("tx_default_label");
+    t.memo || (isFixed ? t.fixedExpenseName : null) || t.categoryName || tt("tx_default_label");
 
-  // 보조 라벨 — 이체는 상대계좌, 평가조정은 타입명, 고정지출은 항목명, 그 외는 카테고리.
-  // 제목이 이미 고정지출명이면 같은 이름을 반복하지 않고 카테고리를 보여준다.
-  const subLabel =
-    t.txType === "TRANSFER"
-      ? `${isPositive ? "← " : "→ "}${counterparty ?? "—"}`
-      : t.txType === "VALUATION"
-        ? tTxType("VALUATION")
-        : isFixedExpense && t.fixedExpenseName && t.fixedExpenseName !== title
-          ? t.fixedExpenseName
-          : (t.categoryName ?? "—");
+  // 메타 — 이체는 상대계좌, 평가조정은 타입명, 고정지출은 항목명(제목과 다를 때), 그 외 카테고리
+  const meta = isTransfer
+    ? `${isPositive ? "← " : "→ "}${counterparty ?? "—"}`
+    : t.txType === "VALUATION"
+      ? tTxType("VALUATION")
+      : isFixed && t.fixedExpenseName && t.fixedExpenseName !== title
+        ? t.fixedExpenseName
+        : (t.categoryName ?? "—");
 
   return (
-    <UnstyledButton
+    <ListRow
+      title={title}
+      tag={isFixed ? tTxType("FIXED_EXPENSE") : undefined}
+      meta={meta}
+      dot={t.categoryColor}
+      value={`${isPositive ? "+" : "−"}${fmt(Math.abs(t.signedAmount))}`}
+      valueColor={isTransfer ? "transfer" : isPositive ? "income" : "expense"}
+      sub={showBalance ? `${tt("balance_current")} ${fmt(t.balanceAfter)}` : undefined}
+      last={last}
       onClick={() => openEdit(t.transactionId, t.txType)}
-      style={{ padding: 12, borderRadius: 12, display: "block" }}
-    >
-      <Group justify="space-between" gap="md" wrap="nowrap" align="center">
-        <Group gap={12} wrap="nowrap" style={{ minWidth: 0, flex: 1 }}>
-          <IconBox icon={t.categoryIcon} color={accent} />
-          <Stack gap={2} style={{ minWidth: 0, flex: 1 }}>
-            <Text size="sm" fw={600} truncate>
-              {title}
-            </Text>
-            <Group gap={4} wrap="nowrap" style={{ minWidth: 0 }}>
-              {isFixedExpense && (
-                <Badge size="xs" color="danger" variant="light" radius="sm">
-                  {tTxType("FIXED_EXPENSE")}
-                </Badge>
-              )}
-              <Text size="xs" c="dimmed" truncate>
-                {subLabel}
-              </Text>
-            </Group>
-          </Stack>
-        </Group>
-        <Stack gap={2} align="flex-end" style={{ flexShrink: 0 }}>
-          <Text
-            fw={800}
-            c={isPositive ? "info.5" : "danger.5"}
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
-            {isPositive ? "+" : "-"}
-            {fmt(Math.abs(t.signedAmount))}
-            {tt("won")}
-          </Text>
-          {showBalance && (
-            <Text
-              size="xs"
-              c="dimmed"
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              {tt("balance_current")} {fmt(t.balanceAfter)}
-              {tt("won")}
-            </Text>
-          )}
-        </Stack>
-      </Group>
-    </UnstyledButton>
+    />
   );
 }

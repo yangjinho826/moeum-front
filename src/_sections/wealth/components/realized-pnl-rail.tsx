@@ -1,19 +1,14 @@
 "use client";
 
-import { Card, Group, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronRight } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 import FormSheet from "_features/common/components/form-sheet";
+import ListRow from "_features/common/components/list-row";
 import RealizedPnlPanel from "_sections/wealth/components/realized-pnl-panel";
-import { useMoney } from "_features/common/hooks/use-money";
 import { useAccountRealizedPnl } from "_features/portfolio/queries/use-query";
-import {
-  formatProfitAmount,
-  formatProfitRate,
-  profitColor,
-} from "_features/portfolio/utils";
+import { signColor } from "_styles/semantic-color";
+import { fmtSigned, fmtSignedPct } from "_utilities/fmt";
 
 interface Props {
   accountId: string;
@@ -27,7 +22,6 @@ interface Props {
  */
 export default function RealizedPnlRail({ accountId }: Props) {
   const t = useTranslations("portfolio");
-  const money = useMoney();
   const [opened, { open, close }] = useDisclosure(false);
   // from/to 미전송 → 백엔드가 첫 매도일~오늘 전체로 집계. 시트도 동일 기본 범위.
   const { data } = useAccountRealizedPnl(accountId);
@@ -37,44 +31,19 @@ export default function RealizedPnlRail({ accountId }: Props) {
 
   return (
     <>
-      <UnstyledButton onClick={open} style={{ width: "100%" }}>
-        <Card radius="xl" p="md">
-          <Group justify="space-between" align="center" wrap="nowrap">
-            <Stack gap={2} style={{ minWidth: 0 }}>
-              <Group gap={6}>
-                <Text size="xs" fw={600} c="dimmed">
-                  {t("cumulative_realized")}
-                </Text>
-                <Text size="10px" c="dimmed">
-                  · {t("realized_all_period")}
-                </Text>
-              </Group>
-              <Group gap={6} wrap="nowrap">
-                <Text
-                  size="md"
-                  fw={800}
-                  c={profitColor(summary.totalRealized)}
-                  style={{ fontVariantNumeric: "tabular-nums" }}
-                >
-                  {formatProfitAmount(summary.totalRealized, money)}
-                </Text>
-                <Text
-                  size="xs"
-                  fw={700}
-                  c={profitColor(summary.totalRate)}
-                  style={{ fontVariantNumeric: "tabular-nums" }}
-                >
-                  {formatProfitRate(summary.totalRate)}
-                </Text>
-                <Text size="xs" c="dimmed" style={{ whiteSpace: "nowrap" }}>
-                  · {t("sell_count", { count: rows.length })}
-                </Text>
-              </Group>
-            </Stack>
-            <IconChevronRight size={16} color="var(--mantine-color-gray-5)" />
-          </Group>
-        </Card>
-      </UnstyledButton>
+      {/* 얇은 행 하나 — 카드 없음(QA D-1). 탭하면 시트 */}
+      <ListRow
+        tall
+        chevron
+        last
+        title={t("cumulative_realized")}
+        meta={`${t("realized_all_period")} · ${t("sell_count", { count: rows.length })}`}
+        value={fmtSigned(summary.totalRealized)}
+        valueColor={signColor(summary.totalRealized, "asset")}
+        sub={fmtSignedPct(summary.totalRate)}
+        subColor={signColor(summary.totalRate, "asset")}
+        onClick={open}
+      />
 
       <FormSheet
         opened={opened}

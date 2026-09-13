@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390,initial-scale=1">
+<title>모음 — S2-c 스모크 (홈 · Statement·Warm · 라이트)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap">
+<style>
+/* DESIGN.md §2-1 라이트 표면 + §2-2 팔레트 — 프리뷰 D 와 동일 값 */
+:root{
+  --bg:#FAF6EF; --surface:#FFFDF9; --text:#3C3530; --dim:#7A6F63; --hair:#DDD5C9; --hair2:#EDE8E0;
+  --accent:#647A5C; --accent-soft:rgba(124,148,115,.14); --on-accent:#FFFFFF;
+  --up:#DC2626; --down:#2563EB; --income:#2F855A; --expense:#C2674A;
+  --sans:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+  --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{width:390px;color:var(--text);font-family:var(--sans);letter-spacing:-0.01em;-webkit-font-smoothing:antialiased}
+.phone{width:390px;height:844px;background:var(--bg);position:relative;display:flex;flex-direction:column}
+.body{flex:1;padding:16px 20px 0;overflow:hidden}
+.ph-top{display:flex;justify-content:space-between;align-items:center;font:500 11px var(--mono);color:var(--dim);letter-spacing:.02em;height:24px}
+.ph-top b{font:800 15px var(--sans);color:var(--accent);letter-spacing:-0.03em}
+.hero{padding:32px 0 12px}
+.hero .l{font-size:13px;color:var(--dim);font-weight:600}
+.hero .n{font:700 44px var(--mono);letter-spacing:-0.04em;line-height:1.05;margin-top:6px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hero .n small{font:500 14px var(--sans);color:var(--dim);margin-left:6px}
+.delta{margin-top:10px;font:600 20px var(--mono);color:var(--up);font-variant-numeric:tabular-nums}
+.delta span{font:500 13px var(--sans);color:var(--dim);margin-left:8px}
+.spark{height:44px;margin:14px 0 8px;display:block;width:100%}
+.hr{height:1px;background:var(--hair);margin:14px 0}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 4px}
+.sec h4{margin:0;font-size:14px;font-weight:700;letter-spacing:-0.03em}
+.sec a{font-size:12px;color:var(--accent);text-decoration:none;font-weight:600}
+.r{display:flex;justify-content:space-between;align-items:center;height:46px;border-bottom:1px solid var(--hair2)}
+.r:last-child{border-bottom:0}
+.r .t{font-size:14px;font-weight:600}
+.r .m{font-size:11px;color:var(--dim);margin-top:2px}
+.r .v{font:600 14px var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.r .v.up{color:var(--up)} .r .v.inc{color:var(--income)} .r .v.exp{color:var(--expense)}
+.bar{height:2px;background:var(--hair2);margin-top:6px;position:relative}
+.bar i{position:absolute;left:0;top:0;height:2px}
+.fab{position:absolute;right:16px;bottom:78px;height:40px;padding:0 16px;border-radius:8px;background:var(--accent);color:var(--on-accent);font:700 13px var(--sans);display:flex;align-items:center;gap:6px}
+.tab{height:64px;border-top:1px solid var(--hair);display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg)}
+.tab div{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--dim);gap:4px;font-weight:600}
+.tab div.on{color:var(--accent)}
+.tab svg{width:20px;height:20px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="body">
+    <div class="ph-top"><b>모음</b><span>2026.09.11 기준</span></div>
+    <div class="hero"><div class="l">총자산</div><div class="n">128,450,000<small>원</small></div>
+      <div class="delta">▲ 3,240,000 <span>+2.6% · 지난달보다</span></div></div>
+    <svg class="spark" viewBox="0 0 350 44" preserveAspectRatio="none"><polyline fill="none" stroke="#647A5C" stroke-width="1.5" points="0,36 58,30 116,32 174,22 232,24 290,14 350,6"/><circle cx="350" cy="6" r="3" fill="#DC2626"/></svg>
+    <div class="hr"></div>
+    <div class="sec"><h4>이번 달 늘어난 이유</h4><a>자세히</a></div>
+    <div class="r"><div><div class="t">순저축</div><div class="m"><span style="color:var(--income)">수입 4,800,000</span> − <span style="color:var(--expense)">지출 3,000,000</span></div></div><div><div class="v">+1,800,000</div><div class="bar" style="width:120px"><i style="width:56%;background:var(--accent)"></i></div></div></div>
+    <div class="r"><div><div class="t">투자손익</div><div class="m">평가 +1,120,000 · 실현 +320,000</div></div><div><div class="v up">+1,440,000</div><div class="bar" style="width:120px"><i style="width:44%;background:var(--up)"></i></div></div></div>
+    <div class="hr"></div>
+    <div class="sec"><h4>자산 구성</h4><a>전체</a></div>
+    <div class="r"><div class="t">주식·ETF</div><div class="v">100,000,000</div></div>
+    <div class="r"><div class="t">현금·예금</div><div class="v">28,450,000</div></div>
+    <div class="hr"></div>
+    <div class="sec"><h4>최근 기록</h4><a>전체</a></div>
+    <div class="r"><div><div class="t">스타벅스</div><div class="m">카페 · 9.11 · 신한 체크</div></div><div class="v exp">−5,600</div></div>
+    <div class="r"><div><div class="t">급여</div><div class="m">수입 · 9.10 · 국민 급여통장</div></div><div class="v inc">+4,800,000</div></div>
+    <div class="r"><div><div class="t">이마트</div><div class="m">식료품 · 9.9 · 신한 체크</div></div><div class="v exp">−86,400</div></div>
+  </div>
+  <div class="fab">＋ 기록</div>
+  <div class="tab"><div class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10H3z"/></svg>홈</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>거래</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/></svg>투자</div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>내정보</div></div>
+</div>
+</body>
+</html>

@@ -1,108 +1,90 @@
 "use client";
 
-import {
-  ActionIcon,
-  Group,
-  Text,
-  Tooltip,
-  UnstyledButton,
-} from "@mantine/core";
+import { Group, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronDown, IconSettings } from "@tabler/icons-react";
+import { IconChevronDown } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useParams, usePathname, useRouter } from "next/navigation";
 
 import { queryKeys } from "_constants/queries";
 import { HouseholdSwitcher } from "_features/household/components/household-switcher";
 import { useHouseholdStore } from "_features/household/store";
+import BrandWordmark from "_features/layout/components/brand-wordmark";
 
 /**
- * 전역 상단 헤더 — UserShell 의 sticky 영역.
- *
- * 좌측: 가계부 스위처 trigger (가계부 이름 + 화살표 + 멤버 수 badge)
- * 우측: 설정 빠른 링크 (현재 위치가 /settings 이면 숨김)
+ * AppHeader — 모바일 상단 48 (DESIGN.md §5 셸, Figma Header 12:3).
+ * 좌: 브랜드 "모음" accent 15/800 · 우: 가계부 pill(이름 + chevron, 2개↑면 개수).
+ * 설정 아이콘 없음(탭 "내정보"가 담당). 배경 bg, 테두리 없음.
  */
 export default function AppHeader() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const params = useParams<{ locale: string }>();
   const currentId = useHouseholdStore((s) => s.currentHouseholdId);
   const [opened, switcher] = useDisclosure(false);
   const t = useTranslations("household");
-  const tGeneral = useTranslations("general");
 
   const { data: hData } = useSuspenseQuery(queryKeys.household.list());
   const households = hData.body.data.items;
   const currentHousehold =
     households.find((h) => h.householdId === currentId) ?? households[0];
 
-  const isSettings = pathname?.endsWith("/settings");
-
   return (
     <>
       <Group
+        component="header"
         justify="space-between"
         align="center"
         wrap="nowrap"
         hiddenFrom="lg"
-        px="md"
-        pb="xs"
-        bg="gray.0"
         style={{
           position: "sticky",
           top: 0,
           zIndex: "var(--z-app-header)" as React.CSSProperties["zIndex"],
+          background: "var(--moeum-bg)",
           // 노치/상태바 영역 흡수 — paddingTop 으로 콘텐츠가 노치 아래로 내려옴
-          paddingTop: "calc(var(--safe-top) + var(--mantine-spacing-xs))",
+          paddingTop: "var(--safe-top)",
           minHeight: "calc(var(--app-header-h) + var(--safe-top))",
-          borderBottom: "1px solid var(--mantine-color-gray-2)",
-          marginLeft: "calc(var(--mantine-spacing-md) * -1)",
-          marginRight: "calc(var(--mantine-spacing-md) * -1)",
-          marginTop: "calc(var(--mantine-spacing-xl) * -1)",
+          paddingLeft: "var(--content-px)",
+          paddingRight: "var(--content-px)",
+          marginLeft: "calc(var(--content-px) * -1)",
+          marginRight: "calc(var(--content-px) * -1)",
+          marginTop: "calc(var(--mantine-spacing-lg) * -1)",
         }}
       >
+        <BrandWordmark size={15} />
+
         <UnstyledButton
           onClick={switcher.open}
-          style={{ padding: "4px 8px", borderRadius: 12, minWidth: 0, flex: 1 }}
+          aria-label={t("list_title")}
+          style={{
+            height: 32,
+            padding: "0 10px",
+            borderRadius: "var(--mantine-radius-md)",
+            border: "1px solid var(--moeum-hair)",
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            maxWidth: "60%",
+          }}
         >
-          <Group gap={6} wrap="nowrap">
-            <Text size="lg" fw={800} truncate>
-              {currentHousehold?.name ?? t("list_title")}
-            </Text>
-            <IconChevronDown size={16} color="var(--mantine-color-gray-5)" />
-            {households.length > 1 && (
-              <Text
-                size="10px"
-                fw={700}
-                c="dimmed"
-                px={6}
-                py={2}
-                style={{
-                  background: "var(--mantine-color-gray-1)",
-                  borderRadius: 999,
-                }}
-              >
-                {households.length}
-              </Text>
-            )}
-          </Group>
-        </UnstyledButton>
-
-        {!isSettings && (
-          <Tooltip label={tGeneral("settings")} withArrow position="bottom">
-            <ActionIcon
-              variant="subtle"
-              color="gray"
-              size="lg"
-              radius="xl"
-              onClick={() => router.push(`/${params.locale}/settings`)}
-              aria-label={tGeneral("settings")}
+          <Text
+            fw={700}
+            c="var(--moeum-text)"
+            truncate
+            style={{ fontSize: 12, lineHeight: "19px", letterSpacing: "-0.01em" }}
+          >
+            {currentHousehold?.name ?? t("list_title")}
+          </Text>
+          {households.length > 1 && (
+            <Text
+              className="moeum-mono"
+              fw={600}
+              c="dimmed"
+              style={{ fontSize: 11, lineHeight: "16px" }}
             >
-              <IconSettings size={20} />
-            </ActionIcon>
-          </Tooltip>
-        )}
+              {households.length}
+            </Text>
+          )}
+          <IconChevronDown size={12} stroke={2} color="var(--moeum-text-dim)" />
+        </UnstyledButton>
       </Group>
 
       <HouseholdSwitcher opened={opened} onClose={switcher.close} />

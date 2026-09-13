@@ -23,7 +23,8 @@ interface FormValues {
   market: Market;
   code: string;
   name: string;
-  currentPrice: number;
+  /** 빈 칸 = "" — 0 과 구분해야 수정에서 0 은 받고 비운 칸은 막는다 */
+  currentPrice: number | "";
   isArchived: boolean;
 }
 
@@ -50,7 +51,7 @@ export function usePortfolioForm({
       market: "KRX_KOSPI",
       code: "",
       name: "",
-      currentPrice: 0,
+      currentPrice: "",
       isArchived: false,
     },
     validateInputOnBlur: true,
@@ -61,7 +62,11 @@ export function usePortfolioForm({
           market: z.enum(["KRX_KOSPI", "KRX_KOSDAQ", "NASDAQ", "NYSE", "OTHER"]),
           code: z.string(),
           name: z.string().min(1, t("name_required_message")),
-          currentPrice: z.number().positive(t("current_price_required_message")),
+          // 백엔드와 같게: 추가 = 양수 · 수정 = 0 이상(portfolio/schema.py) · 빈 칸은 둘 다 막음.
+          // 필드 refine 이라 이름 등 다른 오류와 같이 뜬다(객체 superRefine 은 필드가 다 통과해야 돈다)
+          currentPrice: z
+            .union([z.number(), z.literal("")])
+            .refine((v) => v !== "" && (isUpdate ? v >= 0 : v > 0), t("current_price_required_message")),
         })
         .superRefine((val, ctx) => {
           // OTHER (야후 미지원) 면 code 빈문자열 OK, 그 외엔 필수
@@ -111,14 +116,12 @@ export function usePortfolioForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: `${d.name} · ${d.yahooSymbol}`,
-        color: "green",
+        color: "positive",
       });
-    } catch (error) {
-      notifications.show({
-        title: tg("notificationstitle"),
-        message: getErrorMessage(error, te),
-        color: "red",
-      });
+    } catch {
+      // 조회 실패는 코드 칸 아래에 — 상태 안내는 필드 옆에(DESIGN §5 폼 필드).
+      // 없는 코드도 백엔드는 일반 서버 오류로 돌려줘 원인 문구 대신 "시장·코드 확인"으로 안내
+      form.setFieldError("code", t("lookup_failed"));
     }
   };
 
@@ -128,7 +131,7 @@ export function usePortfolioForm({
         if (!portfolioId) throw new Error("No portfolioId for update");
         await updateMutation.mutateAsync({
           portfolioId,
-          currentPrice: form.values.currentPrice,
+          currentPrice: Number(form.values.currentPrice),
           name: form.values.name,
           code: form.values.code,
           market: form.values.market,
@@ -137,7 +140,7 @@ export function usePortfolioForm({
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("update_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       } else {
         // 종목 메타 등록 (qty=0 시작) — 매수는 디테일에서 별도
@@ -145,13 +148,13 @@ export function usePortfolioForm({
           name: form.values.name,
           code: form.values.code,
           market: form.values.market,
-          currentPrice: form.values.currentPrice,
+          currentPrice: Number(form.values.currentPrice),
           accountId: form.values.accountId,
         });
         notifications.show({
           title: tg("notificationstitle"),
           message: tg("register_has_been_completed"),
-          color: "green",
+          color: "positive",
         });
       }
       if (onDone) onDone();
@@ -160,7 +163,7 @@ export function usePortfolioForm({
       notifications.show({
         title: tg("notificationstitle"),
         message: getErrorMessage(error, te),
-        color: "red",
+        color: "danger",
       });
     }
   };
@@ -170,15 +173,17 @@ export function usePortfolioForm({
     modals.openConfirmModal({
       centered: true,
       title: tg("confirmtitle"),
-      labels: { confirm: tg("confirm"), cancel: tg("cancel") },
-      children: <span>{tg("want_to_delete")}</span>,
+      // 파괴적 확인 = danger (DESIGN §2-3). 백엔드는 보관(is_archived) — 지난 매매 기록은 남는다
+      labels: { confirm: tg("delete"), cancel: tg("cancel") },
+      confirmProps: { color: "danger" },
+      children: <span>{t("delete_confirm_body")}</span>,
       onConfirm: async () => {
         try {
           await updateMutation.mutateAsync({ portfolioId, isArchived: true });
           notifications.show({
             title: tg("notificationstitle"),
             message: tg("confirmyescontent"),
-            color: "green",
+            color: "positive",
           });
           if (onDone) onDone();
           else router.replace(`/${routeParams.locale}/invest`);
@@ -186,7 +191,7 @@ export function usePortfolioForm({
           notifications.show({
             title: tg("notificationstitle"),
             message: getErrorMessage(error, te),
-            color: "red",
+            color: "danger",
           });
         }
       },

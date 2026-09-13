@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, UnstyledButton, useMantineTheme } from "@mantine/core";
+import { Box, UnstyledButton } from "@mantine/core";
 import {
   IconChartPie,
   IconTrendingUp,
@@ -18,13 +18,17 @@ export interface Tab {
   match: (pathname: string) => boolean;
 }
 
+/** 홈 루트(`/`, `/ko`) — 기록 FAB 노출 기준. 홈 탭 활성은 하위 화면까지 넓다 */
+export const isHomeRoot = (p: string): boolean => p === "/" || /^\/[a-z]{2}\/?$/.test(p);
+
 // 자산중심 4탭. label 은 nav i18n 키(id) 로 해석.
 export const TABS: Tab[] = [
   {
     id: "home",
     icon: IconChartPie,
     href: "/",
-    match: (p) => p === "/" || /^\/[a-z]{2}\/?$/.test(p),
+    // 자산(/wealth)·통장 상세(/account)는 홈에서 들어가는 하위 화면 — 활성 탭이 비지 않게 (배치3 S6 F-304)
+    match: (p) => isHomeRoot(p) || /^\/[a-z]{2}\/(wealth|account)(\/|$)/.test(p),
   },
   {
     id: "transactions",
@@ -42,14 +46,18 @@ export const TABS: Tab[] = [
     id: "settings",
     icon: IconUser,
     href: "/settings",
-    match: (p) => p.includes("/settings"),
+    // 카테고리·고정지출·가계부 관리는 내정보 "관리"에서 들어가는 하위 화면 (배치4)
+    match: (p) => p.includes("/settings") || /^\/[a-z]{2}\/(category|fixed|household)(\/|$)/.test(p),
   },
 ];
 
+/**
+ * BottomTab — 모바일 탭바 64 (DESIGN.md §5 셸, Figma TabBar 20:80).
+ * 배경 bg · 상단 hair · 활성 accent / 비활성 dimmed. 아이콘 20 + 라벨 11/700.
+ */
 export function BottomTab() {
   const pathname = usePathname();
   const params = useParams<{ locale: string }>();
-  const theme = useMantineTheme();
   const t = useTranslations("nav");
 
   return (
@@ -63,8 +71,8 @@ export function BottomTab() {
         transform: "translateX(-50%)",
         width: "100%",
         maxWidth: "var(--container-max)",
-        background: theme.colors.gray?.[0] ?? "#F7F4EF",
-        borderTop: `1px solid ${theme.colors.gray?.[2] ?? "#DDD5C9"}`,
+        background: "var(--moeum-bg)",
+        borderTop: "1px solid var(--moeum-hair)",
         // iOS 홈 인디케이터 / Android 제스처 영역 보호
         paddingBottom: "var(--safe-bottom)",
         paddingLeft: "var(--safe-left)",
@@ -76,40 +84,35 @@ export function BottomTab() {
       <Box
         style={{
           display: "flex",
-          justifyContent: "space-around",
           alignItems: "center",
           height: "var(--bottom-tab-h)",
         }}
       >
         {TABS.map(({ id, icon: Icon, href, match }) => {
           const active = match(pathname);
-          const color = active
-            ? (theme.colors.sage?.[6] ?? "#647A5C")
-            : (theme.colors.gray?.[5] ?? "#9C8F82");
+          const color = active ? "var(--moeum-accent)" : "var(--moeum-text-dim)";
           return (
             <UnstyledButton
               key={id}
               component={Link}
               href={`/${params.locale}${href === "/" ? "" : href}`}
               prefetch={false}
+              aria-current={active ? "page" : undefined}
               style={{
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 2,
+                gap: 4,
                 height: "100%",
+                transition: "color 150ms ease-out",
               }}
             >
               <Icon size={20} color={color} stroke={active ? 2.5 : 2} />
               <Box
                 component="span"
-                style={{
-                  fontSize: 10,
-                  fontWeight: 600,
-                  color,
-                }}
+                style={{ fontSize: 11, lineHeight: "16px", fontWeight: 700, color }}
               >
                 {t(id)}
               </Box>
