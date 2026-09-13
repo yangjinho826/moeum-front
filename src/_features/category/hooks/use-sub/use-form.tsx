@@ -107,7 +107,9 @@ export function useCategoryForm({ categoryId, onDone }: UseCategoryFormOptions) 
     modals.openConfirmModal({
       centered: true,
       title: tg("confirmtitle"),
-      labels: { confirm: tg("confirm"), cancel: tg("cancel") },
+      // 파괴적 확인 = danger (DESIGN §2-3) — 폼 삭제 확인 공통
+      labels: { confirm: tg("delete"), cancel: tg("cancel") },
+      confirmProps: { color: "danger" },
       children: <span>{tg("want_to_delete")}</span>,
       onConfirm: async () => {
         try {
