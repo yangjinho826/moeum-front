@@ -1,7 +1,9 @@
 "use client";
 
-import { Box, Drawer, Group } from "@mantine/core";
-import { Suspense } from "react";
+import { ActionIcon, Box, Drawer, Group } from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
+import { type ReactNode, Suspense } from "react";
 
 import { PageLoader } from "_features/common/components/page-loader";
 
@@ -10,8 +12,12 @@ interface FormSheetProps {
   onClose: () => void;
   title: string;
   /** 제목 우측 액션(아이콘 버튼 등). 하단 버튼을 늘리지 않고 보조 액션을 둘 자리. */
-  titleAction?: React.ReactNode;
-  children: React.ReactNode;
+  titleAction?: ReactNode;
+  /** 폼이 아닌 시트(전환기·멤버) — 취소 버튼이 없어 제목 옆 닫기(X, 히트 44)를 둔다 */
+  withClose?: boolean;
+  /** 내용 로딩 자리 — 기본 PageLoader(70dvh)는 짧은 시트를 크게 열었다 줄이므로 행 모양 스켈레톤을 넘긴다 */
+  fallback?: ReactNode;
+  children: ReactNode;
 }
 
 /**
@@ -32,8 +38,11 @@ export default function FormSheet({
   onClose,
   title,
   titleAction,
+  withClose = false,
+  fallback,
   children,
 }: FormSheetProps) {
+  const tg = useTranslations("general.common");
   return (
     <Drawer
       opened={opened}
@@ -47,7 +56,8 @@ export default function FormSheet({
       styles={{
         // size="auto" 여도 Mantine --drawer-height 가 최대 높이로 풀려 푸터 아래 빈칸 → 내용 높이로(Figma 46:451)
         content: { maxHeight: "90dvh", height: "auto" },
-        body: { paddingBottom: "calc(var(--safe-bottom) + 16px)" },
+        // 위는 12 그대로(핸들이 윗변에 붙게), 좌우만 padding 20
+        body: { paddingTop: 12, paddingBottom: "calc(var(--safe-bottom) + 16px)" },
       }}
     >
       {/* 핸들 40×4 hair — 데스크톱 모달에선 숨김 */}
@@ -61,9 +71,15 @@ export default function FormSheet({
           {title}
         </Drawer.Title>
         {titleAction}
+        {withClose && (
+          // 아이콘 18 · 히트 44 — 오른쪽 음수 마진으로 아이콘 선이 본문 우측선(20)에 맞게
+          <ActionIcon variant="subtle" color="gray" size={44} mr={-13} my={-10} onClick={onClose} aria-label={tg("close")}>
+            <IconX size={18} stroke={2} color="var(--moeum-text-dim)" />
+          </ActionIcon>
+        )}
       </Group>
 
-      {opened && <Suspense fallback={<PageLoader />}>{children}</Suspense>}
+      {opened && <Suspense fallback={fallback ?? <PageLoader />}>{children}</Suspense>}
     </Drawer>
   );
 }

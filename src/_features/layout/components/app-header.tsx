@@ -9,6 +9,7 @@ import { useTranslations } from "next-intl";
 import { queryKeys } from "_constants/queries";
 import { HouseholdSwitcher } from "_features/household/components/household-switcher";
 import { useHouseholdStore } from "_features/household/store";
+import BrandWordmark from "_features/layout/components/brand-wordmark";
 
 /**
  * AppHeader — 모바일 상단 48 (DESIGN.md §5 셸, Figma Header 12:3).
@@ -19,7 +20,6 @@ export default function AppHeader() {
   const currentId = useHouseholdStore((s) => s.currentHouseholdId);
   const [opened, switcher] = useDisclosure(false);
   const t = useTranslations("household");
-  const ta = useTranslations("auth");
 
   const { data: hData } = useSuspenseQuery(queryKeys.household.list());
   const households = hData.body.data.items;
@@ -49,14 +49,7 @@ export default function AppHeader() {
           marginTop: "calc(var(--mantine-spacing-lg) * -1)",
         }}
       >
-        {/* 브랜드 accent 800(DESIGN §5 셸) — Mantine Text 기본 굵기·색이 클래스보다 우선이라 props 로 */}
-        <Text
-          fw={800}
-          c="var(--moeum-accent)"
-          style={{ fontSize: 15, lineHeight: "20px", letterSpacing: "-0.03em" }}
-        >
-          {ta("brand_name")}
-        </Text>
+        <BrandWordmark size={15} />
 
         <UnstyledButton
           onClick={switcher.open}

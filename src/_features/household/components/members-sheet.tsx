@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import FormSheet from "_features/common/components/form-sheet";
+import SectionSkeleton from "_features/common/components/section-skeleton";
 import { useMembersSheetStore } from "_features/household/store";
 import MembersSection from "_sections/members/members-section";
 
@@ -16,7 +17,7 @@ export default function MembersSheet() {
   const close = useMembersSheetStore((s) => s.close);
 
   return (
-    <FormSheet opened={opened} onClose={close} title={t("title")}>
+    <FormSheet opened={opened} onClose={close} title={t("title")} withClose fallback={<SectionSkeleton rows={2} />}>
       {householdId && <MembersSection householdId={householdId} inSheet />}
     </FormSheet>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Group, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core";
-import { isEmail, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -9,6 +9,8 @@ import { useTranslations } from "next-intl";
 import BrandLogo from "_features/auth/components/brand-logo";
 import { useAuthMutations } from "_features/auth/queries/use-mutations";
 import AccentLink from "_features/common/components/accent-link";
+import { getErrorMessage } from "_libraries/fetch/error-message";
+import { isValidEmail } from "_utilities/email";
 
 const ERROR_FIELD_MAP: Record<string, "email" | "password" | "name"> = {
   US002: "email",
@@ -29,13 +31,14 @@ function isValidPassword(value: string): boolean {
 export default function RegisterSection() {
   const t = useTranslations("auth");
   const tg = useTranslations("general.common");
+  const te = useTranslations("error");
   const router = useRouter();
   const params = useParams<{ locale: string }>();
 
   const form = useForm({
     initialValues: { email: "", password: "", confirmPassword: "", name: "" },
     validate: {
-      email: isEmail(t("email_format_message")),
+      email: (value) => (isValidEmail(value.trim()) ? null : t("email_format_message")),
       password: (value) => (isValidPassword(value) ? null : t("password_rule_message")),
       confirmPassword: (value, values) =>
         value !== values.password ? t("password_mismatch_message") : null,
@@ -46,13 +49,15 @@ export default function RegisterSection() {
   const { registerMutation } = useAuthMutations({
     onRegisterError: (error) => {
       const field = error.errorCode ? ERROR_FIELD_MAP[error.errorCode] : undefined;
+      // 문구는 에러코드 → i18n 순(getErrorMessage) — 영어 화면에 백엔드 한국어가 나오지 않게
+      const message = getErrorMessage(error, te);
       if (field) {
-        form.setFieldError(field, error.errorMessage ?? "");
+        form.setFieldError(field, message);
         return;
       }
       notifications.show({
         title: tg("notificationstitle"),
-        message: error.errorMessage ?? t("register_failed"),
+        message: message || t("register_failed"),
         color: "danger",
       });
     },
@@ -60,7 +65,7 @@ export default function RegisterSection() {
 
   const onSubmit = form.onSubmit(async (values) => {
     try {
-      await registerMutation.mutateAsync(values);
+      await registerMutation.mutateAsync({ ...values, email: values.email.trim(), name: values.name.trim() });
       notifications.show({
         title: tg("notificationstitle"),
         message: t("register_success"),

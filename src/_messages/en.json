@@ -122,8 +122,8 @@
     "welcome_register_subtitle": "All you need is an email and password",
     "login_prompt": "Already have an account?",
     "register_prompt": "New here?",
-    "password_rule": "8+ characters with letters and numbers",
-    "password_rule_message": "Use at least 8 characters with both letters and numbers."
+    "password_rule": "8–64 characters with letters and numbers",
+    "password_rule_message": "Password doesn't meet the rules"
   },
   "general": {
     "picker": {
@@ -171,7 +171,8 @@
       "next_month": "Next month",
       "back": "Back",
       "load_failed": "Couldn't load",
-      "guide": "Guide"
+      "guide": "Guide",
+      "close": "Close"
     },
     "money": "₩{amount}",
     "won": "₩",
@@ -506,11 +507,11 @@
     "create_new": "New household",
     "member": {
       "title": "Members",
-      "invite_section_title": "Invite member",
-      "invite_button": "Invite",
-      "invite_success_title": "Invite complete",
-      "invite_success_message": "Added {name} ({email})",
-      "invite_failed_title": "Invite failed",
+      "invite_section_title": "Add member",
+      "invite_button": "Add",
+      "invite_success_title": "Added",
+      "invite_success_message": "Added {name} ({email}) as a member",
+      "invite_failed_title": "Could not add",
       "user_not_found": "No user is registered with this email",
       "remove_confirm": "{name} will be removed from this household. Their records stay as they are.",
       "remove_confirm_title": "Remove this member?",
@@ -521,15 +522,15 @@
       "this_member": "this member",
       "role_owner": "Owner",
       "role_member": "Member",
-      "list_title": "{name} members",
+      "list_title": "Members of {name}",
       "row_meta": "{role} · {email}",
-      "invite_desc": "Only emails registered with Moeum can be invited",
-      "owner_only": "Only the owner can invite or remove members.",
+      "invite_desc": "Anyone signed up with Moeum is added right away",
+      "owner_only": "Only the owner can add or remove members.",
       "remove": "Remove",
       "remove_aria": "Remove {name}",
       "guide": {
-        "invite_title": "Invite",
-        "invite_body": "Invite people by the email they signed up with. Only the owner can invite.",
+        "invite_title": "Add",
+        "invite_body": "Enter the email someone signed up with and they become a member right away, with no invitation to accept. Only the owner can add members.",
         "role_title": "Roles",
         "role_body": "Members can view and add records in this household. Only the owner can edit or delete it and manage members.",
         "remove_title": "Remove",

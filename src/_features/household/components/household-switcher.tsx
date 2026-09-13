@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { queryKeys } from "_constants/queries";
 import AccentLink from "_features/common/components/accent-link";
 import FormSheet from "_features/common/components/form-sheet";
+import SectionSkeleton from "_features/common/components/section-skeleton";
 import Hairline from "_features/common/components/hairline";
 import ListRow from "_features/common/components/list-row";
 
@@ -26,7 +27,13 @@ interface HouseholdSwitcherProps {
 export function HouseholdSwitcher({ opened, onClose }: HouseholdSwitcherProps) {
   const t = useTranslations("household");
   return (
-    <FormSheet opened={opened} onClose={onClose} title={t("switcher_title")}>
+    <FormSheet
+      opened={opened}
+      onClose={onClose}
+      title={t("switcher_title")}
+      withClose
+      fallback={<SectionSkeleton rows={2} />}
+    >
       <SwitcherBody onClose={onClose} />
     </FormSheet>
   );
@@ -49,7 +56,8 @@ function SwitcherBody({ onClose }: { onClose: () => void }) {
   const inUseId = items.some((h) => h.householdId === currentId) ? currentId : items[0]?.householdId;
 
   const onSelect = (id: string) => {
-    if (id === currentId) {
+    // "사용 중" 표시와 같은 기준 — 저장값이 비었을 때 첫 가계부를 눌러도 캐시를 비우지 않게
+    if (id === inUseId) {
       onClose();
       return;
     }
@@ -73,6 +81,7 @@ function SwitcherBody({ onClose }: { onClose: () => void }) {
             date: h.startedAt.replaceAll("-", "."),
           })}
           value={h.householdId === inUseId ? t("in_use") : undefined}
+          current={h.householdId === inUseId}
           valueColor="dim"
           valueText
           last={i === items.length - 1}

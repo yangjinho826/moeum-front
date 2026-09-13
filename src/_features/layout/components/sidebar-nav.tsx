@@ -12,6 +12,7 @@ import { queryKeys } from "_constants/queries";
 import BrandLogo from "_features/auth/components/brand-logo";
 import { HouseholdSwitcher } from "_features/household/components/household-switcher";
 import { useHouseholdStore } from "_features/household/store";
+import BrandWordmark from "_features/layout/components/brand-wordmark";
 import { useQuickAddStore } from "_features/transaction/store";
 
 import { TABS } from "./bottom-tab";
@@ -28,7 +29,6 @@ export function SidebarNav() {
   const [opened, switcher] = useDisclosure(false);
   const t = useTranslations("nav");
   const th = useTranslations("household");
-  const ta = useTranslations("auth");
   const openQuickAdd = useQuickAddStore((s) => s.open);
 
   const currentId = useHouseholdStore((s) => s.currentHouseholdId);
@@ -60,9 +60,7 @@ export function SidebarNav() {
         {/* 앱 브랜드 마크 */}
         <Group gap={8} px={8} pt={2} pb={20} wrap="nowrap">
           <BrandLogo size={28} />
-          <Text fw={800} c="var(--moeum-accent)" style={{ fontSize: 18, lineHeight: "24px", letterSpacing: "-0.03em" }}>
-            {ta("brand_name")}
-          </Text>
+          <BrandWordmark size={18} />
         </Group>
 
         {/* 가계부 스위처 trigger */}

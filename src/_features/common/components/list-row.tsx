@@ -54,6 +54,8 @@ export interface ListRowProps {
   tall?: boolean;
   /** 행 끝 보조 행동(멤버 "내보내기" 등). 행 자체가 누를 수 없을 때만 — 버튼 안 버튼 금지 */
   action?: ReactNode;
+  /** 선택지 중 지금 쓰는 것(가계부 전환기 "사용 중") — 스크린리더에 aria-current 로 알린다 */
+  current?: boolean;
   /** 마지막 행이면 하단 구분선 생략 */
   last?: boolean;
   href?: string;
@@ -81,6 +83,7 @@ export default function ListRow({
   chevron = false,
   tall = false,
   action,
+  current = false,
   last = false,
   href,
   onClick,
@@ -231,7 +234,12 @@ export default function ListRow({
     );
   }
   return (
-    <UnstyledButton onClick={onClick} className="moeum-row-press" style={pressStyle}>
+    <UnstyledButton
+      onClick={onClick}
+      aria-current={current ? "true" : undefined}
+      className="moeum-row-press"
+      style={pressStyle}
+    >
       {body}
     </UnstyledButton>
   );
