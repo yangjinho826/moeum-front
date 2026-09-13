@@ -291,3 +291,12 @@ small,
 .moeum-remove-action[data-disabled] {
   background: transparent;
 }
+
+/* outline(default) 버튼 비활성 — Mantine 기본 회색 채움 대신 투명 + hair 테두리 + 흐린 글자
+   (DESIGN §5 "비활성은 배경 투명", 조회·추가처럼 입력 전 비활성으로 뜨는 보조 버튼). 2클래스로 Mantine 규칙보다 뒤에 */
+.mantine-Button-root[data-variant="default"]:disabled,
+.mantine-Button-root[data-variant="default"][data-disabled] {
+  background: transparent;
+  border: 1px solid var(--moeum-hair);
+  color: var(--mantine-color-placeholder);
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Box,
   Button,
   Group,
   NumberInput,
@@ -114,30 +115,35 @@ export default function PortfolioForm({
           allowDeselect={false}
         />
         {!isOther && (
-          <Group align="end" gap="xs" wrap="nowrap">
-            <TextInput
-              {...form.getInputProps("code")}
-              label={t("code")}
-              placeholder={codePlaceholder}
-              style={{ flex: 1 }}
-            />
-            {/* 보조 행동 = outline(DESIGN §5 버튼), 필드와 같은 높이 44 */}
-            <Button
-              type="button"
-              variant="default"
-              onClick={handleLookup}
-              loading={isLookupPending}
-              disabled={!form.values.code.trim()}
-            >
-              {t("lookup")}
-            </Button>
-          </Group>
+          <TextInput
+            {...form.getInputProps("code")}
+            label={t("code")}
+            placeholder={codePlaceholder}
+            inputWrapperOrder={["label", "input", "description", "error"]}
+            // 필드와 "조회" 한 줄 — 에러 줄이 생겨도 버튼은 입력칸 옆에 그대로(멤버 추가와 같은 구조)
+            inputContainer={(children) => (
+              <Group gap={8} wrap="nowrap" align="flex-start">
+                <Box style={{ flex: 1, minWidth: 0 }}>{children}</Box>
+                {/* 보조 행동 = outline(DESIGN §5 버튼), 필드와 같은 높이 44 */}
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={handleLookup}
+                  loading={isLookupPending}
+                  disabled={!form.values.code.trim()}
+                >
+                  {t("lookup")}
+                </Button>
+              </Group>
+            )}
+          />
         )}
         <TextInput
           {...form.getInputProps("name")}
           label={t("name")}
           placeholder={t("name_placeholder")}
-          description={isUpdate ? undefined : t("name_help")}
+          // 조회가 있는 시장에서만 — 기타는 조회 버튼이 없다
+          description={isUpdate || isOther ? undefined : t("name_help")}
           inputWrapperOrder={["label", "input", "description", "error"]}
           disabled={isUpdate}
         />
@@ -150,9 +156,11 @@ export default function PortfolioForm({
           placeholder={t("current_price_placeholder")}
           thousandSeparator=","
           min={0}
+          allowNegative={false}
           rightSection={<InputUnit>{tGeneral("won")}</InputUnit>}
           rightSectionPointerEvents="none"
-          description={isUpdate ? undefined : t("current_price_help")}
+          // 자동 갱신 시장은 수정에서도 알려 준다 — 직접 고친 값이 다음 갱신 때 바뀐다
+          description={isOther ? t("current_price_help_other") : t("current_price_help")}
           inputWrapperOrder={["label", "input", "description", "error"]}
         />
         <FormActions

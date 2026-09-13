@@ -17,7 +17,7 @@ interface FormValues {
 
 /**
  * 첫 가계부 만들기 (plan/7.md, Figma 78:79) — 가계부 0개인 계정만 OnboardingGuard 가 보낸다.
- * 로그인과 같은 한 칼럼: 제목 → 설명 → 이름 → 버튼 → 힌트. 카드·가운데 정렬 없음(DESIGN §1).
+ * 로그인과 같은 한 칼럼: 제목 → 설명 → 이름(+ 통화·시작일 안내) → 버튼. 카드·가운데 정렬 없음(DESIGN §1).
  */
 export default function HouseholdOnboardingSection() {
   const t = useTranslations("onboarding");
@@ -75,14 +75,15 @@ export default function HouseholdOnboardingSection() {
           {...form.getInputProps("name")}
           label={t("household_name")}
           placeholder={t("household_name_placeholder")}
+          // 통화·시작일 안내는 누르기 전에 읽히게 설명 줄로(가입 비밀번호 규칙과 같은 자리)
+          description={t("hint")}
+          inputWrapperOrder={["label", "input", "description", "error"]}
+          maxLength={100}
           autoComplete="off"
         />
         <Button type="submit" size="lg" fullWidth mt={24} loading={createMutation.isPending}>
           {t("submit")}
         </Button>
-        <Text c="dimmed" mt={16} style={{ fontSize: 13, lineHeight: "19px" }}>
-          {t("hint")}
-        </Text>
       </Stack>
     </form>
   );

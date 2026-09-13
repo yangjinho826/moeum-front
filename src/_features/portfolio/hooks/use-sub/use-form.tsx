@@ -113,12 +113,10 @@ export function usePortfolioForm({
         message: `${d.name} · ${d.yahooSymbol}`,
         color: "positive",
       });
-    } catch (error) {
-      notifications.show({
-        title: tg("notificationstitle"),
-        message: getErrorMessage(error, te),
-        color: "danger",
-      });
+    } catch {
+      // 조회 실패는 코드 칸 아래에 — 상태 안내는 필드 옆에(DESIGN §5 폼 필드).
+      // 없는 코드도 백엔드는 일반 서버 오류로 돌려줘 원인 문구 대신 "시장·코드 확인"으로 안내
+      form.setFieldError("code", t("lookup_failed"));
     }
   };
 
