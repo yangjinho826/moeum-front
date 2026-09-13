@@ -26,9 +26,9 @@
 | household/[householdId]/members | /household/[householdId]/members | P2 | 6 | 로그인·uitest 데이터 · 390/1440 | 76:111 | 56a66f7·e14f503 | members-sheet.jpg·members-desktop.jpg |
 | login | /login | P2 | 6 | 비로그인 · 390/1440 | 77:147 | 49ed452·e14f503 | login.jpg·login-desktop.jpg |
 | register | /register | P2 | 6 | 비로그인 · 베타 차단(→ /login 리다이렉트) | 77:170 | 49ed452·e14f503 | ⏭(라우트 차단) |
-| invest/[portfolioId] | /invest/[portfolioId] | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | | | |
-| invest/new | /invest/new | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | | | |
-| onboarding/household | /onboarding/household | P2 | 7 | 로그인·가계부 0개 · 390 | | | |
-| transactions/[transactionId] | /transactions/[transactionId] | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | | | |
+| invest/[portfolioId] | /invest/[portfolioId] | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | 78:4(같은 폼) | 45a6e3d·05eb83a | invest-edit-desktop.jpg |
+| invest/new | /invest/new | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | 78:4 | 45a6e3d·05eb83a | invest-new-sheet.jpg·invest-new-desktop.jpg |
+| onboarding/household | /onboarding/household | P2 | 7 | 로그인·가계부 0개 · 390 | 78:79 | f730bf9·05eb83a | ⏭(가계부 0개 계정 필요) |
+| transactions/[transactionId] | /transactions/[transactionId] | P2 | 7 | 로그인·uitest 데이터 · 390/1440 | 46:451(같은 폼) | 0f01663·ecbf5ef | transaction-edit-desktop.jpg |
 
 배치: 1 = 셸(헤더·탭바·사이드바·기록 진입점) + 4탭 메인 · 2 = 핵심 상세·기록(자산 상세·투자 계좌·종목·거래 기록 폼=QuickAddSheet 정본, 라우트는 fallback) · 3~7 = P2 관리·게스트. 배치 ≤4 화면.

@@ -1,5 +1,5 @@
 # design-flow status — redesign-20260911
-재개: 배치7 S5 — 종목 폼 · 거래 수정 페이지 · 온보딩
+재개: 완료 — main 머지 · v0.13.0 태그 배포(사용자 위임)
 look=교체(Warm Ledger→Statement·Warm)  figma=full  fileKey=j1xaab6icKdvERz6SbU6E0 (https://www.figma.com/design/j1xaab6icKdvERz6SbU6E0)  lib=같은 파일 로컬(혼자·게시 불필요)  baseline=token-baseline.txt
 
 | 단계 | 상태 | 산출물·식별자 | 날짜 |
@@ -32,8 +32,8 @@ look=교체(Warm Ledger→Statement·Warm)  figma=full  fileKey=j1xaab6icKdvERz6
 | 배치6 S6 | ✅ | qa/6.md · 감사 @49ed452 · 픽스 e14f503 — 토큰 신규 0 · typecheck·lint 0 · 콘솔 0 · /design-review 감사만 + Codex(4) · 서브에이전트(10+5) 같은 커밋 기준 · blocking 0 · 수정 13(시트 닫기 · 로딩 스켈레톤 · 윗 여백 · "초대"→"추가" · 이메일 검사 통일 · 오류 alert · 워드마크 컴포넌트 · 히트 44 · aria-current 등) 전부 실측 · 기각 1(내보내기 danger = §5 삭제 규칙) · 보류 H-601~605 · 사용자 "전체 총괄" 위임 | 2026-09-13 |
 | 배치7 S3 | ✅ | 계획표 plan/7.md(invest/[portfolioId] · invest/new · onboarding/household · transactions/[transactionId]) · 감사 = 코드 + 백엔드 대조(종목 폼 간격 8·조회 light 틴트·설명 위 · 종목 삭제 = 보관(보유 0) · 거래·종목 페이지 레일 비어 있음 · 온보딩 Card·가운데 힌트) · 가설 = 배치1 pick A+C 확장 · 캔버스 ⏭(위임) · pick = 추천안 A·A·A | 2026-09-13 |
 | 배치7 S4 | ✅ | node-id (페이지 "배치7 · 390" 78:2 — invest/new(시트) 78:4 · invest/[portfolioId] = 78:4 같은 폼(수정 = 삭제 좌측, 배치3 60:249 문법) · onboarding/household 78:79 · transactions/[transactionId] = 46:451 같은 폼) · 배치5·6 부품 복제(시트 73:541 · Field/시작 잔액 60:161 단위 · Button Outline 73:648 · 로그인 77:147) · get_design_context OK(78:79) · 미바인딩 solid 0/2 | 2026-09-13 |
-| 배치7 S5 | ⬜ | | |
-| 배치7 S6 | ⬜ | | |
-| 마감 | ⬜ | qa/final.md | |
+| 배치7 S5 | ✅ | 코드 · 커밋 종목 폼 45a6e3d · 거래 수정 페이지 0f01663 · 온보딩 f730bf9 — 종목 폼 간격 14 · 조회 outline · 설명 아래 · 현재가 0 빈 칸 · 삭제(보관) 확인 danger · 레일 시장·수량·삭제 / 거래 수정 레일 유형·잔액·고정지출 / 온보딩 카드·가운데 힌트 제거 → 한 칼럼 — 검증: typecheck 0 · lint 0 · 토큰 신규 0 · 콘솔 0 · shots(qa/7 대조표) | 2026-09-13 |
+| 배치7 S6 | ✅ | qa/7.md · 감사 @f730bf9 · 픽스 05eb83a · 67e3401 — Codex(새 발견 0 · 기존 1) · 서브에이전트(8+4) · blocking 0 · 수정 10(기타 시장 설명 · outline 비활성 투명 · 시세 갱신 시각 · 코드+조회 한 줄 · 삭제 확인 danger 5곳 통일 · 온보딩 버튼·안내 위치 등) 전부 반영 · 보류 H-701~704 · Figma 문구 동기화 · 사용자 "전체 총괄" 위임 | 2026-09-13 |
+| 마감 | ✅ | qa/final.md — 전 화면 재촬영(390 zoom 저장 + 1440) · 토큰 신규 0 · typecheck·lint 0 · `pnpm build` 0 + 프로덕션 서버 스모크 · 콘솔 0 · 마감 수정 Z-1~3(FAB 거래 폼 가림 · "멤버 추가" 문구 · 삭제 확인 danger 통일) · 사용자 "전체 총괄" 위임 | 2026-09-13 |
 
 상태: ⬜ 미완 · 🟡 진행 중 · 🟡 산출물 있음·승인 전 · ✅ 통과(식별자 필수) · ⏭ 해당없음. 식별자가 바뀌면 그 뒤 ✅ 는 ⬜ 로. 배치가 늘면 행을 복사한다.

@@ -10,12 +10,11 @@
 
 ## Status
 
-### 리디자인 Quiet Dark — 배치1~5 (2026-09-13, feat/redesign-quiet-dark)
-design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 배치1~4 push 완료(6e3f8eb). 배치5(고정지출 폼·가계부 목록·가계부 폼, pick A·A·A) S3~S6 — qa/5.md, S6 사용자 ✅ 대기 · push 완료(60fcc39).
-- 배치5: 고정지출 금액·가계부 통화 입력 제거(백엔드에 없음/무효과) · 고정지출 카테고리 연결·보관 Switch · `InputUnit` · 가계부 목록 소유자 행만 수정 · ListRow `valueText`.
-- 팀에 확인: 백엔드 update_fixed_expense 가 null 을 "안 바꿈"으로 받아 수정에서 카테고리·색·아이콘 비우기 불가(H-501, moeum-back `model_fields_set` 필요).
-- 참조 0 파일 삭제 완료(household search·table·use-search, 60fcc39).
-- 주의: dev 서버가 편집 누적 후 SSR `useContext null`/HMR module factory → 재시작. Chrome `type` 은 숫자 인풋에 안 먹음(`key`). 숨은 창 Drawer 는 rAF 멈춤 — 한 번만 열고 screenshot 으로 프레임 돌리기.
+### 리디자인 Quiet Dark — 배치1~7 + 마감 완료 (2026-09-13, feat/redesign-quiet-dark)
+design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 사용자 "전체 총괄" 위임으로 배치5 S6 승인 → 배치6(멤버·전환기·로그인·가입) → 배치7(종목 폼·거래 수정·온보딩) → 마감(qa/final.md) → main 머지·v0.13.0 태그 배포.
+- 공통 변경: FormSheet 본문 좌우 20 · 폼 아닌 시트 닫기 X · ListRow `action`/`current` · `BrandWordmark` · `isValidEmail`(백엔드 규칙) · outline 비활성 투명 · 삭제 확인 danger 통일 · FAB 목록 루트만.
+- 팀에 확인: H-501(수정에서 비우기 = 백엔드, 하지 않기로) · H-601 아이콘 선택기 칸 폭 · H-701 현재가 0 수정 · 가입 재오픈 시 로그인 링크·온보딩 셸.
+- 주의: i18n JSON 수정은 turbopack dev 에 안 먹을 때 있음 → 재시작. 390 shot 은 Chrome zoom 저장(sips cropOffset 은 가운데 자름). 공개 레포라 shot 이메일은 가림.
 
 ### 프로젝트 이름 정리 — `household` → `moeum` (2026-08-22, B·C 레이어만)
 브랜드는 이미 "모음"인데 레포·디렉토리·문서에 옛 이름이 남아 거슬린다는 요청. 범위를 4레이어로 쪼개 **B(문서·주석)·C(디렉토리·레포명)만 실행**, D(인프라 식별자)·E(도메인 모델)는 보류.
