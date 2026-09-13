@@ -478,7 +478,15 @@
     "date_tx": "{month}/{day} transactions",
     "date_header": "{month}.{day} {weekday}",
     "date_with_weekday": "{weekday}, {month}/{day}",
-    "need_account": "Create an account first"
+    "need_account": "Create an account first",
+    "guide": {
+      "type_title": "Type",
+      "type_body": "Expense, income, transfer or fixed expense. Choosing a manual asset account such as real estate or a pension switches it to a valuation adjustment.",
+      "balance_title": "Balance",
+      "balance_body": "Recording updates the account balance right away. Editing or deleting recalculates it.",
+      "fixed_title": "Fixed expense",
+      "fixed_body": "Recording a fixed expense adds it to that item's spending for the month."
+    }
   },
   "wealth": {
     "title": "Assets",

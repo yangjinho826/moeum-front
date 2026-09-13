@@ -476,7 +476,15 @@
     "date_tx": "{month}월 {day}일 거래",
     "date_header": "{month}.{day} {weekday}",
     "date_with_weekday": "{month}월 {day}일 ({weekday})",
-    "need_account": "통장을 먼저 만들어요"
+    "need_account": "통장을 먼저 만들어요",
+    "guide": {
+      "type_title": "유형",
+      "type_body": "지출 · 수입 · 이체 · 고정지출 중 하나예요. 부동산·연금 같은 직접 입력 자산 통장을 고르면 평가 조정으로 바뀌어요.",
+      "balance_title": "잔액",
+      "balance_body": "기록하면 고른 통장 잔액에 바로 반영돼요. 고치거나 지우면 잔액도 다시 계산돼요.",
+      "fixed_title": "고정지출",
+      "fixed_body": "고정지출로 기록하면 고른 항목의 그 달 사용액에 더해져요."
+    }
   },
   "wealth": {
     "title": "자산",
