@@ -561,7 +561,7 @@
     "description_placeholder": "Optional — who shares it and what for",
     "guide": {
       "role_title": "Owner · member",
-      "role_body": "Only the owner can edit or delete a household and invite members.",
+      "role_body": "Only the owner can edit or delete a household and add members.",
       "switch_title": "Switching",
       "switch_body": "Switch the household you use from the household picker at the top.",
       "book_title": "Household",

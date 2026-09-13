@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 import { useQuickAddStore } from "_features/transaction/store";
 
-import { isHomeRoot, TABS } from "./bottom-tab";
+import { isHomeRoot } from "./bottom-tab";
 
 /**
  * `＋ 기록` — 모바일 탭바 위 우측 40px accent 버튼 (DESIGN.md §5 셸, Figma FAB 20:98).
@@ -18,10 +18,9 @@ export default function RecordFab() {
   const open = useQuickAddStore((s) => s.open);
   const t = useTranslations("nav");
 
-  // 홈은 루트만 — 홈 탭 활성이 /wealth·/account 까지 넓어졌어도 FAB 는 거기 안 띄운다 (배치3 S6)
-  const visible =
-    isHomeRoot(pathname) ||
-    TABS.some((tab) => tab.id === "transactions" && tab.match(pathname));
+  // 홈·거래 모두 목록 루트만 — 홈 탭 활성이 /wealth·/account 까지 넓어졌어도(배치3 S6),
+  // 거래 추가·수정 페이지(/transactions/new · /transactions/[id])는 폼 위를 가려서 안 띄운다(마감 QA)
+  const visible = isHomeRoot(pathname) || /\/transactions\/?$/.test(pathname);
   if (!visible) return null;
 
   return (
