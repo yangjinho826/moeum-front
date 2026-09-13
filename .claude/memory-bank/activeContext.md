@@ -13,7 +13,7 @@
 ### 리디자인 Quiet Dark — 배치1~7 + 마감 완료 (2026-09-13, feat/redesign-quiet-dark)
 design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 사용자 "전체 총괄" 위임으로 배치5 S6 승인 → 배치6(멤버·전환기·로그인·가입) → 배치7(종목 폼·거래 수정·온보딩) → 마감(qa/final.md) → main 머지·v0.13.0 태그 배포.
 - 공통 변경: FormSheet 본문 좌우 20 · 폼 아닌 시트 닫기 X · ListRow `action`/`current` · `BrandWordmark` · `isValidEmail`(백엔드 규칙) · outline 비활성 투명 · 삭제 확인 danger 통일 · FAB 목록 루트만.
-- 팀에 확인: H-501(수정에서 비우기 = 백엔드, 하지 않기로) · H-601 아이콘 선택기 칸 폭 · H-701 현재가 0 수정 · 가입 재오픈 시 로그인 링크·온보딩 셸.
+- 보류 정리: H-501 닫음(백엔드 안 함) · H-601 칸 44(22142d6) · H-701 수정 0 허용(6e16c34). 팀에 확인: 가입 재오픈 시 로그인 링크·온보딩 셸.
 - 주의: i18n JSON 수정은 turbopack dev 에 안 먹을 때 있음 → 재시작. 390 shot 은 Chrome zoom 저장(sips cropOffset 은 가운데 자름). 공개 레포라 shot 이메일은 가림.
 
 ### 프로젝트 이름 정리 — `household` → `moeum` (2026-08-22, B·C 레이어만)
