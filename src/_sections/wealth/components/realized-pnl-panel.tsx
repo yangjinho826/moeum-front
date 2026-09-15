@@ -22,7 +22,7 @@ import {
   formatProfitRate,
   profitColor,
 } from "_features/portfolio/utils";
-import { todayIsoKst } from "_utilities/datetime";
+import { firstDayOfYearKst, todayIsoKst } from "_utilities/datetime";
 
 interface Props {
   // 둘 중 하나 — 종목 단위(portfolioId) 또는 계좌 누적(accountId)
@@ -30,8 +30,8 @@ interface Props {
   accountId?: string;
 }
 
-// 기간 — 증권사 매매손익처럼 **당일부터** 시작하고 날짜로 직접 좁힌다.
-// 프리셋(전체/올해/작년)은 두지 않는다 — 누적 성과는 레일이 이미 보여준다.
+// 기간 — 기본은 **올해 1/1~오늘**(레일 숫자와 같게), 날짜로 직접 좁히거나 넓힌다.
+// 프리셋(전체/올해/작년)은 두지 않는다.
 interface Range {
   from: string;
   to: string;
@@ -71,9 +71,9 @@ export default function RealizedPnlPanel({ portfolioId, accountId }: Props) {
 }
 
 function usePeriod() {
-  // 기본 = 당일. 과거를 보려면 시작일을 직접 넓힌다.
+  // 기본 = 올해 1/1~오늘. 작년 이전은 시작일을 직접 넓힌다.
   const [range, setRange] = useState<Range>(() => ({
-    from: todayIsoKst(),
+    from: firstDayOfYearKst(),
     to: todayIsoKst(),
   }));
   // 쿼리는 지연값으로 — 날짜 변경 시 재-suspend 로 Drawer 가 깜빡이지 않게
@@ -112,7 +112,7 @@ function RealizedPnlView({ data, period }: ViewProps) {
 
   return (
     <Stack gap="sm">
-      {/* 기간 — 날짜 두 개로만 좁힌다. 기본은 당일. */}
+      {/* 기간 — 날짜 두 개로만 바꾼다. 기본은 올해 1/1~오늘. */}
       <Group grow gap="xs">
         <DatePickerInput
           size="xs"

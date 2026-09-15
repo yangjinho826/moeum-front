@@ -20,6 +20,7 @@ import { usePortfolioSheetStore } from "_features/portfolio/store";
 import AccountBalanceTrend from "_sections/wealth/components/account-balance-trend";
 import RealizedPnlRail from "_sections/wealth/components/realized-pnl-rail";
 import { signColor } from "_styles/semantic-color";
+import { nowKst } from "_utilities/datetime";
 import { fmt, fmtArrowPct } from "_utilities/fmt";
 
 interface Props {
@@ -29,7 +30,7 @@ interface Props {
 /**
  * 투자 계좌 상세 — 명세서 배치 (plan/2.md, Figma 41:365).
  * 모바일: hero(계좌 총액 + 평가손익) → StatGrid(현금·평가·종목) → 자산 추이 → 종목 비중(StockShares)
- * → 누적 매매수익 행 → 보유 종목 ListRow. 데스크톱: 좌 판면(hero·StatGrid·추이·보유 종목) + 우 레일(비중·매매수익).
+ * → 올해 매매수익 행 → 보유 종목 ListRow. 데스크톱: 좌 판면(hero·StatGrid·추이·보유 종목) + 우 레일(비중·매매수익).
  */
 export default function AccountPortfolioSection({ accountId }: Props) {
   const t = useTranslations("portfolio");
@@ -49,13 +50,13 @@ export default function AccountPortfolioSection({ accountId }: Props) {
   const profitLoss = account.portfolioProfitLoss ?? 0;
   const profitLossRate = account.portfolioProfitLossRate ?? 0;
 
-  // 종목 비중 + 누적 매매수익 — 모바일은 판면 중간, 데스크톱은 우측 레일
+  // 종목 비중 + 올해 매매수익 — 모바일은 판면 중간, 데스크톱은 우측 레일
   const rail = (
     <>
       {/* 종목 비중 — 투자 메인과 같은 구성 막대 + 색 점 행. 종목 0 이면 현금 100% 뿐이라 숨김(plan ⑤) */}
       {portfolios.length > 0 && <StockShares stocks={portfolios} cash={cash} />}
-      {/* 누적 매매수익 — 얇은 행, 탭하면 시트 (전량매도된 종목 포함) */}
-      <SectionBoundary title={t("cumulative_realized")}>
+      {/* 올해 매매수익 — 얇은 행, 탭하면 시트 (전량매도된 종목 포함) */}
+      <SectionBoundary title={t("year_realized", { year: nowKst().year() })}>
         <RealizedPnlRail accountId={accountId} />
       </SectionBoundary>
     </>
