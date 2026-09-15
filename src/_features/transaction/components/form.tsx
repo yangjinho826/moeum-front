@@ -20,6 +20,7 @@ import { useAccountSheetStore } from "_features/account/store";
 import EmptyText from "_features/common/components/empty-text";
 import FormActions from "_features/common/components/form-actions";
 import InputUnit from "_features/common/components/input-unit";
+import { useFinePointer } from "_libraries/hooks/use-fine-pointer";
 import { queryKeys } from "_constants/queries";
 import { semanticColor, signColor } from "_styles/semantic-color";
 import { fmt } from "_utilities/fmt";
@@ -48,6 +49,8 @@ export default function TransactionForm({
   const tg = useTranslations("general.common");
   const tWealth = useTranslations("wealth");
   const openAccountSheet = useAccountSheetStore((s) => s.open);
+  // 터치 기기는 검색 끔 — 키보드가 드롭다운을 가림
+  const canSearch = useFinePointer();
 
   const { data: txTypeData } = useSuspenseQuery({
     ...queryKeys.enum.options("tx-type"),
@@ -184,7 +187,7 @@ export default function TransactionForm({
       error={form.errors.accountId}
       data={accounts.map((a) => ({ value: a.accountId, label: a.name }))}
       allowDeselect={false}
-      searchable
+      searchable={canSearch}
       leftSection={
         selectedColor ? (
           <Box w={8} h={8} style={{ borderRadius: 999, background: selectedColor }} />
@@ -266,7 +269,7 @@ export default function TransactionForm({
         label={t("to_account")}
         placeholder={t("account_placeholder")}
         data={toAccountOptions}
-        searchable
+        searchable={canSearch}
       />
       {renderBalanceHint(selectedToAccount, amountNum)}
     </>
@@ -277,7 +280,7 @@ export default function TransactionForm({
         label={t("category")}
         placeholder={t("category_placeholder")}
         data={categoryOptions}
-        searchable
+        searchable={canSearch}
         clearable
       />
       {isFixedExpense && (
@@ -286,7 +289,7 @@ export default function TransactionForm({
           label={t("fixed_expense_item")}
           placeholder={t("fixed_expense_item_placeholder")}
           data={fixedOptions}
-          searchable
+          searchable={canSearch}
           required
         />
       )}

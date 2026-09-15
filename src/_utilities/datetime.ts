@@ -20,6 +20,9 @@ export const currentYearMonthKst = (): string => nowKst().format("YYYY-MM");
 export const firstDayOfMonthKst = (deltaMonths = 0): string =>
   nowKst().add(deltaMonths, "month").startOf("month").format("YYYY-MM-DD");
 
+/** "YYYY-MM-DD" — KST 기준 올해 1월 1일 */
+export const firstDayOfYearKst = (): string => nowKst().startOf("year").format("YYYY-MM-DD");
+
 /** ISO 8601 timestamp — KST 오프셋 포함 (frstRegDt/lastMdfcnDt 용) */
 export const nowIsoKst = (): string => nowKst().format();
 

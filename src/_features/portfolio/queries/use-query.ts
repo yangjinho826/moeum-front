@@ -1,10 +1,12 @@
 import {
   useInfiniteQuery,
   useQueryClient,
+  useSuspenseQueries,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
 import { queryKeys } from "_constants/queries";
+import { firstDayOfYearKst, todayIsoKst } from "_utilities/datetime";
 
 import { GetPortfolioItemTransactionsApi } from "../api";
 
@@ -44,6 +46,24 @@ export const useAccountRealizedPnl = (
   return useSuspenseQuery(
     queryKeys.portfolio.accountRealizedPnl({ accountId, fromDate, toDate }),
   );
+};
+
+/**
+ * 계좌 올해 매매손익 — 레일용. 전체(매도 이력 있는지) + 올해(1/1~오늘, 표시값)를 병렬 조회.
+ * 올해 키는 매매손익 시트 기본 기간과 같아 시트가 캐시로 바로 열린다.
+ */
+export const useAccountRealizedPnlThisYear = (accountId: string) => {
+  const [all, thisYear] = useSuspenseQueries({
+    queries: [
+      queryKeys.portfolio.accountRealizedPnl({ accountId }),
+      queryKeys.portfolio.accountRealizedPnl({
+        accountId,
+        fromDate: firstDayOfYearKst(),
+        toDate: todayIsoKst(),
+      }),
+    ],
+  });
+  return { all: all.data.body.data, thisYear: thisYear.data.body.data };
 };
 
 /** 종목 평가액 월별 추이 — 기본 최근 12개월 */

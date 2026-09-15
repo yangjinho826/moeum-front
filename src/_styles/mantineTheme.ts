@@ -285,7 +285,13 @@ export const mantineTheme = createTheme({
       },
     }),
     Select: Select.extend({
-      defaultProps: { variant: "filled", size: "md", radius: "md" },
+      defaultProps: {
+        variant: "filled",
+        size: "md",
+        radius: "md",
+        // 드롭다운이 넘치면 스크롤바 상시 표시 — 기본 "scroll" 은 스크롤 중에만 보여 뒤 항목이 있는지 모름
+        scrollAreaProps: { type: "auto" },
+      },
       vars: inputVars,
       styles: { input: { letterSpacing: "-0.01em" } },
     }),
