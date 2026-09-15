@@ -15,6 +15,7 @@ import { useTranslations } from "next-intl";
 import FormActions from "_features/common/components/form-actions";
 import InputUnit from "_features/common/components/input-unit";
 import { useEnumOptions } from "_features/enum/queries/use-query";
+import { useFinePointer } from "_libraries/hooks/use-fine-pointer";
 
 import { usePortfolioForm } from "../hooks/use-sub/use-form";
 import { usePortfolioFormOptions } from "../queries/use-query";
@@ -38,6 +39,8 @@ export default function PortfolioForm({
   const t = useTranslations("portfolio");
   const tg = useTranslations("general.common");
   const tGeneral = useTranslations("general");
+  // 터치 기기는 검색 끔 — 키보드가 드롭다운을 가림
+  const canSearch = useFinePointer();
 
   const {
     form,
@@ -104,7 +107,7 @@ export default function PortfolioForm({
           placeholder={t("account_placeholder")}
           data={investAccountOptions}
           disabled={isUpdate}
-          searchable
+          searchable={canSearch}
         />
         <Select
           {...form.getInputProps("market")}

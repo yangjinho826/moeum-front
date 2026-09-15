@@ -10,6 +10,7 @@ import ColorPicker from "_features/common/components/color-picker";
 import FormActions from "_features/common/components/form-actions";
 import IconPicker from "_features/common/components/icon-picker";
 import InputUnit from "_features/common/components/input-unit";
+import { useFinePointer } from "_libraries/hooks/use-fine-pointer";
 
 import { useFixedForm } from "../hooks/use-sub/use-form";
 
@@ -34,6 +35,8 @@ export default function FixedForm({
   const t = useTranslations("fixed");
   const tg = useTranslations("general.common");
   const tApp = useTranslations("app");
+  // 터치 기기는 검색 끔 — 키보드가 드롭다운을 가림
+  const canSearch = useFinePointer();
 
   const {
     form,
@@ -99,7 +102,7 @@ export default function FixedForm({
             </Group>
           )}
           disabled={categoryOptions.length === 0}
-          searchable
+          searchable={canSearch}
           // 수정에선 비우기 불가 — 버튼도, 고른 항목 다시 누르기(allowDeselect)도 막는다(백엔드가 null 을 무시)
           clearable={!isUpdate}
           allowDeselect={!isUpdate}
