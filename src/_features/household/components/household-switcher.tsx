@@ -63,10 +63,11 @@ function SwitcherBody({ onClose }: { onClose: () => void }) {
     }
     setCurrentId(id);
     onClose();
-    // 가계부 = 데이터 컨텍스트 완전 교체. invalidate 는 활성 쿼리만 refetch 하고
-    // enum 등 staleTime:Infinity 캐시는 그대로 남아 옛 가계부 데이터가 보인다.
-    // → 캐시 전체 제거 후 마운트된 쿼리부터 새 X-Household-Id 헤더로 재요청.
-    queryClient.clear();
+    // 가계부 = 데이터 컨텍스트 완전 교체(쿼리 키에 가계부가 없음). 전부 초기 상태로 되돌리고
+    // 화면에 떠 있는 쿼리는 새 X-Household-Id 헤더로 바로 다시 불러온다.
+    // clear() 는 캐시에서 떼기만 해서 떠 있는 화면이 옛 데이터를 들고 있고,
+    // invalidate 는 staleTime:Infinity(enum 등) 캐시를 남긴다.
+    queryClient.resetQueries();
   };
 
   return (
