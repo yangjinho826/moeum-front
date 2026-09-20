@@ -41,11 +41,8 @@ export function useTransactionMutations() {
       queryKey: queryKeys.fixed.monthlySummary._def,
       refetchType: "all",
     });
-    // home 화면의 카테고리 통계 — 누락되어 거래 변경 후 stale 이었음
-    queryClient.invalidateQueries({
-      queryKey: queryKeys.stats._def,
-      refetchType: "all",
-    });
+    // 거래 탭의 월간 통계(요약·지출Top5)는 transaction.calendarFull 안에 들어 있어
+    // 위 transaction._def 가 이미 커버한다. home 의 통계는 아래 home._def.
     // 페이지 진입용 overview 들도 stale — home(최근 거래/stats), wealth(잔액), settings(거래 카운트)
     queryClient.invalidateQueries({
       queryKey: queryKeys.home._def,

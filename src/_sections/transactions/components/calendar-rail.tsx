@@ -10,6 +10,8 @@ import { queryKeys } from "_constants/queries";
 interface CalendarRailProps {
   year: number;
   month: number;
+  /** 통장 필터 — 좌측 목록과 같은 통장. 없으면 가구 전체 */
+  accountId?: string;
   selectedDate: string | null;
   onSelect: (date: string | null) => void;
 }
@@ -18,9 +20,17 @@ interface CalendarRailProps {
  * 데스크톱 우측 레일 달력 — 날짜를 고르면 좌측 목록이 그 날만 보여준다(handoff TransactionsDesktop).
  * 헤더 링크 "전체" 로 선택 해제.
  */
-export default function CalendarRail({ year, month, selectedDate, onSelect }: CalendarRailProps) {
+export default function CalendarRail({
+  year,
+  month,
+  accountId,
+  selectedDate,
+  onSelect,
+}: CalendarRailProps) {
   const t = useTranslations("transaction");
-  const { data } = useSuspenseQuery(queryKeys.transaction.calendarFull({ year, month }));
+  const { data } = useSuspenseQuery(
+    queryKeys.transaction.calendarFull({ year, month, accountId }),
+  );
 
   return (
     <Section

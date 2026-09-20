@@ -148,13 +148,15 @@ interface BackendFormOptions {
   fixedExpenses: BackendFixed[];
 }
 
-/** 달력 페이지 1호출 — calendar + stats + 그달 거래 */
+/** 달력 페이지 1호출 — calendar + stats + 그달 거래. accountId 있으면 그 통장만 */
 export async function GetTransactionCalendarFullApi(params: {
   year: number;
   month: number;
+  accountId?: string;
 }) {
+  const queryString = objectToParams({ accountId: params.accountId }).toString();
   const res = await apiFetch<ApiResponse<BackendCalendarFull>>(
-    `/api/transaction/calendar/${params.year}/${params.month}/full`,
+    `/api/transaction/calendar/${params.year}/${params.month}/full${queryString ? `?${queryString}` : ""}`,
     { method: "GET" },
   );
   const transactions = res.body.data.transactions.map((b) => toListItem(b));

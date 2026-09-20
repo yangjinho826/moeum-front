@@ -16,8 +16,3 @@ export interface MonthlyStatsType {
   monthlyTransfer: number;
   byCategory: CategoryStatsItemType[];
 }
-
-export interface MonthlyStatsRequest {
-  year: number;
-  month: number;
-}

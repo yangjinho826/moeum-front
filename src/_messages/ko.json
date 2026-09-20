@@ -464,6 +464,7 @@
     "balance_current": "잔액",
     "won": "원",
     "account_select": "통장 선택",
+    "account_all": "전체 통장",
     "valuation_new": "새 평가액",
     "valuation_new_placeholder": "현재 총 평가액",
     "valuation_direction": "방향",

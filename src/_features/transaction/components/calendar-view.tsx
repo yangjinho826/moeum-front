@@ -17,6 +17,8 @@ import TxRow from "./tx-row";
 interface CalendarViewProps {
   year: number;
   month: number;
+  /** 통장 필터 — 목록 뷰와 같은 통장. 없으면 가구 전체 */
+  accountId?: string;
 }
 
 /**
@@ -24,7 +26,11 @@ interface CalendarViewProps {
  * 월 변경은 부모(transactions-section) 가 key={month} 로 리마운트 → selectedDate 는 init state 로 충분.
  * 데스크톱은 목록 + 우측 레일 달력(calendar-rail) 이라 이 뷰를 쓰지 않는다.
  */
-export default function TransactionCalendarView({ year, month }: CalendarViewProps) {
+export default function TransactionCalendarView({
+  year,
+  month,
+  accountId,
+}: CalendarViewProps) {
   const tGeneral = useTranslations("general");
   const tNav = useTranslations("nav");
   const openQuickAdd = useQuickAddStore((st) => st.open);
@@ -36,7 +42,9 @@ export default function TransactionCalendarView({ year, month }: CalendarViewPro
     today.startsWith(monthPrefix) ? today : `${monthPrefix}-01`,
   );
 
-  const { data: fullData } = useSuspenseQuery(queryKeys.transaction.calendarFull({ year, month }));
+  const { data: fullData } = useSuspenseQuery(
+    queryKeys.transaction.calendarFull({ year, month, accountId }),
+  );
   const calendar = fullData.body.data;
   const selectedTx = calendar.transactions.filter((it) => it.txDate.slice(0, 10) === selectedDate);
 

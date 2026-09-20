@@ -4,13 +4,10 @@ import { Group, ScrollArea, Select } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo } from "react";
 
-import { LEDGER_ACCOUNT_TYPES } from "_features/account/constants";
 import FilterChip from "_features/common/components/filter-chip";
 import { useEnumOptions } from "_features/enum/queries/use-query";
-import type { TransactionFilterMode } from "_features/transaction/hooks/use-sub/use-search";
-import type { TxType } from "_features/transaction/types";
+import type { TransactionFilterMode, TxType } from "_features/transaction/types";
 import { queryKeys } from "_constants/queries";
 
 interface TransactionToolbarProps {
@@ -20,9 +17,12 @@ interface TransactionToolbarProps {
   onAccountChange: (next: string | undefined) => void;
 }
 
+/** Mantine Select 는 빈 문자열 value 를 못 다뤄서 "전체" 를 나타내는 센티넬을 쓴다 */
+const ALL_ACCOUNTS = "all";
+
 /**
  * 거래 필터 행 — 타입 칩(언더라인) + 통장 Select (Figma Filters 22:121).
- * 리스트 뷰에서만 — 캘린더는 calendarFull API 가 일별 합계까지 묶여 계좌 필터 미지원.
+ * 목록·캘린더 양쪽에 걸리고, 고른 통장은 우측 레일(요약·달력·Top5)에도 그대로 적용된다.
  */
 export default function TransactionToolbar({
   filter,
@@ -39,19 +39,6 @@ export default function TransactionToolbar({
   const { data: formOptions } = useSuspenseQuery(queryKeys.transaction.formOptions());
   // 필터엔 전체 통장 노출 — INVESTMENT 는 잔액만 숨긴다(거래는 표시).
   const filterAccounts = formOptions.body.data.accounts;
-  // 자동 선택 기본값은 현금흐름 통장 우선(없으면 첫 통장).
-  const defaultAccount = useMemo(
-    () =>
-      filterAccounts.find((a) => LEDGER_ACCOUNT_TYPES.has(a.accountType)) ?? filterAccounts[0],
-    [filterAccounts],
-  );
-
-  // 계좌 선택 필수 — 선택 안 됐으면 기본 통장 자동 선택.
-  useEffect(() => {
-    if (!accountId && defaultAccount) {
-      onAccountChange(defaultAccount.accountId);
-    }
-  }, [accountId, defaultAccount, onAccountChange]);
 
   return (
     <Group justify="space-between" align="flex-end" gap="sm" wrap="nowrap">
@@ -75,9 +62,14 @@ export default function TransactionToolbar({
       </ScrollArea>
 
       <Select
-        value={accountId ?? null}
-        onChange={(v) => v && onAccountChange(v)}
-        data={filterAccounts.map((a) => ({ value: a.accountId, label: a.name }))}
+        value={accountId ?? ALL_ACCOUNTS}
+        onChange={(v) =>
+          onAccountChange(!v || v === ALL_ACCOUNTS ? undefined : v)
+        }
+        data={[
+          { value: ALL_ACCOUNTS, label: t("account_all") },
+          ...filterAccounts.map((a) => ({ value: a.accountId, label: a.name })),
+        ]}
         allowDeselect={false}
         rightSection={<IconChevronDown size={12} stroke={2} color="var(--moeum-text-dim)" />}
         size="sm"

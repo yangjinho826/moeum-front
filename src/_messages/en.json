@@ -466,6 +466,7 @@
     "balance_current": "Balance",
     "won": "KRW",
     "account_select": "Select account",
+    "account_all": "All accounts",
     "valuation_new": "New valuation",
     "valuation_new_placeholder": "Current total valuation",
     "valuation_direction": "Direction",

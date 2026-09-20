@@ -18,19 +18,37 @@ const TOP_CATEGORY_COUNT = 5;
 interface MonthSummaryProps {
   year: number;
   month: number;
+  /** 통장 필터 — 좌측 목록과 같은 통장. 없으면 가구 전체 */
+  accountId?: string;
   /** 지출 Top5 접힘 토글 표시(모바일). 데스크톱 레일은 false + ExpenseTop 별도 */
   showTop?: boolean;
+  /** 드릴다운 중인 카테고리 — 그 행을 눌린 상태로 표시 */
+  selectedCategoryId?: string;
+  /** 행 클릭 = 목록을 그 카테고리로 좁힘(같은 걸 다시 누르면 해제) */
+  onSelectCategory?: (categoryId: string | undefined) => void;
 }
 
 /**
  * 이번 달 요약 — 수입/지출/저축률 StatGrid + 접히는 지출 Top5 (Figma 22:105 · 22:115).
- * 리스트/캘린더 뷰 공통 상단. stats/monthly 의 byCategory 재사용.
+ * 리스트/캘린더 뷰 공통 상단.
+ *
+ * 목록·달력과 **같은 calendarFull 응답**을 본다. stats/monthly 로 따로 조회하면 같은 숫자를
+ * 백엔드 코드 경로 둘이 각각 계산하게 되어, 한쪽만 손대는 순간 좌우 불일치가 조용히 돌아온다.
  */
-export default function MonthSummary({ year, month, showTop = true }: MonthSummaryProps) {
+export default function MonthSummary({
+  year,
+  month,
+  accountId,
+  showTop = true,
+  selectedCategoryId,
+  onSelectCategory,
+}: MonthSummaryProps) {
   const t = useTranslations("transaction");
   const [opened, setOpened] = useState(false);
 
-  const { data } = useSuspenseQuery(queryKeys.stats.monthly({ year, month }));
+  const { data } = useSuspenseQuery(
+    queryKeys.transaction.calendarFull({ year, month, accountId }),
+  );
   const stats = data.body.data;
 
   const income = stats.monthlyIncome;
@@ -79,6 +97,15 @@ export default function MonthSummary({ year, month, showTop = true }: MonthSumma
                 value={fmt(cat.amount)}
                 sub={expense > 0 ? `${Math.round((cat.amount / expense) * 100)}%` : undefined}
                 bar={{ ratio: expense > 0 ? cat.amount / expense : 0, color: "expense" }}
+                current={cat.categoryId === selectedCategoryId}
+                onClick={
+                  onSelectCategory
+                    ? () =>
+                        onSelectCategory(
+                          cat.categoryId === selectedCategoryId ? undefined : cat.categoryId,
+                        )
+                    : undefined
+                }
                 last={i === topExpenses.length - 1}
               />
             ))}

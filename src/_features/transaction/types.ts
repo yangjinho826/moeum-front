@@ -8,6 +8,9 @@ export type TxType =
 /** 평가조정(VALUATION) 거래의 증감 방향 — 그 외 타입에는 없음 */
 export type ValuationDirection = "INCREASE" | "DECREASE";
 
+/** 거래 목록 타입 칩 — "all" 은 유형 무관 */
+export type TransactionFilterMode = "all" | TxType;
+
 export interface TransactionSearchRequestType {
   searchTerm?: string;
   txType?: TxType;

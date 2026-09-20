@@ -8,10 +8,7 @@ import { fmt } from "_utilities/fmt";
 
 import { useQuickAddStore } from "../store";
 import type { TransactionListItemType } from "../types";
-
-/** "YYYY-MM-DD" → "9.11" */
-const shortDate = (iso: string): string =>
-  `${Number(iso.slice(5, 7))}.${Number(iso.slice(8, 10))}`;
+import { shortDate } from "../utils";
 
 interface TxRowProps {
   item: TransactionListItemType;

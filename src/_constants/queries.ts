@@ -10,7 +10,6 @@ import { home } from "_features/home/queries/query-key";
 import { households } from "_features/household/queries/query-key";
 import { portfolios } from "_features/portfolio/queries/query-key";
 import { settings } from "_features/settings/queries/query-key";
-import { stats } from "_features/stats/queries/query-key";
 import { transactions } from "_features/transaction/queries/query-key";
 import { wealth } from "_features/wealth/queries/query-key";
 
@@ -24,7 +23,6 @@ export const queryKeys = mergeQueryKeys(
   transactions,
   households,
   accountSnapshots,
-  stats,
   home,
   wealth,
   settings,

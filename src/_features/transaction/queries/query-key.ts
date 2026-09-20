@@ -22,7 +22,11 @@ export const transactions = createQueryKeys("transaction", {
     queryKey: [transactionId],
     queryFn: () => GetTransactionDetailApi(transactionId),
   }),
-  calendarFull: (params: { year: number; month: number }) => ({
+  calendarFull: (params: {
+    year: number;
+    month: number;
+    accountId?: string;
+  }) => ({
     queryKey: [params],
     queryFn: () => GetTransactionCalendarFullApi(params),
   }),

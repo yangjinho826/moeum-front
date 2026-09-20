@@ -7,6 +7,7 @@ import { fmt } from "_utilities/fmt";
 
 import { useQuickAddStore } from "../store";
 import type { AccountLedgerItemType } from "../types";
+import { shortDate } from "../utils";
 
 interface LedgerRowProps {
   t: AccountLedgerItemType;
@@ -14,6 +15,8 @@ interface LedgerRowProps {
   accountId: string;
   /** running balance 표시 여부 — INVESTMENT 는 숨김 */
   showBalance?: boolean;
+  /** 메타에 날짜 포함 — 날짜 헤더가 없는 금액순 목록(카테고리 드릴다운) */
+  withDate?: boolean;
   last?: boolean;
 }
 
@@ -26,6 +29,7 @@ export default function LedgerRow({
   t,
   accountId,
   showBalance = true,
+  withDate = false,
   last = false,
 }: LedgerRowProps) {
   const tt = useTranslations("transaction");
@@ -42,13 +46,14 @@ export default function LedgerRow({
     t.memo || (isFixed ? t.fixedExpenseName : null) || t.categoryName || tt("tx_default_label");
 
   // 메타 — 이체는 상대계좌, 평가조정은 타입명, 고정지출은 항목명(제목과 다를 때), 그 외 카테고리
-  const meta = isTransfer
+  const kind = isTransfer
     ? `${isPositive ? "← " : "→ "}${counterparty ?? "—"}`
     : t.txType === "VALUATION"
       ? tTxType("VALUATION")
       : isFixed && t.fixedExpenseName && t.fixedExpenseName !== title
         ? t.fixedExpenseName
         : (t.categoryName ?? "—");
+  const meta = withDate ? `${kind} · ${shortDate(t.txDate)}` : kind;
 
   return (
     <ListRow
