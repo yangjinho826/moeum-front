@@ -10,6 +10,16 @@
 
 ## Status
 
+### 거래 탭 좌우 숫자 불일치 해소 + 카테고리 드릴다운 (2026-09-20, main · front v0.15.0 / back v0.13.0 배포 완료)
+"왼쪽 거래내역은 통장 필터가 되는데 오른쪽은 전체로 보인다" → 원인은 좌우가 서로 다른 API 를 보는데 그중 하나만 통장 필터를 받았던 것. 게다가 툴바 `useEffect` 가 첫 통장을 강제 선택해 왼쪽은 **절대 전체가 될 수 없었다**.
+- **좌우 일치**: 기본값 "전체 통장"(자동선택 제거), 통장 고르면 좌우 동시 필터. 백엔드 집계 3개 + stats·calendar 엔드포인트에 `account_id` 옵션 추가(기본 None → 홈 무영향).
+- **카테고리 드릴다운**: 지출 Top5 행 클릭 → 좌측만 그 카테고리로 좁히고 **금액순 평면 목록**("제일 많이 쓴 것"이 맨 위). 우측은 안 바뀐다 — 바꾸면 Top5 가 1줄로 쪼그라들어 되돌아갈 길이 사라짐.
+- **잔액 규칙**: running balance 는 날짜순일 때만 표시. 전체 통장·금액순 모드에선 숨기고 통장명/날짜를 대신 보여준다.
+- **단일 응답**: 요약·Top5 도 `calendarFull` 을 보게 해 화면 전체가 쿼리 1회. 죽은 `stats` 쿼리 인프라 삭제(types·utils 는 홈·Top5 가 계속 사용).
+- 코드리뷰가 선결 버그 3건을 찾아줌: TRANSFER 전환 시 category_id 잔존 → 이중계상(재현 테스트 RED 후 수정), 통장 변경 시 카테고리 안 풀려 **갇히는 상태**, 삭제된 통장 id 가 URL 에 남으면 404 로 화면 사망.
+- 미적용 리뷰 지적(전부 low): calendarFull 500건 초과 잘림, `/stats/monthly` 의 account_id 가구 미검증(0 응답 vs 404 계약 불일치), Top5 행 블록 중복(month-summary↔expense-top), `railDate` 만 nuqs 아님.
+- 주의: **dev 서버 켠 채 `pnpm build` 금지** — 같은 `.next` 를 써서 turbopack manifest 가 깨진다(ENOENT app-build-manifest.json). 이번에 한 번 밟음.
+
 ### 리디자인 Quiet Dark — 배치1~7 + 마감 완료 (2026-09-13, feat/redesign-quiet-dark)
 design-flow run `redesign-20260911`(docs/design/…/status.md 가 정본). 사용자 "전체 총괄" 위임으로 배치5 S6 승인 → 배치6(멤버·전환기·로그인·가입) → 배치7(종목 폼·거래 수정·온보딩) → 마감(qa/final.md) → main 머지·v0.13.0 태그 배포.
 - 공통 변경: FormSheet 본문 좌우 20 · 폼 아닌 시트 닫기 X · ListRow `action`/`current` · `BrandWordmark` · `isValidEmail`(백엔드 규칙) · outline 비활성 투명 · 삭제 확인 danger 통일 · FAB 목록 루트만.

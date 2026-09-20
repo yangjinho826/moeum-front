@@ -1,5 +1,17 @@
 # 결정 기록
 
+## 2026-09-20: 통장은 좌우 필터 · 카테고리는 좌측 드릴다운 / 잔액은 날짜순일 때만
+- 결정: 통장 Select = 좌(목록)+우(요약·달력·Top5) 동시 필터, 기본값 "전체 통장". 지출 Top5 클릭 = 좌측만 그 카테고리로 좁히는 드릴다운(금액순 평면 목록). running balance 는 날짜순 목록에서만 표시.
+- 왜: 좌측만 통장 필터가 걸려 좌우 숫자가 안 맞던 게 발단. 카테고리까지 우측에 반영하면 Top5 가 자기 자신 1줄로 쪼그라들어 되돌아갈 길이 사라진다. 잔액은 "그 통장의 그 거래 직후" 값이라 통장이 섞이거나 금액순으로 깔면 오르락내리락해서 틀린 값처럼 보인다.
+- 버린 옵션: 전체 통장에서 가구 합산 잔액 계산(이체 상쇄·INVESTMENT 혼입으로 숫자 신뢰도 낮고 백엔드 작업 큼) / 드릴다운을 바텀시트로(데스크톱에서 좌측이 빈 채 모달이 떠 어색) / 카테고리 선택 시 날짜순 유지("제일 많이 쓴 것"이 안 드러남).
+- 상세: `use-search` nuqs `account`·`category`. **월·통장 변경 시 category 를 같이 해제** — 지출 0 인 통장으로 바꾸면 Top5 섹션이 통째로 사라지면서 해제 링크까지 없어져 빈 목록에 갇힌다. 전체 모드 목록은 신규 `MonthTxListView`(TxRow), 통장 모드는 기존 `AccountLedgerView`(LedgerRow) — 데이터 출처와 빈 결과 처리(early return vs sentinel)가 달라 컴포넌트는 안 합치고 `filterTxns`/`layoutTxns` 만 공유.
+
+## 2026-09-20: 거래 탭 숫자는 calendarFull 한 응답으로
+- 결정: 요약·지출Top5 도 `stats/monthly` 대신 `transaction.calendarFull` 을 본다 → 이 화면 전체가 쿼리 1회. 쓰이지 않게 된 stats 쿼리 인프라(`api.ts`·`queries/`)는 삭제.
+- 왜: 좌(목록·달력)와 우(요약·Top5)가 다른 엔드포인트를 보면 같은 숫자를 백엔드 코드 경로 둘이 각각 계산한다(`daily_sums_for_month` vs `sum_by_type_for_month`). 지금은 값이 같아도 한쪽만 손대면 이번에 고친 좌우 불일치가 조용히 되돌아온다.
+- 버린 옵션: 두 엔드포인트 유지 + 동치 테스트로 방어(계산 경로가 둘인 건 그대로) / 요약만 옮기고 Top5 는 유지(중간 상태라 더 헷갈림).
+- 상세: `stats/types.ts`(홈이 `home.overview` 안에서 사용)·`stats/utils.ts`(topExpenseCategories)는 유지. `use-mutations` 의 `stats._def` 무효화 제거 — `transaction._def` 가 커버. 백엔드 `/stats/monthly` 엔드포인트 자체는 존치.
+
 ## 2026-09-15: 매매수익 레일 = 올해 · Select 검색 = 마우스 기기만
 - 결정: 투자 계좌 레일은 "{연도}년 매매수익"(1/1~오늘), 시트 기본 기간도 같게. 올해 0건이어도 매도 이력 있으면 `0 · 매도 0건` 으로 유지. `searchable` Select 는 `useFinePointer()` 일 때만 검색, 드롭다운은 넘치면 스크롤바 표시(테마 `scrollAreaProps.type=auto`).
 - 왜: 사용자 요청(연 단위). 폰에서 검색 Select 를 누르면 키보드가 드롭다운을 가려 뒤 항목이 안 보였음.
