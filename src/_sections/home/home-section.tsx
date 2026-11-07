@@ -10,6 +10,7 @@ import ListRow from "_features/common/components/list-row";
 import Section from "_features/common/components/section";
 import { ASSET_CLASS_COLOR } from "_features/portfolio/constants";
 import { usePortfolioOverview } from "_features/portfolio/queries/use-query";
+import { hasActiveInvestment } from "_features/portfolio/utils";
 import { savingRate, topExpenseCategories } from "_features/stats/utils";
 import { useQuickAddStore } from "_features/transaction/store";
 import TxRow from "_features/transaction/components/tx-row";
@@ -46,7 +47,7 @@ export default function HomeSection() {
   const rate = savingRate(income, expense);
 
   const summary = portfolioRes.body.data.summary;
-  const hasInvestment = portfolioRes.body.data.investmentAccounts.length > 0;
+  const hasInvestment = hasActiveInvestment(portfolioRes.body.data.investmentAccounts);
   const profit = hasInvestment ? summary.totalProfit : 0;
 
   // 기여 막대 — 순저축·투자손익 절대값 합 대비
