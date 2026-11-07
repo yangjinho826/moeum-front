@@ -1,6 +1,6 @@
 "use client";
 
-import { ActionIcon, Group, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Text } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
@@ -21,6 +21,7 @@ export default function MonthPicker({ value, onChange }: MonthPickerProps) {
   const [yearStr, monthStr] = value.split("-");
   const year = Number(yearStr);
   const month = Number(monthStr);
+  const thisMonth = currentYearMonthKst();
 
   const shift = (delta: number) => {
     const total = year * 12 + (month - 1) + delta;
@@ -40,6 +41,12 @@ export default function MonthPicker({ value, onChange }: MonthPickerProps) {
       <ActionIcon variant="subtle" color="gray" size="lg" onClick={() => shift(1)} aria-label={tg("next_month")}>
         <IconChevronRight size={16} stroke={2} color="var(--moeum-text-dim)" />
       </ActionIcon>
+      {/* 다른 달을 보고 있을 때만 — 화살표를 여러 번 누르지 않고 바로 돌아오게 */}
+      {value !== thisMonth && (
+        <Button variant="subtle" color="gray" size="compact-xs" onClick={() => onChange(thisMonth)}>
+          {tg("this_month")}
+        </Button>
+      )}
     </Group>
   );
 }
