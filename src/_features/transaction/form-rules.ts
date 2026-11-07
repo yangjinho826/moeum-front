@@ -68,6 +68,17 @@ export function pickInitialAccountId(
   return last && !last.isArchived && !last.isManualAsset ? last.accountId : "";
 }
 
+/**
+ * 거래 폼 통장 선택지 — 보관 통장은 뺀다. 단, 지금 고른 통장(수정 중인 거래가 보관 통장)은 남긴다.
+ * 빼 버리면 Select 가 값을 못 찾아 빈칸으로 보인다.
+ */
+export function selectableAccounts<T extends { accountId: string; isArchived: boolean }>(
+  accounts: readonly T[],
+  currentId: string | null | undefined,
+): T[] {
+  return accounts.filter((a) => !a.isArchived || a.accountId === currentId);
+}
+
 /** 저장 후 계속 — 같은 통장·유형·날짜로 다음 건을 바로 입력하게, 건마다 다른 칸만 비운다 */
 export function resetForNext<T extends TransactionBaseRequestType & { valuation: number }>(
   values: T,

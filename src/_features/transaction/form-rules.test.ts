@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import type { TransactionBaseRequestType } from "./types";
-import { applyTypeChange, pickInitialAccountId, resetForNext, transferIssue } from "./form-rules";
+import {
+  applyTypeChange,
+  pickInitialAccountId,
+  resetForNext,
+  selectableAccounts,
+  transferIssue,
+} from "./form-rules";
 
 const base: TransactionBaseRequestType = {
   txType: "EXPENSE",
@@ -111,5 +117,25 @@ describe("리뷰 반영", () => {
   it("W8-5b 수동자산 통장은 마지막 통장이어도 기본값으로 쓰지 않는다", () => {
     const accounts = [{ accountId: "apt", isArchived: false, isManualAsset: true }];
     expect(pickInitialAccountId(accounts, "apt")).toBe("");
+  });
+});
+
+describe("selectableAccounts — 거래 폼 통장 선택지에서 보관 통장을 뺀다", () => {
+  const accounts = [
+    { accountId: "acc-a", isArchived: false },
+    { accountId: "acc-old", isArchived: true },
+    { accountId: "acc-b", isArchived: false },
+  ];
+
+  it("P4-1 새 거래면 보관 통장은 선택지에 없다", () => {
+    expect(selectableAccounts(accounts, "").map((a) => a.accountId)).toEqual(["acc-a", "acc-b"]);
+  });
+
+  it("P4-2 수정 중인 거래가 보관 통장이면 그 통장은 남긴다(값이 빈칸으로 안 보이게)", () => {
+    expect(selectableAccounts(accounts, "acc-old").map((a) => a.accountId)).toEqual([
+      "acc-a",
+      "acc-old",
+      "acc-b",
+    ]);
   });
 });

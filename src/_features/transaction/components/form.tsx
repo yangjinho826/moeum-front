@@ -26,7 +26,7 @@ import { queryKeys } from "_constants/queries";
 import { semanticColor, signColor } from "_styles/semantic-color";
 import { fmt } from "_utilities/fmt";
 
-import { categoryKindOf } from "_features/transaction/form-rules";
+import { categoryKindOf, selectableAccounts } from "_features/transaction/form-rules";
 
 import { useTransactionForm } from "../hooks/use-sub/use-form";
 import type { TxType } from "../types";
@@ -116,10 +116,10 @@ export default function TransactionForm({
 
   const toAccountOptions = useMemo(
     () =>
-      accounts
+      selectableAccounts(accounts, form.values.toAccountId)
         .filter((a) => a.accountId !== form.values.accountId)
         .map((a) => ({ value: a.accountId, label: a.name })),
-    [accounts, form.values.accountId],
+    [accounts, form.values.accountId, form.values.toAccountId],
   );
 
   const categoryOptions = useMemo(
@@ -197,7 +197,10 @@ export default function TransactionForm({
       value={form.values.accountId || null}
       onChange={(value) => value && form.setFieldValue("accountId", value)}
       error={form.errors.accountId}
-      data={accounts.map((a) => ({ value: a.accountId, label: a.name }))}
+      data={selectableAccounts(accounts, form.values.accountId).map((a) => ({
+        value: a.accountId,
+        label: a.name,
+      }))}
       allowDeselect={false}
       searchable={canSearch}
       leftSection={
