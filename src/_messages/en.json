@@ -173,7 +173,8 @@
       "back": "Back",
       "load_failed": "Couldn't load",
       "guide": "Guide",
-      "close": "Close"
+      "close": "Close",
+      "this_month": "This month"
     },
     "money": "₩{amount}",
     "won": "₩",
@@ -490,7 +491,11 @@
       "balance_body": "Recording updates the account balance right away. Editing or deleting recalculates it.",
       "fixed_title": "Fixed expense",
       "fixed_body": "Recording a fixed expense adds it to that item's spending for the month."
-    }
+    },
+    "to_account_required": "Select the receiving account.",
+    "same_account": "Choose an account different from the sending one.",
+    "keep_adding": "Keep adding after save",
+    "valuation_direction_required": "Choose increase or decrease."
   },
   "wealth": {
     "title": "Assets",
@@ -653,6 +658,10 @@
     "PT001": "Stock lookup failed.",
     "ID001": "This key has already been used for a different request.",
     "ID002": "A different request body was sent with the same key.",
-    "ID003": "The same request is being processed. Please retry shortly."
+    "ID003": "The same request is being processed. Please retry shortly.",
+    "AC002": "Accounts with transactions or holdings can't switch between investment, asset and regular types.",
+    "CT001": "Categories used by transactions or fixed expenses can't switch between income and expense.",
+    "US006": "This action isn't available on the demo account.",
+    "CM006": "Too many requests. Please try again shortly."
   }
 }
