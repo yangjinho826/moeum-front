@@ -1,6 +1,7 @@
 import type {
   TransactionFilterMode,
   TransactionListItemType,
+  TxType,
 } from "./types";
 
 /** "YYYY-MM-DD" → "9.11" — 날짜 헤더 없는 목록의 행 메타용 */
@@ -15,6 +16,12 @@ export interface TxListQuery {
   categoryId?: string;
 }
 
+/** 칩이 고른 유형에 거래가 들어가나 — 지출 칩은 고정지출도 지출이라 같이 보인다(홈 차트와 같은 기준) */
+const matchesType = (filter: TransactionFilterMode, txType: TxType): boolean =>
+  filter === "all" ||
+  txType === filter ||
+  (filter === "EXPENSE" && txType === "FIXED_EXPENSE");
+
 /**
  * 목록 필터 — 계좌 원장과 전체 통장 목록이 **같은 규칙**을 써야 한다.
  * 한쪽에만 조건이 붙으면 통장을 바꿨을 뿐인데 목록이 달라 보이는 버그가 된다.
@@ -25,7 +32,7 @@ export function filterTxns<T extends TransactionListItemType>(
 ): T[] {
   return items.filter(
     (it) =>
-      (filter === "all" || it.txType === filter) &&
+      matchesType(filter, it.txType) &&
       (!date || it.txDate.slice(0, 10) === date) &&
       (!categoryId || it.categoryId === categoryId),
   );
