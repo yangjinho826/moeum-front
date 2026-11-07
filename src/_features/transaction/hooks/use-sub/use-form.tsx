@@ -3,13 +3,23 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useRouter, useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 
 import type { AccountListItemType } from "_features/account/types";
+import type { CategoryKind } from "_features/category/types";
+import { useHouseholdStore } from "_features/household/store";
 import { useTransactionMutations } from "_features/transaction/queries/use-mutations";
 import { getErrorMessage } from "_libraries/fetch/error-message";
 import { todayIsoKst } from "_utilities/datetime";
+
+import {
+  applyTypeChange,
+  pickInitialAccountId,
+  resetForNext,
+  transferIssue,
+} from "_features/transaction/form-rules";
+import { useTxInputPrefStore } from "_features/transaction/store";
 
 import { useTransactionDetail as useTransactionDetailQuery } from "../../queries/use-query";
 import type {
@@ -28,6 +38,8 @@ interface UseTransactionFormOptions {
   copyFromId?: string;
   /** 폼 옵션의 통장 목록 — 선택 통장 타입으로 평가조정 분기를 결정한다. */
   accounts: AccountListItemType[];
+  /** 폼 옵션의 카테고리 — 유형이 자동 전환될 때 kind 안 맞는 카테고리를 비우는 데 쓴다. */
+  categories: readonly { categoryId: string; kind: CategoryKind }[];
   /**
    * 성공/취소/삭제 완료 후 호출. 시트 모드: close 호출 (라우트 이동 X).
    * 없으면 기본 동작 = router.replace(/transactions) 또는 router.back().
@@ -39,6 +51,7 @@ export function useTransactionForm({
   transactionId,
   copyFromId,
   accounts,
+  categories,
   onDone,
 }: UseTransactionFormOptions) {
   const t = useTranslations("transaction");
@@ -52,6 +65,16 @@ export function useTransactionForm({
     useTransactionMutations();
 
   const isUpdate = Boolean(transactionId);
+  // 원본 없는 생성 — 마지막 통장 기본값·저장 후 계속은 여기서만(수정·복사는 원본 값이 우선)
+  const isFreshCreate = !transactionId && !copyFromId;
+
+  const householdId = useHouseholdStore((s) => s.currentHouseholdId);
+  const lastAccountId = useTxInputPrefStore((s) => s.lastAccountByHousehold[householdId]);
+  const keepAdding = useTxInputPrefStore((s) => s.keepAdding);
+  const rememberAccount = useTxInputPrefStore((s) => s.rememberAccount);
+  const setKeepAdding = useTxInputPrefStore((s) => s.setKeepAdding);
+  // 저장 후 계속으로 다음 건이 시작될 때마다 +1 — 화면이 금액 칸에 포커스를 다시 준다
+  const [entrySeq, setEntrySeq] = useState(0);
 
   const todayDate = todayIsoKst();
 
@@ -60,7 +83,7 @@ export function useTransactionForm({
       txType: "EXPENSE" as TxType,
       amount: 0,
       txDate: todayDate,
-      accountId: "",
+      accountId: isFreshCreate ? pickInitialAccountId(accounts, lastAccountId) : "",
       toAccountId: null,
       categoryId: null,
       paidByUserId: null,
@@ -82,10 +105,20 @@ export function useTransactionForm({
           amount: z.number(),
           txDate: z.string().min(1),
           accountId: z.string().min(1, t("account_placeholder")),
+          toAccountId: z.string().nullable().optional(),
+          valuationDirection: z.enum(["INCREASE", "DECREASE"]).nullable().optional(),
           fixedExpenseId: z.string().nullable().optional(),
         })
         .superRefine((data, ctx) => {
           if (data.txType === "VALUATION") {
+            // 수정 모드는 방향을 직접 고른다 — 비면 백엔드가 400(방향 없는 평가조정은 감소로 계산돼 금액이 틀림)
+            if (transactionId && !data.valuationDirection) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["valuationDirection"],
+                message: t("valuation_direction_required"),
+              });
+            }
             // 수정 모드는 방향+금액 직접 입력, 생성 모드는 새 평가액으로 handleSubmit 에서 검증.
             if (transactionId && !(data.amount > 0)) {
               ctx.addIssue({
@@ -101,6 +134,15 @@ export function useTransactionForm({
               code: z.ZodIssueCode.custom,
               path: ["amount"],
               message: t("amount_required_message"),
+            });
+          }
+          // 받는 통장 없이 저장하면 백엔드 400 — 칸 옆에 먼저 알린다
+          const issue = transferIssue(data);
+          if (issue) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: ["toAccountId"],
+              message: t(issue),
             });
           }
           if (data.txType === "FIXED_EXPENSE" && !data.fixedExpenseId) {
@@ -122,10 +164,11 @@ export function useTransactionForm({
   // 통장 선택 → 타입 동기화. 수동자산이면 평가조정 고정, 일반 통장으로 바꾸면 지출로 복귀.
   useEffect(() => {
     if (!selectedAccount) return;
+    // 유형만 바꾸면 이전 유형의 숨은 값(카테고리·받는 통장)이 남는다 — 전환 규칙을 같이 적용
     if (selectedAccount.isManualAsset && form.values.txType !== "VALUATION") {
-      form.setFieldValue("txType", "VALUATION");
+      form.setValues(applyTypeChange(form.values, "VALUATION", categories));
     } else if (!selectedAccount.isManualAsset && form.values.txType === "VALUATION") {
-      form.setFieldValue("txType", "EXPENSE");
+      form.setValues(applyTypeChange(form.values, "EXPENSE", categories));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.values.accountId]);
@@ -200,6 +243,7 @@ export function useTransactionForm({
       } else {
         await createMutation.mutateAsync({ ...txValues });
       }
+      if (!isUpdate) rememberAccount(householdId, txValues.accountId);
       notifications.show({
         title: tg("notificationstitle"),
         message: isUpdate
@@ -207,6 +251,13 @@ export function useTransactionForm({
           : tg("register_has_been_completed"),
         color: "positive",
       });
+      if (isFreshCreate && keepAdding) {
+        // 같은 통장·유형·날짜로 다음 건 — 시트를 닫지 않는다. 함수형: 요청 중에 바꾼 날짜·통장은 살린다
+        form.setValues((prev) => resetForNext({ ...form.values, ...prev }));
+        form.resetTouched();
+        setEntrySeq((n) => n + 1);
+        return;
+      }
       if (onDone) {
         onDone();
       } else {
@@ -265,6 +316,13 @@ export function useTransactionForm({
   return {
     form,
     isUpdate,
+    isFreshCreate,
+    entrySeq,
+    keepAdding,
+    setKeepAdding,
+    /** 유형 전환 — 그 유형에 없는 칸(받는 통장·카테고리·고정지출·방향)을 같이 비운다 */
+    changeType: (nextType: TxType) =>
+      form.setValues(applyTypeChange(form.values, nextType, categories)),
     selectedAccount,
     isPending:
       createMutation.isPending ||

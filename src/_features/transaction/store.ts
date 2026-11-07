@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 import type { TxType } from "./types";
 
@@ -12,6 +13,33 @@ export const useTransactionStore = create<TransactionStoreState>((set) => ({
   bumpDetailRefreshKey: () =>
     set((s) => ({ detailRefreshKey: s.detailRefreshKey + 1 })),
 }));
+
+/**
+ * 거래 입력 습관 — 기기 localStorage 에 남긴다(서버 X, 기기마다 쓰는 통장이 다르다).
+ * 통장은 가계부별: 가계부를 바꿨는데 다른 가계부 통장 id 가 기본값이면 목록에 없어 빈 칸이 된다.
+ */
+interface TxInputPrefState {
+  lastAccountByHousehold: Record<string, string>;
+  /** 저장 후 계속 — 생성 뒤 시트를 닫지 않고 다음 건 */
+  keepAdding: boolean;
+  rememberAccount: (householdId: string, accountId: string) => void;
+  setKeepAdding: (on: boolean) => void;
+}
+
+export const useTxInputPrefStore = create<TxInputPrefState>()(
+  persist(
+    (set) => ({
+      lastAccountByHousehold: {},
+      keepAdding: false,
+      rememberAccount: (householdId, accountId) =>
+        set((s) => ({
+          lastAccountByHousehold: { ...s.lastAccountByHousehold, [householdId]: accountId },
+        })),
+      setKeepAdding: (keepAdding) => set({ keepAdding }),
+    }),
+    { name: "tx-input-pref" },
+  ),
+);
 
 /**
  * 거래 입력 시트 — 어디서나 + FAB·거래 탭 [+]·거래 row 클릭으로 열림.

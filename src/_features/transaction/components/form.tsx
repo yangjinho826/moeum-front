@@ -6,6 +6,7 @@ import {
   SegmentedControl,
   Select,
   Stack,
+  Switch,
   Text,
   Textarea,
 } from "@mantine/core";
@@ -13,7 +14,7 @@ import { DateInput } from "@mantine/dates";
 import { IconBuildingBank } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { ACCOUNT_TYPE_HEX } from "_features/account/constants";
 import { useAccountSheetStore } from "_features/account/store";
@@ -24,6 +25,8 @@ import { useFinePointer } from "_libraries/hooks/use-fine-pointer";
 import { queryKeys } from "_constants/queries";
 import { semanticColor, signColor } from "_styles/semantic-color";
 import { fmt } from "_utilities/fmt";
+
+import { categoryKindOf } from "_features/transaction/form-rules";
 
 import { useTransactionForm } from "../hooks/use-sub/use-form";
 import type { TxType } from "../types";
@@ -80,12 +83,23 @@ export default function TransactionForm({
   const {
     form,
     isUpdate,
+    isFreshCreate,
+    entrySeq,
+    keepAdding,
+    setKeepAdding,
+    changeType,
     isPending,
     selectedAccount,
     handleSubmit,
     handleRemove,
     handleCancel,
-  } = useTransactionForm({ transactionId, copyFromId, accounts, onDone });
+  } = useTransactionForm({ transactionId, copyFromId, accounts, categories, onDone });
+
+  // 저장 후 계속 — 다음 건은 금액부터 치게 포커스를 돌려준다(첫 렌더는 data-autofocus 가 맡음)
+  const amountRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (entrySeq > 0) amountRef.current?.focus();
+  }, [entrySeq]);
 
   const txType = form.values.txType;
   const isValuation = txType === "VALUATION";
@@ -111,9 +125,7 @@ export default function TransactionForm({
   const categoryOptions = useMemo(
     () =>
       categories
-        .filter((c) =>
-          txType === "INCOME" ? c.kind === "INCOME" : c.kind === "EXPENSE",
-        )
+        .filter((c) => c.kind === categoryKindOf(txType))
         .map((c) => ({ value: c.categoryId, label: c.name })),
     [categories, txType],
   );
@@ -204,7 +216,8 @@ export default function TransactionForm({
     <SegmentedControl
       fullWidth
       value={txType}
-      onChange={(value) => form.setFieldValue("txType", value as TxType)}
+      // 유형에 없는 칸(받는 통장·카테고리·고정지출)을 같이 비운다 — 숨은 값이 전송되지 않게
+      onChange={(value) => changeType(value as TxType)}
       data={txTypeOptions}
     />
   );
@@ -214,11 +227,13 @@ export default function TransactionForm({
   const amountField = (
     <NumberInput
       {...form.getInputProps("amount")}
+      ref={amountRef}
       value={form.values.amount || ""}
       onChange={(v) => form.setFieldValue("amount", typeof v === "number" ? v : 0)}
       placeholder="0"
       label={t("amount")}
       min={0}
+      allowDecimal={false}
       classNames={{ input: "moeum-amount-input" }}
       rightSection={<InputUnit>{t("won")}</InputUnit>}
       rightSectionPointerEvents="none"
@@ -242,6 +257,7 @@ export default function TransactionForm({
         {...form.getInputProps("amount")}
         label={t("valuation_amount")}
         min={0}
+        allowDecimal={false}
         classNames={{ input: "moeum-amount-input" }}
       />
     </>
@@ -255,6 +271,7 @@ export default function TransactionForm({
         label={t("valuation_new")}
         placeholder={t("valuation_new_placeholder")}
         min={0}
+        allowDecimal={false}
         classNames={{ input: "moeum-amount-input" }}
       />
       {renderValuationHint()}
@@ -332,6 +349,15 @@ export default function TransactionForm({
           autosize
           minRows={1}
         />
+
+        {isFreshCreate && (
+          // 여러 건 연달아 입력 — 켜 두면 저장 뒤 같은 통장·날짜로 비워진 폼이 남는다
+          <Switch
+            label={t("keep_adding")}
+            checked={keepAdding}
+            onChange={(e) => setKeepAdding(e.currentTarget.checked)}
+          />
+        )}
 
         <FormActions
           submitLabel={isUpdate ? tg("update") : tg("create")}
