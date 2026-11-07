@@ -89,7 +89,8 @@
     "go_all": "All →",
     "no_transactions": "No transactions this month",
     "drilldown_title": "{month} breakdown",
-    "drilldown_total": "Total"
+    "drilldown_total": "Total",
+    "drilldown_fixed_expense": "incl. fixed"
   },
   "auth": {
     "email": "Email",
@@ -190,7 +191,7 @@
     "unit": {
       "stock": "{count} shares",
       "count": "{count}",
-      "man": "{value}0k"
+      "man": "{k}k"
     },
     "etc_count": "+{count} more",
     "empty": "Nothing to show",

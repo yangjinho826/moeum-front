@@ -23,3 +23,18 @@ export const fmtArrowPct = (n: number, digits = 1): string =>
   `${n > 0 ? "▲ " : n < 0 ? "▼ " : ""}${Math.abs(n).toFixed(digits)}%`;
 
 export const newId = (): string => Math.random().toString(36).slice(2, 10);
+
+/** 비율 % — 소수 1자리, null(정의 불가 — 예: 수입 0 저축률)은 "—" */
+export const fmtPct = (n: number | null): string => (n === null ? "—" : `${n.toFixed(1)}%`);
+
+/**
+ * 만 단위 숫자(크기만 — 부호는 호출부) — 1만 이상 정수 반올림, 미만은 소수 1자리(최소 0.1).
+ * 달력 셀에서 소액 지출이 "-0만"으로 사라지지 않게.
+ */
+export const fmtMan = (n: number): string => {
+  if (n === 0) return "0";
+  const man = Math.abs(n) / 10000;
+  if (man >= 1) return String(Math.round(man));
+  const oneDecimal = Math.max(0.1, Math.round(man * 10) / 10);
+  return oneDecimal >= 1 ? "1" : oneDecimal.toFixed(1);
+};
