@@ -16,6 +16,8 @@ const alias = Object.fromEntries(
 
 export default defineConfig({
   resolve: { alias },
+  // tsconfig 는 Next 용 jsx: "preserve" — 테스트에선 React 17+ 자동 런타임으로 변환(컴포넌트 테스트에 React import 불필요)
+  esbuild: { jsx: "automatic" },
   test: {
     include: ["src/**/*.test.{ts,tsx}"],
   },
