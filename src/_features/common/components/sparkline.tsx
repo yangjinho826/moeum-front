@@ -1,9 +1,10 @@
 "use client";
 
 import { Box } from "@mantine/core";
-import { Line, LineChart, ResponsiveContainer } from "recharts";
+import { Line, LineChart, ResponsiveContainer, YAxis } from "recharts";
 
 import { semanticColor } from "_styles/semantic-color";
+import { trendYDomain } from "_utilities/chart";
 
 interface SparklineProps {
   /** 시간순 값. 마지막 점이 현재 */
@@ -49,6 +50,8 @@ export default function Sparkline({
           accessibilityLayer={false}
           style={{ cursor: onPointClick ? "pointer" : undefined }}
         >
+          {/* 0 부터 그리면 큰 금액의 작은 변동이 평평해진다 — 데이터 범위로 줌인(숨김 축, 여백 하한 없음) */}
+          <YAxis hide domain={trendYDomain(values, 0)} />
           <Line
             type="monotone"
             dataKey="v"
