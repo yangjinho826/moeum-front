@@ -192,4 +192,4 @@ R1~R5a 전부 dev 커밋 완료. **dev→main 머지는 아직 안 함** — R5a
 
 ## Next
 
-- 진행중: 단계 4/8 · .claude/plans/cosmic-napping-locket.md · 시작 back ea53726 / front aedb51b · W1 · finding 0
+- W1~W8 끝(로컬 브랜치 커밋, push 안 함) — 다음: 브랜치 push·PR 여부 결정, 주차장 정책 확인
