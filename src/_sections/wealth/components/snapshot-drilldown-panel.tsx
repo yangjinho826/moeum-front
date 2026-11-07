@@ -4,6 +4,7 @@ import { Card, Group, Stack, Text } from "@mantine/core";
 import { useTranslations } from "next-intl";
 
 import type { AccountSnapshotMonthItem } from "_features/account-snapshot/types";
+import { snapshotMonthExpense } from "_features/account-snapshot/utils";
 import { fmt } from "_utilities/fmt";
 
 interface Props {
@@ -66,10 +67,21 @@ export default function SnapshotDrilldownPanel({ month }: Props) {
               c="danger.5"
               style={{ fontVariantNumeric: "tabular-nums" }}
             >
-              −{fmt(month.totalExpense)}
+              −{fmt(snapshotMonthExpense(month))}
               {t("won")}
             </Text>
           </Group>
+          {month.totalFixedExpense > 0 && (
+            <Group justify="space-between">
+              <Text size="xs" c="dimmed" pl="sm">
+                {t("drilldown_fixed_expense")}
+              </Text>
+              <Text size="xs" c="dimmed" style={{ fontVariantNumeric: "tabular-nums" }}>
+                −{fmt(month.totalFixedExpense)}
+                {t("won")}
+              </Text>
+            </Group>
+          )}
         </Stack>
       </Card>
 

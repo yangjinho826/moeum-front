@@ -10,16 +10,16 @@ import ListRow from "_features/common/components/list-row";
 import Section from "_features/common/components/section";
 import { ASSET_CLASS_COLOR } from "_features/portfolio/constants";
 import { usePortfolioOverview } from "_features/portfolio/queries/use-query";
-import { topExpenseCategories } from "_features/stats/utils";
+import { hasActiveInvestment } from "_features/portfolio/utils";
+import { savingRate, topExpenseCategories } from "_features/stats/utils";
 import { useQuickAddStore } from "_features/transaction/store";
 import TxRow from "_features/transaction/components/tx-row";
 import { queryKeys } from "_constants/queries";
 import { amountColor, signColor } from "_styles/semantic-color";
-import { fmt, fmtSigned, fmtSignedPct } from "_utilities/fmt";
+import { fmt, fmtPct, fmtSigned, fmtSignedPct } from "_utilities/fmt";
 
 import TotalAssetHero from "./components/total-asset-hero";
 
-const pct = (n: number): string => `${n.toFixed(1)}%`;
 
 /**
  * HomeSection — "결과 하나"(A) 홈 (plan/1.md, Figma home 10:3).
@@ -44,10 +44,10 @@ export default function HomeSection() {
   const income = stats.monthlyIncome;
   const expense = stats.monthlyExpense;
   const netSaving = income - expense;
-  const savingRate = income > 0 ? (netSaving / income) * 100 : 0;
+  const rate = savingRate(income, expense);
 
   const summary = portfolioRes.body.data.summary;
-  const hasInvestment = portfolioRes.body.data.investmentAccounts.length > 0;
+  const hasInvestment = hasActiveInvestment(portfolioRes.body.data.investmentAccounts);
   const profit = hasInvestment ? summary.totalProfit : 0;
 
   // 기여 막대 — 순저축·투자손익 절대값 합 대비
@@ -65,6 +65,8 @@ export default function HomeSection() {
     (a, b) => b.valuation - a.valuation,
   );
   const expenseTop = topExpenseCategories(stats.byCategory, 3);
+  // 이 숫자들의 달(서버 KST 기준) — 거래 탭 기본 달과 어긋나지 않게 링크에 실어 보낸다
+  const monthParam = `month=${home.year}-${String(home.month).padStart(2, "0")}`;
   const recent = home.recentTransactions.slice(0, 3);
 
   const whySection = (
@@ -148,9 +150,10 @@ export default function HomeSection() {
         hairline={false}
         link={{ label: t("go_transactions_all"), href: `/${locale}/transactions` }}
       >
-        <ListRow title={t("income")} value={fmt(income)} valueColor={amountColor(income, "income")} href={`/${locale}/transactions?filter=INCOME`} />
-        <ListRow title={t("expense")} value={fmt(expense)} valueColor={amountColor(expense, "expense")} href={`/${locale}/transactions?filter=EXPENSE`} />
-        <ListRow title={t("saving_rate")} value={pct(savingRate)} last href={`/${locale}/transactions`} />
+        <ListRow title={t("income")} value={fmt(income)} valueColor={amountColor(income, "income")} href={`/${locale}/transactions?filter=INCOME&${monthParam}`} />
+        {/* 필터 없이 — EXPENSE 칩은 고정지출을 빼서 이 숫자와 목록 합이 달라진다 */}
+        <ListRow title={t("expense")} value={fmt(expense)} valueColor={amountColor(expense, "expense")} href={`/${locale}/transactions?${monthParam}`} />
+        <ListRow title={t("saving_rate")} value={fmtPct(rate)} last href={`/${locale}/transactions`} />
       </Section>
       {expenseTop.length > 0 && (
         <Section title={t("expense_top")}>
@@ -163,7 +166,7 @@ export default function HomeSection() {
               sub={expense > 0 ? `${Math.round((c.amount / expense) * 100)}%` : undefined}
               bar={{ ratio: expense > 0 ? c.amount / expense : 0, color: "expense" }}
               last={i === expenseTop.length - 1}
-              href={`/${locale}/transactions?filter=EXPENSE`}
+              href={`/${locale}/transactions?category=${c.categoryId}&${monthParam}`}
             />
           ))}
         </Section>

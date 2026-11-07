@@ -189,3 +189,7 @@ R1~R5a 전부 dev 커밋 완료. **dev→main 머지는 아직 안 함** — R5a
 - **dev→main 머지** — R1~R5b①(front+back) + R5b② 구조 트랙(front) 전부 dev push, main 미반영. front/back 두 레포.
 
 > 금/채권ETF asset_class 재분류 = **안 함**(사용자 결정 2026-06-02). 트랙①에서 종목 전체 INVESTMENT 단일화·금은 COMMODITY 수동자산으로 편입했으므로 종목 재분류 자체가 무의미.
+
+## Next
+
+- W1~W8 + 보관 통장·지출 칩 정리 끝(로컬 브랜치 커밋, push 안 함) — 다음: 브랜치 push·PR 여부 결정

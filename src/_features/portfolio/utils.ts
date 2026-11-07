@@ -60,3 +60,10 @@ export function formatProfitAmount(amount: number, formatter: (n: number) => str
   const sign = amount > 0 ? "+" : amount < 0 ? "-" : "";
   return `${sign}${formatter(Math.abs(amount))}`;
 }
+
+/** 집계되는(보관 아닌) 투자통장이 있나 — 백엔드 투자 요약은 보관 통장을 빼므로(W3) 칸 노출도 같은 기준 */
+export function hasActiveInvestment(
+  groups: readonly { account: { isArchived: boolean } }[],
+): boolean {
+  return groups.some((g) => !g.account.isArchived);
+}

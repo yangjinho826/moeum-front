@@ -4,7 +4,7 @@ import { SimpleGrid, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-import { todayIso } from "_utilities/fmt";
+import { fmtMan, todayIso } from "_utilities/fmt";
 
 import type { TransactionCalendarDay } from "../types";
 
@@ -25,6 +25,12 @@ interface MonthCalendarProps {
  * 선택일 = accent 배경 + on-accent, 오늘 = surface-2. 요일색은 쓰지 않는다(수입·지출 색과 충돌).
  * 거래 탭 모바일 달력 뷰와 데스크톱 우측 레일이 공용.
  */
+/** 달력 셀 금액 — ko "{value}만", en "{k}k"(천 단위). 둘 다 같은 반올림(fmtMan)에서 나와 숫자가 같다 */
+const manUnit = (n: number) => {
+  const value = fmtMan(n);
+  return { value, k: Math.round(Number(value) * 10) };
+};
+
 export default function MonthCalendar({ year, month, days, selectedDate, onSelect }: MonthCalendarProps) {
   const tGeneral = useTranslations("general");
   const today = todayIso();
@@ -97,12 +103,12 @@ export default function MonthCalendar({ year, month, days, selectedDate, onSelec
               <Stack gap={0} align="center">
                 {stat.income > 0 && (
                   <Text className="moeum-mono" size="10px" fw={600} c={amountColor("var(--moeum-income)")}>
-                    +{tGeneral("unit.man", { value: Math.round(stat.income / 10000) })}
+                    +{tGeneral("unit.man", manUnit(stat.income))}
                   </Text>
                 )}
                 {stat.expense > 0 && (
                   <Text className="moeum-mono" size="10px" fw={600} c={amountColor("var(--moeum-expense)")}>
-                    -{tGeneral("unit.man", { value: Math.round(stat.expense / 10000) })}
+                    -{tGeneral("unit.man", manUnit(stat.expense))}
                   </Text>
                 )}
               </Stack>

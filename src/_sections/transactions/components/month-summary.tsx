@@ -8,10 +8,10 @@ import { useState } from "react";
 
 import ListRow from "_features/common/components/list-row";
 import StatGrid from "_features/common/components/stat-grid";
-import { topExpenseCategories } from "_features/stats/utils";
+import { savingRate, topExpenseCategories } from "_features/stats/utils";
 import { queryKeys } from "_constants/queries";
 import { amountColor } from "_styles/semantic-color";
-import { fmt } from "_utilities/fmt";
+import { fmt, fmtPct } from "_utilities/fmt";
 
 const TOP_CATEGORY_COUNT = 5;
 
@@ -53,7 +53,7 @@ export default function MonthSummary({
 
   const income = stats.monthlyIncome;
   const expense = stats.monthlyExpense;
-  const savingRate = income > 0 ? ((income - expense) / income) * 100 : 0;
+  const rate = savingRate(income, expense);
 
   const topExpenses = topExpenseCategories(stats.byCategory, TOP_CATEGORY_COUNT);
 
@@ -63,7 +63,7 @@ export default function MonthSummary({
         items={[
           { label: t("summary_income"), value: fmt(income), color: amountColor(income, "income") },
           { label: t("summary_expense"), value: fmt(expense), color: amountColor(expense, "expense") },
-          { label: t("summary_saving_rate"), value: `${savingRate.toFixed(1)}%` },
+          { label: t("summary_saving_rate"), value: fmtPct(rate) },
         ]}
       />
       {showTop && topExpenses.length > 0 && (
