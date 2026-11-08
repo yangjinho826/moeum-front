@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useAccountSnapshotMutations } from "_features/account-snapshot/queries/use-mutations";
-import { trendTip } from "_features/account-snapshot/utils";
+import { snapshotMonthExpense, trendTip } from "_features/account-snapshot/utils";
 import DeltaPill from "_features/common/components/delta-pill";
 import FormSheet from "_features/common/components/form-sheet";
 import HeroAmount from "_features/common/components/hero-amount";
@@ -28,7 +28,13 @@ import SnapshotDrilldownPanel from "_sections/wealth/components/snapshot-drilldo
  * `기준일 · [N월 기록]` 캡션(링크 = 지난달 박제 confirm) → 총자산 44/60 → DeltaPill(마지막 박제 대비)
  * → 44px 추이선(점 탭 = 그달 분해 FormSheet). wealth.overview 단독 소비(홈 다른 쿼리와 캐시 공유).
  */
-export default function TotalAssetHero() {
+interface TotalAssetHeroProps {
+  /** 이번 달 수입·지출 — 추이선 현재점 툴팁 */
+  currentIncome: number;
+  currentExpense: number;
+}
+
+export default function TotalAssetHero({ currentIncome, currentExpense }: TotalAssetHeroProps) {
   const t = useTranslations("home");
   const tCommon = useTranslations("general.common");
   const te = useTranslations("error");
@@ -51,8 +57,16 @@ export default function TotalAssetHero() {
   const selectedMonth = selectedIdx !== null ? (months[selectedIdx] ?? null) : null;
 
   // 추이 = 박제 월들 + 현재점(오늘 날짜 · 지금 총자산). 현재점은 드릴다운 대상 아님(인덱스 범위로 걸러냄)
-  const points = months.map((m) => ({ date: m.snapshotDate, value: m.totalBalance }));
-  if (months.length > 0) points.push({ date: todayIsoKst(), value: total });
+  // 지출 = 일반 + 고정(거래 탭과 같은 기준)
+  const points = months.map((m) => ({
+    date: m.snapshotDate,
+    value: m.totalBalance,
+    income: m.totalIncome,
+    expense: snapshotMonthExpense(m),
+  }));
+  if (months.length > 0) {
+    points.push({ date: todayIsoKst(), value: total, income: currentIncome, expense: currentExpense });
+  }
 
   // 마지막 박제 대비 증감
   const lastSnapshot = months.length > 0 ? months[months.length - 1] : null;
@@ -200,6 +214,11 @@ export default function TotalAssetHero() {
                   }}
                 >
                   {tPortfolio("mom", { pct: fmtSignedPct(tip.mom, 1) })}
+                </Text>
+              )}
+              {tip.income !== null && tip.expense !== null && (
+                <Text className="moeum-mono" c="dimmed" style={{ fontSize: 11, lineHeight: "16px" }}>
+                  {t("income")} {fmt(tip.income)} · {t("expense")} {fmt(tip.expense)}
                 </Text>
               )}
             </>
