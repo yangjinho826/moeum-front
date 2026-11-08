@@ -9,8 +9,10 @@ export const snapshotMonthExpense = (
 
 export interface TrendTip {
   title: string;
-  /** 총자산을 가린 상태면 null */
+  /** 금액들 — 총자산을 가린 상태면 null */
   amount: number | null;
+  income: number | null;
+  expense: number | null;
   mom: number | null;
 }
 
@@ -19,7 +21,7 @@ export interface TrendTip {
  * 가린 상태면 금액은 비운다 — 가려둔 금액이 호버로 새지 않게.
  */
 export function trendTip(
-  points: readonly { date: string; value: number }[],
+  points: readonly { date: string; value: number; income: number; expense: number }[],
   index: number,
   opts: { hidden: boolean; currentTitle: string; monthTitle: (iso: string) => string },
 ): TrendTip | null {
@@ -29,6 +31,8 @@ export function trendTip(
   return {
     title: isCurrent ? opts.currentTitle : opts.monthTitle(point.date),
     amount: opts.hidden ? null : point.value,
+    income: opts.hidden ? null : point.income,
+    expense: opts.hidden ? null : point.expense,
     mom: momPct(points[index - 1], point),
   };
 }

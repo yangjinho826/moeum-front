@@ -190,7 +190,8 @@ export default function HomeSection() {
   return (
     <div className="moeum-main-rail">
       <Stack gap={0}>
-        <TotalAssetHero />
+        {/* 추이선 현재점 툴팁용 — 이번 달 수입·지출(이미 이 화면이 불러온 값) */}
+        <TotalAssetHero currentIncome={income} currentExpense={expense} />
         {whySection}
         {allocationSection}
         {recentSection}
