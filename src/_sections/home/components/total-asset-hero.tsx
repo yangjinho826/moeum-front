@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useAccountSnapshotMutations } from "_features/account-snapshot/queries/use-mutations";
+import { trendTip } from "_features/account-snapshot/utils";
 import DeltaPill from "_features/common/components/delta-pill";
 import FormSheet from "_features/common/components/form-sheet";
 import HeroAmount from "_features/common/components/hero-amount";
@@ -15,7 +16,9 @@ import Sparkline from "_features/common/components/sparkline";
 import { useMonthLabel } from "_features/common/hooks/use-month-label";
 import { queryKeys } from "_constants/queries";
 import { getErrorMessage } from "_libraries/fetch/error-message";
+import { semanticColor, signColor } from "_styles/semantic-color";
 import { todayIsoKst } from "_utilities/datetime";
+import { fmt, fmtSignedPct } from "_utilities/fmt";
 
 import SnapshotDrilldownPanel from "_sections/wealth/components/snapshot-drilldown-panel";
 
@@ -29,6 +32,7 @@ export default function TotalAssetHero() {
   const t = useTranslations("home");
   const tCommon = useTranslations("general.common");
   const te = useTranslations("error");
+  const tPortfolio = useTranslations("portfolio");
   const monthLabel = useMonthLabel();
 
   const { data: overviewRes } = useSuspenseQuery(queryKeys.wealth.overview({}));
@@ -46,9 +50,9 @@ export default function TotalAssetHero() {
 
   const selectedMonth = selectedIdx !== null ? (months[selectedIdx] ?? null) : null;
 
-  // 추이 = 박제 월들 + 현재점. 현재점은 드릴다운 대상 아님(인덱스 범위로 걸러냄)
-  const trend = months.map((m) => m.totalBalance);
-  if (months.length > 0) trend.push(total);
+  // 추이 = 박제 월들 + 현재점(오늘 날짜 · 지금 총자산). 현재점은 드릴다운 대상 아님(인덱스 범위로 걸러냄)
+  const points = months.map((m) => ({ date: m.snapshotDate, value: m.totalBalance }));
+  if (months.length > 0) points.push({ date: todayIsoKst(), value: total });
 
   // 마지막 박제 대비 증감
   const lastSnapshot = months.length > 0 ? months[months.length - 1] : null;
@@ -158,8 +162,49 @@ export default function TotalAssetHero() {
       </HeroAmount>
 
       <Sparkline
-        values={trend}
+        values={points.map((p) => p.value)}
         labels={[...months.map((m) => monthLabel(m.snapshotDate)), t("as_of", { date: asOf })]}
+        // 월 숫자 — TrendLine 축과 같은 모양. 현재점은 이번 달
+        axisLabels={points.map((p) => String(Number(p.date.slice(5, 7))))}
+        renderTooltip={(i) => {
+          const tip = trendTip(points, i, {
+            hidden,
+            currentTitle: t("as_of", { date: asOf }),
+            monthTitle: monthLabel,
+          });
+          if (!tip) return null;
+          return (
+            <>
+              <Text c="dimmed" style={{ fontSize: 11, lineHeight: "16px" }}>
+                {tip.title}
+              </Text>
+              {tip.amount !== null && (
+                <Text
+                  className="moeum-mono"
+                  fw={600}
+                  c="var(--moeum-text)"
+                  style={{ fontSize: 14, lineHeight: "20px" }}
+                >
+                  {fmt(tip.amount)}
+                  {t("won")}
+                </Text>
+              )}
+              {tip.mom !== null && (
+                <Text
+                  className="moeum-mono"
+                  fw={600}
+                  style={{
+                    fontSize: 11,
+                    lineHeight: "16px",
+                    color: semanticColor(signColor(tip.mom, "asset")),
+                  }}
+                >
+                  {tPortfolio("mom", { pct: fmtSignedPct(tip.mom, 1) })}
+                </Text>
+              )}
+            </>
+          );
+        }}
         className="moeum-spark"
         onPointClick={(idx) => {
           if (idx < months.length) {

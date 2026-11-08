@@ -1,7 +1,8 @@
 "use client";
 
 import { Box } from "@mantine/core";
-import { Line, LineChart, ResponsiveContainer, YAxis } from "recharts";
+import type { ReactNode } from "react";
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { semanticColor } from "_styles/semantic-color";
 import { trendYDomain } from "_utilities/chart";
@@ -16,6 +17,10 @@ interface SparklineProps {
   onPointClick?: (index: number) => void;
   /** 점별 접근성 이름(월 라벨 등). onPointClick 과 함께 */
   labels?: string[];
+  /** 점 아래 눈금(월 숫자 등). 없으면 축 없음 */
+  axisLabels?: string[];
+  /** 호버(모바일 터치) 툴팁 내용 — 점 인덱스를 받는다. 없으면 툴팁 없음 */
+  renderTooltip?: (index: number) => ReactNode;
 }
 
 /**
@@ -29,6 +34,8 @@ export default function Sparkline({
   className,
   onPointClick,
   labels,
+  axisLabels,
+  renderTooltip,
 }: SparklineProps) {
   if (values.length < 2) return null;
   const data = values.map((v, i) => ({ i, v }));
@@ -50,8 +57,48 @@ export default function Sparkline({
           accessibilityLayer={false}
           style={{ cursor: onPointClick ? "pointer" : undefined }}
         >
+          {axisLabels && (
+            <XAxis
+              dataKey="i"
+              tickFormatter={(i: number) => axisLabels[i] ?? ""}
+              tick={{
+                fontSize: 11,
+                fill: "var(--moeum-text-dim)",
+                fontFamily: "var(--mantine-font-family-monospace)",
+              }}
+              axisLine={{ stroke: "var(--moeum-hair)" }}
+              tickLine={false}
+              interval={0}
+              height={18}
+            />
+          )}
           {/* 0 부터 그리면 큰 금액의 작은 변동이 평평해진다 — 데이터 범위로 줌인(숨김 축, 여백 하한 없음) */}
           <YAxis hide domain={trendYDomain(values, 0)} />
+          {renderTooltip && (
+            <Tooltip
+              cursor={{ stroke: "var(--moeum-hair)", strokeWidth: 1 }}
+              allowEscapeViewBox={{ x: false, y: true }}
+              wrapperStyle={{ zIndex: 5 }}
+              content={({ active, payload }) => {
+                const row = active ? (payload?.[0]?.payload as { i: number } | undefined) : undefined;
+                if (!row) return null;
+                // TrendLine 툴팁과 같은 카드 — DESIGN.md §2-4 surface + hair 테두리
+                return (
+                  <Box
+                    px={12}
+                    py={8}
+                    style={{
+                      background: "var(--moeum-surface)",
+                      border: "1px solid var(--moeum-hair)",
+                      borderRadius: "var(--mantine-radius-md)",
+                    }}
+                  >
+                    {renderTooltip(row.i)}
+                  </Box>
+                );
+              }}
+            />
+          )}
           <Line
             type="monotone"
             dataKey="v"
