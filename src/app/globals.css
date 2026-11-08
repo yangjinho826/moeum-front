@@ -188,7 +188,7 @@ small,
 
 /* 홈 추이선 — 모바일 44 / 데스크톱 판면 120 (DESIGN.md §5 Sparkline) */
 .moeum-spark {
-  height: 58px; /* 44 + 위아래 14 */
+  height: 76px; /* 44 + 위아래 14 + 월 눈금 18 */
 }
 /* Sparkline 탭 가능한 점 — hover/포커스 시 4px accent (recharts activeDot 대신, 클릭 히트영역 유지) */
 .moeum-spark-dot {
@@ -204,7 +204,7 @@ small,
 }
 @media (min-width: 1200px) {
   .moeum-spark {
-    height: 134px;
+    height: 152px; /* 120 + 14 + 월 눈금 18 */
   }
 }
 

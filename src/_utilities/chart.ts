@@ -12,3 +12,19 @@ export function trendYDomain(values: number[], minPadRatio = 0.03): [number, num
   const pad = spread > 0 ? Math.max(spread * 0.6, max * minPadRatio) : max * 0.03;
   return [Math.max(0, min - pad), max + pad];
 }
+
+/** "YYYY-MM-DD" 에서 back 개월 전의 "YYYY-MM" */
+export function monthKeyBefore(iso: string, back: number): string {
+  const total = Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1 - back;
+  return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, "0")}`;
+}
+
+/** 전월 대비 % — 앞 점이 정말 전달일 때만(달이 비면 기준이 틀어진다), 앞 값 0 이면 null */
+export function momPct(
+  prev: { date: string; value: number } | undefined,
+  cur: { date: string; value: number },
+): number | null {
+  if (!prev || prev.value <= 0) return null;
+  if (prev.date.slice(0, 7) !== monthKeyBefore(cur.date, 1)) return null;
+  return ((cur.value - prev.value) / prev.value) * 100;
+}
